@@ -66,7 +66,14 @@ export const defaultConfig = {
 
   whatWillChange: {
     title: 'What Will Change In Your Business?',
-    ctaText: 'Register Now at ₹99/- Only',
+    centerLabel: 'Business Breakthrough',
+    items: [
+      { text: 'Right Psychology Of Running The Business', position: 'top' },
+      { text: 'Right Systems', position: 'left' },
+      { text: 'Right Strategies', position: 'right' },
+    ],
+    ctaText: 'REGISTER NOW AT ₹99/- ONLY',
+    diagramImage: '', // optional: upload in admin to show custom image instead of diagram
   },
 
   targetAudience: {

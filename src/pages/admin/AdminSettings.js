@@ -192,6 +192,29 @@ export function AdminSettings() {
       </section>
 
       <section className="card shadow-sm mb-4">
+        <div className="card-header fw-bold">What Will Change (diagram)</div>
+        <div className="card-body">
+          <div className="mb-3">
+            <label className="form-label">Diagram image (optional)</label>
+            <p className="small text-muted mb-1">Upload an image to replace the built diagram. Leave empty to show the default diagram.</p>
+            <div className="d-flex gap-2 align-items-center flex-wrap">
+              <input type="file" accept="image/*" className="form-control" style={{ maxWidth: '220px' }} onChange={(e) => handleImageUpload(e, 'whatWillChange.diagramImage')} disabled={!isSupabaseConfigured() || uploading === 'whatWillChange_diagramImage'} />
+              {editConfig.whatWillChange?.diagramImage && <img src={editConfig.whatWillChange.diagramImage} alt="Diagram" className="rounded" style={{ maxHeight: '80px' }} />}
+              <input type="url" className="form-control" placeholder="Or paste image URL" value={editConfig.whatWillChange?.diagramImage || ''} onChange={(e) => handleConfigChange('whatWillChange.diagramImage', e.target.value)} />
+            </div>
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Center label</label>
+            <input type="text" className="form-control" value={editConfig.whatWillChange?.centerLabel || ''} onChange={(e) => handleConfigChange('whatWillChange.centerLabel', e.target.value)} placeholder="Business Breakthrough" />
+          </div>
+          <div className="mb-3">
+            <label className="form-label">CTA button text</label>
+            <input type="text" className="form-control" value={editConfig.whatWillChange?.ctaText || ''} onChange={(e) => handleConfigChange('whatWillChange.ctaText', e.target.value)} placeholder="REGISTER NOW AT ₹99/- ONLY" />
+          </div>
+        </div>
+      </section>
+
+      <section className="card shadow-sm mb-4">
         <div className="card-header fw-bold">Featured logos</div>
         <div className="card-body">
           {(editConfig.featuredLogos || []).map((url, i) => (
