@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { useConfig } from '../../context/ConfigContext';
 
 const ITEM_WIDTH = 150;
@@ -11,7 +11,7 @@ export function FeaturedInSection() {
   const scrollRef = useRef(null);
   const [centerIndex, setCenterIndex] = useState(0);
 
-  const updateCenterIndex = () => {
+  const updateCenterIndex = useCallback(() => {
     const el = scrollRef.current;
     if (!el || logos.length === 0) return;
     const scrollLeft = el.scrollLeft;
@@ -20,7 +20,7 @@ export function FeaturedInSection() {
     const index = Math.round((scrollLeft + containerCenter - itemTotalWidth / 2) / itemTotalWidth);
     const clamped = Math.max(0, Math.min(index, logos.length - 1));
     setCenterIndex(clamped);
-  };
+  }, [logos.length]);
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -28,7 +28,7 @@ export function FeaturedInSection() {
     const onScroll = () => updateCenterIndex();
     el.addEventListener('scroll', onScroll);
     return () => el.removeEventListener('scroll', onScroll);
-  }, [logos.length]);
+  }, [logos.length, updateCenterIndex]);
 
   useEffect(() => {
     if (logos.length <= 1) return;
