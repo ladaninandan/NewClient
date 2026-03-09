@@ -1,0 +1,17 @@
+export { Header } from './Header';
+export { HeroSection } from './HeroSection';
+export { InstructorSection } from './InstructorSection';
+export { CountdownSection } from './CountdownSection';
+export { FeaturedInSection } from './FeaturedInSection';
+export { BenefitsSection } from './BenefitsSection';
+export { WhatWillChangeSection } from './WhatWillChangeSection';
+export { TargetAudienceSection } from './TargetAudienceSection';
+export { LearningOutcomesSection } from './LearningOutcomesSection';
+export { BonusesSection } from './BonusesSection';
+export { TestimonialsSection } from './TestimonialsSection';
+export { MeetCoachSection } from './MeetCoachSection';
+export { RecapBonusesSection } from './RecapBonusesSection';
+export { GuaranteeSection } from './GuaranteeSection';
+export { FAQSection } from './FAQSection';
+export { RegistrationForm } from './RegistrationForm';
+export { FooterSection } from './FooterSection';

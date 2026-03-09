@@ -1,70 +1,53 @@
-# Getting Started with Create React App
+# Workshop Landing Page
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A component-based landing page with an admin panel. Built with React, Bootstrap, and Supabase.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- **Landing page**: Logo, title, hero, instructor section, countdown, benefits, registration form (name, email, phone), bonuses, footer. All content and theme are configurable.
+- **Admin panel** (`/admin`): Edit theme colors, logo, title, images (upload or URL), instructor details, featured logos, bonus images. View all form submissions.
+- **Form**: Submissions are stored in Supabase and listed in the admin panel.
+- **Theme**: Primary/secondary/background colors managed in admin; applied via CSS variables.
 
-### `npm start`
+## Setup
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+1. **Install and run**
+   ```bash
+   npm install
+   npm start
+   ```
+   Open [http://localhost:3000](http://localhost:3000). Without Supabase the app uses default config and form submit will show a message.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+2. **Supabase**
+   - Create a project at [supabase.com](https://supabase.com).
+   - In **SQL Editor**, run the contents of `supabase-setup.sql` to create:
+     - `site_config` (id, config JSONB) for admin-editable content
+     - `registrations` (name, email, phone) for form data
+     - Storage bucket `images` for uploads
+   - In **Settings → API**: copy Project URL and anon key.
 
-### `npm test`
+3. **Environment**
+   - Copy `.env.example` to `.env`.
+   - Set:
+     - `REACT_APP_SUPABASE_URL`
+     - `REACT_APP_SUPABASE_ANON_KEY`
+   - Restart `npm start`.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+4. **Admin**
+   - Go to **Admin** (link in header) or `/admin`.
+   - Change colors, logo, title, images; click **Save all config**.
+   - Upload images (they go to Supabase Storage and URLs are saved in config).
+   - View form submissions in the table and use **Refresh list** to update.
 
-### `npm run build`
+## Project structure
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- `src/config/defaultConfig.js` – default content/theme (fallback when Supabase is not used).
+- `src/context/ConfigContext.js` – loads/saves config from Supabase, provides it to the app.
+- `src/components/landing/` – reusable sections: Header, HeroSection, InstructorSection, CountdownSection, FeaturedInSection, BenefitsSection, WhatWillChangeSection, LearningOutcomesSection, BonusesSection, RegistrationForm, FooterSection.
+- `src/pages/LandingPage.js` – composes all landing sections.
+- `src/pages/AdminPage.js` – admin UI for config and submissions.
+- `src/lib/supabase.js` – Supabase client (optional if env vars are set).
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Tech stack
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- React 19, React Router, Bootstrap 5, Supabase (database + storage).
