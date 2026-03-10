@@ -15,7 +15,7 @@ export function WhatWillChangeSection() {
   const hasCustomImage = !!block.diagramImage;
 
   return (
-    <section className="py-5" style={{ backgroundColor: '#F5F5F5' }}>
+    <section className="py-5" style={{ backgroundColor: 'lightgray' }}>
       <div className="container">
         <h2 className="h4 fw-bold text-center text-dark mb-2" style={{ lineHeight: 1.3 }}>
           What Will Change In Your
@@ -142,7 +142,7 @@ export function WhatWillChangeSection() {
         )}
 
         {/* CTA button - gradient orange to yellow-orange */}
-        <div className="text-center">
+        <div className="text-center pt-4">
           <button
             type="button"
             className="btn btn-lg border-0 rounded-4 fw-bold text-white px-5 py-3 shadow"

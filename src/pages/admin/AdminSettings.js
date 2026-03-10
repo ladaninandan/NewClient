@@ -100,11 +100,11 @@ export function AdminSettings() {
 
   return (
     <>
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h1 className="h4 fw-bold mb-0">Site settings</h1>
+      <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3 mb-md-4">
+        <h1 className="h4 h5-md fw-bold mb-0">Site settings</h1>
         <button
           type="button"
-          className="btn btn-primary"
+          className="btn btn-primary btn-sm"
           onClick={handleSaveConfig}
           disabled={saving || !isSupabaseConfigured()}
         >
@@ -123,12 +123,12 @@ export function AdminSettings() {
         </div>
       )}
 
-      <section className="card shadow-sm mb-4">
-        <div className="card-header fw-bold">Theme &amp; colors</div>
-        <div className="card-body">
-          <div className="row g-3">
+      <section className="card shadow-sm mb-3 mb-md-4 overflow-hidden">
+        <div className="card-header fw-bold small">Theme &amp; colors</div>
+        <div className="card-body p-3 p-md-4">
+          <div className="row g-2 g-md-3">
             {['primaryColor', 'primaryHover', 'secondaryColor', 'backgroundColor', 'textColor', 'textMuted'].map((key) => (
-              <div className="col-md-4" key={key}>
+              <div className="col-6 col-md-4" key={key}>
                 <label className="form-label">{key}</label>
                 <input type="color" className="form-control form-control-color w-100" value={editConfig.theme?.[key] || '#000000'} onChange={(e) => handleConfigChange(`theme.${key}`, e.target.value)} />
                 <input type="text" className="form-control form-control-sm mt-1" value={editConfig.theme?.[key] || ''} onChange={(e) => handleConfigChange(`theme.${key}`, e.target.value)} />
@@ -138,14 +138,14 @@ export function AdminSettings() {
         </div>
       </section>
 
-      <section className="card shadow-sm mb-4">
-        <div className="card-header fw-bold">Logo &amp; title</div>
-        <div className="card-body">
+      <section className="card shadow-sm mb-3 mb-md-4 overflow-hidden">
+        <div className="card-header fw-bold small">Logo &amp; title</div>
+        <div className="card-body p-3 p-md-4">
           <div className="mb-3">
-            <label className="form-label">Logo</label>
+            <label className="form-label small">Logo</label>
             <p className="small text-muted mb-1">Upload saves to site automatically. For URL only, click &quot;Save all&quot; below.</p>
-            <div className="d-flex gap-2 align-items-center flex-wrap">
-              <input type="file" accept="image/*" className="form-control" style={{ maxWidth: '220px' }} onChange={(e) => handleImageUpload(e, 'logo')} disabled={!isSupabaseConfigured() || uploading === 'logo'} />
+            <div className="d-flex flex-column flex-sm-row gap-2 align-items-start flex-wrap">
+              <input type="file" accept="image/*" className="form-control form-control-sm w-100" style={{ maxWidth: '220px' }} onChange={(e) => handleImageUpload(e, 'logo')} disabled={!isSupabaseConfigured() || uploading === 'logo'} />
               {editConfig.logo && <img src={editConfig.logo} alt="Logo" style={{ height: '40px' }} />}
               <input type="url" className="form-control" placeholder="Or paste URL" value={editConfig.logo || ''} onChange={(e) => handleConfigChange('logo', e.target.value)} />
             </div>
@@ -210,6 +210,39 @@ export function AdminSettings() {
           <div className="mb-3">
             <label className="form-label">CTA button text</label>
             <input type="text" className="form-control" value={editConfig.whatWillChange?.ctaText || ''} onChange={(e) => handleConfigChange('whatWillChange.ctaText', e.target.value)} placeholder="REGISTER NOW AT ₹99/- ONLY" />
+          </div>
+        </div>
+      </section>
+
+      <section className="card shadow-sm mb-4">
+        <div className="card-header fw-bold">Target Audience (Who This Workshop Will Help)</div>
+        <div className="card-body">
+          <div className="mb-3">
+            <label className="form-label">Section image (optional)</label>
+            <p className="small text-muted mb-1">Upload an image to replace the DON&apos;T JOIN IF diagram. Leave empty to show the default.</p>
+            <div className="d-flex gap-2 align-items-center flex-wrap">
+              <input type="file" accept="image/*" className="form-control" style={{ maxWidth: '220px' }} onChange={(e) => handleImageUpload(e, 'targetAudience.image')} disabled={!isSupabaseConfigured() || uploading === 'targetAudience_image'} />
+              {editConfig.targetAudience?.image && <img src={editConfig.targetAudience.image} alt="Target audience" className="rounded" style={{ maxHeight: '80px' }} />}
+              <input type="url" className="form-control" placeholder="Or paste image URL" value={editConfig.targetAudience?.image || ''} onChange={(e) => handleConfigChange('targetAudience.image', e.target.value)} />
+            </div>
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Title line 2</label>
+            <input type="text" className="form-control" value={editConfig.targetAudience?.titleLine2 || ''} onChange={(e) => handleConfigChange('targetAudience.titleLine2', e.target.value)} placeholder="Help The Best?" />
+          </div>
+          <div className="mb-3">
+            <label className="form-label">DON&apos;T JOIN IF label</label>
+            <input type="text" className="form-control" value={editConfig.targetAudience?.dontJoinLabel || ''} onChange={(e) => handleConfigChange('targetAudience.dontJoinLabel', e.target.value)} placeholder="DON'T JOIN IF" />
+          </div>
+          {(editConfig.targetAudience?.items || []).map((item, i) => (
+            <div className="mb-3" key={i}>
+              <label className="form-label">Point {i + 1}</label>
+              <input type="text" className="form-control" value={item} onChange={(e) => { const arr = [...(editConfig.targetAudience?.items || [])]; arr[i] = e.target.value; handleConfigChange('targetAudience.items', arr); }} />
+            </div>
+          ))}
+          <div className="mb-3">
+            <label className="form-label">CTA button text</label>
+            <input type="text" className="form-control" value={editConfig.targetAudience?.ctaText || ''} onChange={(e) => handleConfigChange('targetAudience.ctaText', e.target.value)} placeholder="REGISTER NOW AT ₹99/- ONLY" />
           </div>
         </div>
       </section>

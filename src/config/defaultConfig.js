@@ -78,7 +78,15 @@ export const defaultConfig = {
 
   targetAudience: {
     title: 'Who This Workshop Will Help The Best?',
-    ctaText: 'Register Now at ₹99/- Only',
+    titleLine2: 'Help The Best?',
+    dontJoinLabel: "DON'T JOIN IF",
+    items: [
+      'You Are Not A Business Owner',
+      'You Are Not An Action Taker',
+      'You Are Not Serious About Your Business',
+    ],
+    ctaText: 'REGISTER NOW AT ₹99/- ONLY',
+    image: '', // optional: upload in admin to show custom image instead of diagram
   },
 
   learningOutcomes: {
