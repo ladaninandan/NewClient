@@ -1,13 +1,174 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+/* Tailwind is loaded via CDN in index.html so utility classes apply. */
+
+html, body {
+  overflow-x: hidden;
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  min-height: max(884px, 100dvh);
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+/* Scroll-triggered animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-on-scroll {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.animate-on-scroll.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.animate-on-scroll.stagger-1 { transition-delay: 0.1s; }
+.animate-on-scroll.stagger-2 { transition-delay: 0.2s; }
+.animate-on-scroll.stagger-3 { transition-delay: 0.3s; }
+.animate-on-scroll.stagger-4 { transition-delay: 0.4s; }
+.animate-on-scroll.stagger-5 { transition-delay: 0.5s; }
+
+/* Staggered children: when parent .animate-on-scroll gets .in-view, animate descendants */
+.animate-on-scroll.in-view .stagger-children-item {
+  opacity: 0;
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+.animate-on-scroll.in-view .stagger-children-item:nth-child(1) { animation-delay: 0.05s; }
+.animate-on-scroll.in-view .stagger-children-item:nth-child(2) { animation-delay: 0.12s; }
+.animate-on-scroll.in-view .stagger-children-item:nth-child(3) { animation-delay: 0.19s; }
+.animate-on-scroll.in-view .stagger-children-item:nth-child(4) { animation-delay: 0.26s; }
+.animate-on-scroll.in-view .stagger-children-item:nth-child(5) { animation-delay: 0.33s; }
+.animate-on-scroll.in-view .stagger-children-item:nth-child(6) { animation-delay: 0.4s; }
+.animate-on-scroll.in-view .stagger-children-item:nth-child(7) { animation-delay: 0.47s; }
+.animate-on-scroll.in-view .stagger-children-item:nth-child(8) { animation-delay: 0.54s; }
+.animate-on-scroll.in-view .stagger-children-item:nth-child(9) { animation-delay: 0.61s; }
+.animate-on-scroll.in-view .stagger-children-item:nth-child(10) { animation-delay: 0.68s; }
+.animate-on-scroll.in-view .stagger-children-item:nth-child(n+11) { animation-delay: 0.75s; }
+
+/* Hover: card lift */
+.hover-lift {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+/* Button hover */
+.btn-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+.btn-hover:hover {
+  transform: scale(1.03);
+  box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.25);
+  filter: brightness(1.05);
+}
+.btn-hover:active {
+  transform: scale(0.98);
+}
+
+/* FAQ details: smooth summary */
+details.animate-faq summary {
+  transition: color 0.2s ease;
+}
+details.animate-faq[open] summary {
+  margin-bottom: 0.25rem;
+}
+details.animate-faq p {
+  transition: opacity 0.25s ease;
+}
+
+/* Form: input with icon + focus ring */
+.form-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border: 2px solid rgb(203 213 225);
+  border-radius: 0.75rem;
+  background: white;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.form-input-wrap:focus-within {
+  border-color: var(--theme-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-primary) 25%, transparent);
+}
+.dark .form-input-wrap {
+  border-color: rgb(71 85 105);
+  background: var(--theme-card-dark);
+}
+.dark .form-input-wrap:focus-within {
+  border-color: var(--theme-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-primary) 30%, transparent);
+}
+.form-input-wrap .form-icon {
+  flex-shrink: 0;
+  padding-left: 1rem;
+  color: var(--theme-primary);
+  pointer-events: none;
+}
+.form-input-wrap input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  padding: 0.75rem 1rem 0.75rem 0.5rem;
+  font-size: 1rem;
+}
+.form-input-wrap input:focus {
+  outline: none;
+}
+.form-input-wrap input::placeholder {
+  color: rgb(148 163 184);
+}
+.dark .form-input-wrap input::placeholder {
+  color: rgb(100 116 139);
+}
+.form-message.success {
+  background: rgb(220 252 231);
+  color: rgb(22 101 52);
+  border: 1px solid rgb(134 239 172);
+}
+.dark .form-message.success {
+  background: rgb(5 46 22);
+  color: rgb(134 239 172);
+  border-color: rgb(22 101 52);
+}
+.form-message.error {
+  background: rgb(254 226 226);
+  color: rgb(153 27 27);
+  border: 1px solid rgb(252 165 165);
+}
+.dark .form-message.error {
+  background: rgb(69 10 10);
+  color: rgb(252 165 165);
+  border-color: rgb(153 27 27);
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.animate-spin {
+  animation: spin 0.8s linear infinite;
 }

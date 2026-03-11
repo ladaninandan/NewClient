@@ -1,9 +1,136 @@
 /**
- * Default site configuration – matches https://rajivtalreja.co.in/bsw-fb/
- * Admin panel can override these via Supabase.
+ * Default site configuration.
+ * layout: 'workshop' | 'strategy' — strategy = RRTCS/Business Clarity theme (Tailwind).
+ * Admin panel can override via Supabase.
  */
 export const defaultConfig = {
+  layout: 'strategy', // 'workshop' = Rajiv workshop style, 'strategy' = RRTCS Business Clarity style
   logo: '',
+
+  // Strategy layout (Rahul Revne Business Clarity Session) — all editable in admin
+  strategyLayout: {
+    theme: {
+      primary: '#f77c18',
+      accent: '#f77c18',
+      accentHover: '#e66b0a',
+      backgroundLight: '#f8f7f5',
+      backgroundDark: '#064e3b',
+      cardDark: '#1e3a32',
+    },
+    nav: { logo: '', brandShort: 'RR.', brandName: 'Rahul Revne', ctaText: 'Book Now' },
+    hero: {
+      badge: '1-to-1 Clarity Session',
+      headline: 'Is Your Business Running Because Of You…',
+      headlineHighlight: 'Or Despite You?',
+      subtext: 'Stop being the bottleneck. Transform your Indian business from chaos to clarity with a high-impact 1-to-1 Strategy Session.',
+      ctaText: 'Reserve My ₹199 Strategy Session',
+      slotNote: 'Limited slots available for this month',
+    },
+    offerCard: {
+      price: '₹199',
+      items: [
+        { title: 'Personalized Business Audit', desc: "We'll identify exactly where you are stuck." },
+        { title: '90-Minute Strategic Roadmap', desc: 'Step-by-step plan to automate operations.' },
+        { title: 'Scale-Up Blueprint', desc: 'Indian-market specific scaling strategies.' },
+      ],
+    },
+    whyScale: {
+      title: 'Why Most Businesses In India Never Scale',
+      cards: [
+        { icon: 'person_off', title: 'Owner Reliance', desc: "Everything stops when you take a day off. You've created a job, not a business." },
+        { icon: 'account_tree', title: 'Lack of Systems', desc: 'Processes are stored in your head. Scaling is impossible because nobody else knows how to do it.' },
+        { icon: 'trending_flat', title: 'Plateaued Growth', desc: "You've hit a ceiling. You're working harder, but your revenue isn't moving proportionately." },
+      ],
+    },
+    founderTrap: {
+      title: 'The Founder Dependency Trap',
+      text: 'In India, most entrepreneurs take pride in "being everywhere." But this is exactly what kills your growth. If you are the best technician, the best salesperson, and the best accountant in your company—you are the bottleneck.',
+      image: '',
+      warningItems: [
+        'You work IN the business, not ON it.',
+        'Decision fatigue is affecting your personal life.',
+      ],
+    },
+    coach: {
+      label: 'The Strategist',
+      name: 'Rahul Revne',
+      heading: 'Meet Rahul Revne',
+      bio: 'Rahul Revne is a seasoned Business Coach and Author with 15+ years of experience in the Indian entrepreneurial ecosystem.\n\nHe has mentored over 500+ MSME owners to transition from being self-employed to becoming true CEOs through his unique "Freedom Framework."',
+      stats: [
+        { value: '15+', label: 'Years Experience' },
+        { value: '500+', label: 'Success Stories' },
+      ],
+      image: '',
+      ctaText: 'Learn More About Rahul',
+    },
+    learn: {
+      title: 'What You Will Learn In The 1-to-1 Session',
+      subtitle: 'A deep dive into your business operations and scaling potential.',
+      items: [
+        { icon: 'psychology', text: 'The Mindset shift from Worker to Architect.' },
+        { icon: 'architecture', text: 'Designing SOPs that actually work.' },
+        { icon: 'groups', text: 'How to hire and trust your first managers.' },
+        { icon: 'analytics', text: 'Reading financial health beyond just turnover.' },
+        { icon: 'rocket_launch', text: 'Strategic delegation techniques.' },
+        { icon: 'distance', text: 'Scaling without losing quality control.' },
+      ],
+    },
+    founderModel: {
+      title: 'The Founder Freedom Model',
+      subtitle: 'The 4 stages of business evolution',
+      steps: [
+        { num: 1, title: 'Self-Employed', desc: 'The business is YOU. You do everything.' },
+        { num: 2, title: 'Manager-Led', desc: 'You have help, but you still make every call.' },
+        { num: 3, title: 'System-Driven', desc: 'Processes guide the team. You monitor.' },
+        { num: 4, title: 'Freedom State', desc: 'The business grows while you focus on vision.', highlight: true },
+      ],
+    },
+    whyDifferent: {
+      title: 'Why This Session Is Different?',
+      quote: '"Most consultants give you \'strategies.\' I give you implementation. We don\'t just talk about theories; we look at your actual spreadsheet, your actual team, and your actual bottlenecks to build a real-world exit strategy for you from the daily grind."',
+    },
+    forNotFor: {
+      forTitle: 'Who This Is For',
+      forItems: [
+        'Service or Product business owners with 3+ employees.',
+        'Founders tired of micro-managing every small detail.',
+        'Action-takers ready to change how they work.',
+      ],
+      notForTitle: 'Who This Is Not For',
+      notForItems: [
+        'People looking for a "Get Rich Quick" scheme.',
+        'Freelancers who don\'t want to build a team.',
+        'Business owners unwilling to share their current numbers.',
+      ],
+    },
+    pricing: {
+      title: 'Start Your Transformation',
+      originalPrice: '₹4,999',
+      price: '₹199',
+      note: 'This is a symbolic commitment fee. My goal is to work with dedicated founders, not spectators.',
+      ctaText: 'Reserve My ₹199 Strategy Session',
+      ribbonText: 'BEST VALUE',
+      secureText: '100% Secure Checkout',
+    },
+    faq: {
+      title: 'Frequently Asked Questions',
+      items: [
+        { q: 'How long is the session?', a: 'The Clarity Session typically lasts between 75 to 90 minutes. We dive deep into your specific business challenges.' },
+        { q: 'Will I get a recording?', a: 'Yes, the session is conducted over Zoom, and a full recording along with the notes will be provided to you.' },
+        { q: 'Why is it only ₹199?', a: 'I want to eliminate the barrier to entry for serious entrepreneurs. Once you experience the value of a structured approach, you might want to explore long-term coaching (no pressure!).' },
+      ],
+    },
+    footer: {
+      headline: 'Ready to exit the grind?',
+      ctaText: 'Book My Strategy Session Now',
+      copyright: '© 2024 Rahul Revne. All Rights Reserved.',
+      links: [
+        { label: 'Privacy Policy', url: '#' },
+        { label: 'Terms of Service', url: '#' },
+      ],
+    },
+  },
+
   title: 'Join and Become Like The Top 1% Successful Business Owners & Entrepreneurs',
   subtitle: 'Register Now for Free',
 

@@ -12,6 +12,18 @@ export function ConfigProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const deepMerge = (target, source) => {
+    const out = { ...target };
+    for (const key of Object.keys(source)) {
+      if (source[key] != null && typeof source[key] === 'object' && !Array.isArray(source[key]) && typeof target[key] === 'object' && target[key] != null && !Array.isArray(target[key])) {
+        out[key] = deepMerge(target[key], source[key]);
+      } else {
+        out[key] = source[key];
+      }
+    }
+    return out;
+  };
+
   const fetchConfig = useCallback(async () => {
     if (!isSupabaseConfigured()) {
       setConfig(defaultConfig);
@@ -32,7 +44,7 @@ export function ConfigProvider({ children }) {
           setConfig(defaultConfig);
         }
       } else if (data?.config) {
-        setConfig({ ...defaultConfig, ...data.config });
+        setConfig(deepMerge(defaultConfig, data.config));
       }
     } catch (e) {
       setError(e.message);
@@ -48,10 +60,10 @@ export function ConfigProvider({ children }) {
 
   const updateConfig = useCallback(async (newConfig) => {
     if (!isSupabaseConfigured()) {
-      setConfig((prev) => ({ ...prev, ...newConfig }));
+      setConfig((prev) => deepMerge(prev, newConfig));
       return { error: null };
     }
-    const merged = { ...config, ...newConfig };
+    const merged = deepMerge(config, newConfig);
     const { error: err } = await supabase
       .from(CONFIG_KEY)
       .upsert(

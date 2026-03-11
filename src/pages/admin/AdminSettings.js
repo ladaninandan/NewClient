@@ -26,7 +26,8 @@ export function AdminSettings() {
       let cur = next;
       for (let i = 0; i < parts.length - 1; i++) {
         const p = parts[i];
-        if (!(p in cur)) cur[p] = {};
+        const isObj = cur[p] != null && typeof cur[p] === 'object' && !Array.isArray(cur[p]);
+        cur[p] = isObj ? cur[p] : {};
         cur = cur[p];
       }
       cur[parts[parts.length - 1]] = value;
@@ -100,7 +101,7 @@ export function AdminSettings() {
 
   return (
     <>
-      <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3 mb-md-4">
+      <div className="d-flex flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3 mb-md-4">
         <h1 className="h4 h5-md fw-bold mb-0">Site settings</h1>
         <button
           type="button"
@@ -123,159 +124,222 @@ export function AdminSettings() {
         </div>
       )}
 
-      <section className="card shadow-sm mb-3 mb-md-4 overflow-hidden">
-        <div className="card-header fw-bold small">Theme &amp; colors</div>
-        <div className="card-body p-3 p-md-4">
-          <div className="row g-2 g-md-3">
-            {['primaryColor', 'primaryHover', 'secondaryColor', 'backgroundColor', 'textColor', 'textMuted'].map((key) => (
-              <div className="col-6 col-md-4" key={key}>
-                <label className="form-label">{key}</label>
-                <input type="color" className="form-control form-control-color w-100" value={editConfig.theme?.[key] || '#000000'} onChange={(e) => handleConfigChange(`theme.${key}`, e.target.value)} />
-                <input type="text" className="form-control form-control-sm mt-1" value={editConfig.theme?.[key] || ''} onChange={(e) => handleConfigChange(`theme.${key}`, e.target.value)} />
+      <section className="card shadow-sm mb-4">
+        <div className="card-header fw-bold">Theme (colors)</div>
+        <div className="card-body">
+          <p className="small text-muted mb-3">Control the landing page colors. Primary = main brand (nav button, hero background). Accent = CTAs and highlights.</p>
+          <div className="row g-3">
+            {[
+              { key: 'primary', label: 'Primary (nav, hero &amp; section backgrounds)' },
+              { key: 'accent', label: 'Accent (buttons, badges, icons)' },
+              { key: 'accentHover', label: 'Accent hover (optional)' },
+              { key: 'backgroundLight', label: 'Background light' },
+              { key: 'backgroundDark', label: 'Background dark (page &amp; nav)' },
+              { key: 'cardDark', label: 'Card dark (offer card, coach card, etc.)' },
+            ].map(({ key, label }) => (
+              <div className="col-12 col-md-6 col-lg-4" key={key}>
+                <label className="form-label small">{label}</label>
+                <div className="d-flex gap-2 align-items-center">
+                  <input
+                    type="color"
+                    className="form-control form-control-color p-1"
+                    style={{ width: '2.5rem', height: '2rem' }}
+                    value={editConfig.strategyLayout?.theme?.[key]?.replace(/[^#a-fA-F0-9]/g, '')?.slice(0, 7) || '#000000'}
+                    onChange={(e) => handleConfigChange(`strategyLayout.theme.${key}`, e.target.value)}
+                  />
+                  <input
+                    type="text"
+                    className="form-control form-control-sm"
+                    placeholder="#hex"
+                    value={editConfig.strategyLayout?.theme?.[key] ?? ''}
+                    onChange={(e) => handleConfigChange(`strategyLayout.theme.${key}`, e.target.value)}
+                  />
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="card shadow-sm mb-3 mb-md-4 overflow-hidden">
-        <div className="card-header fw-bold small">Logo &amp; title</div>
-        <div className="card-body p-3 p-md-4">
-          <div className="mb-3">
-            <label className="form-label small">Logo</label>
-            <p className="small text-muted mb-1">Upload saves to site automatically. For URL only, click &quot;Save all&quot; below.</p>
-            <div className="d-flex flex-column flex-sm-row gap-2 align-items-start flex-wrap">
-              <input type="file" accept="image/*" className="form-control form-control-sm w-100" style={{ maxWidth: '220px' }} onChange={(e) => handleImageUpload(e, 'logo')} disabled={!isSupabaseConfigured() || uploading === 'logo'} />
-              {editConfig.logo && <img src={editConfig.logo} alt="Logo" style={{ height: '40px' }} />}
-              <input type="url" className="form-control" placeholder="Or paste URL" value={editConfig.logo || ''} onChange={(e) => handleConfigChange('logo', e.target.value)} />
-            </div>
-          </div>
-          {['title', 'subtitle', 'ctaButtonText'].map((key) => (
-            <div className="mb-3" key={key}>
-              <label className="form-label">{key}</label>
-              <input type="text" className="form-control" value={editConfig[key] || ''} onChange={(e) => handleConfigChange(key, e.target.value)} />
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* <section className="card shadow-sm mb-4">
-        <div className="card-header fw-bold">Hero card &amp; banner</div>
-        <div className="card-body">
-          {['workshopTitle', 'bannerText', 'bannerFullText', 'subHeadline', 'coachIntro', 'offerEndsLabel', 'registerPrice', 'originalPrice', 'bonusesWorth', 'registerInNextLabel', 'toUnlockBonusesLabel'].map((key) => (
-            <div className="mb-3" key={key}>
-              <label className="form-label">{key}</label>
-              <input type="text" className="form-control" value={editConfig[key] || ''} onChange={(e) => handleConfigChange(key, e.target.value)} placeholder={key === 'bannerFullText' ? 'e.g. 4 HOUR ONLINE WORKSHOP ON 11TH MARCH 2026 (9:00 AM - 1:00 PM IST)' : ''} />
-            </div>
-          ))}
-        </div>
-      </section> */}
-
       <section className="card shadow-sm mb-4">
-        <div className="card-header fw-bold">Instructor</div>
+        <div className="card-header fw-bold">Landing page content (RRTCS / Business Clarity)</div>
         <div className="card-body">
-          <div className="mb-3">
-            <label className="form-label">Image</label>
-            <div className="d-flex gap-2 align-items-center flex-wrap">
-              <input type="file" accept="image/*" className="form-control" style={{ maxWidth: '220px' }} onChange={(e) => handleImageUpload(e, 'instructor.image')} disabled={!isSupabaseConfigured() || uploading === 'instructor_image'} />
-              {editConfig.instructor?.image && <img src={editConfig.instructor.image} alt="" className="rounded-circle" style={{ width: '60px', height: '60px', objectFit: 'cover' }} />}
-              <input type="url" className="form-control" placeholder="Or URL" value={editConfig.instructor?.image || ''} onChange={(e) => handleConfigChange('instructor.image', e.target.value)} />
+          <p className="small text-muted mb-3">Edit all content for the landing page. Changes appear after you click &quot;Save all&quot;.</p>
+          <div className="row g-3">
+            <div className="col-12"><h6 className="border-bottom pb-1">Nav</h6></div>
+            <div className="col-12">
+              <label className="form-label small">Nav logo (shows on navbar left)</label>
+              <div className="d-flex flex-wrap gap-2 align-items-center">
+                <input type="file" accept="image/*" className="form-control form-control-sm" style={{ maxWidth: '200px' }} onChange={(e) => handleImageUpload(e, 'strategyLayout.nav.logo')} disabled={!isSupabaseConfigured() || uploading} />
+                <input type="url" className="form-control form-control-sm flex-grow-1" placeholder="Or paste logo URL" value={editConfig.strategyLayout?.nav?.logo ?? ''} onChange={(e) => handleConfigChange('strategyLayout.nav.logo', e.target.value)} />
+              </div>
+              {editConfig.strategyLayout?.nav?.logo && (
+                <img src={editConfig.strategyLayout.nav.logo} alt="Nav logo preview" className="mt-2 rounded border" style={{ maxHeight: '40px', width: 'auto' }} />
+              )}
+            </div>
+            {['brandShort', 'brandName', 'ctaText'].map((k) => (
+              <div className="col-12 col-md-6" key={k}>
+                <label className="form-label small">Nav {k}</label>
+                <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.nav?.[k] ?? ''} onChange={(e) => handleConfigChange(`strategyLayout.nav.${k}`, e.target.value)} />
+              </div>
+            ))}
+            <div className="col-12"><h6 className="border-bottom pb-1 mt-2">Hero</h6></div>
+            {['badge', 'headline', 'headlineHighlight', 'subtext', 'ctaText', 'slotNote'].map((k) => (
+              <div className="col-12" key={k}>
+                <label className="form-label small">Hero {k}</label>
+                <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.hero?.[k] ?? ''} onChange={(e) => handleConfigChange(`strategyLayout.hero.${k}`, e.target.value)} />
+              </div>
+            ))}
+            <div className="col-12"><h6 className="border-bottom pb-1 mt-2">Offer card (hero right)</h6></div>
+            <div className="col-12">
+              <label className="form-label small">Price badge</label>
+              <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.offerCard?.price ?? ''} onChange={(e) => handleConfigChange('strategyLayout.offerCard.price', e.target.value)} />
+            </div>
+            <div className="col-12">
+              <label className="form-label small">Offer items (one per line: title | desc)</label>
+              <textarea className="form-control form-control-sm" rows={4} value={(editConfig.strategyLayout?.offerCard?.items || []).map((i) => `${i.title}|${i.desc || ''}`).join('\n')} onChange={(e) => handleConfigChange('strategyLayout.offerCard.items', e.target.value.split('\n').filter(Boolean).map((line) => { const [title, ...rest] = line.split('|'); return { title: (title || '').trim(), desc: rest.join('|').trim() }; }))} />
+            </div>
+            <div className="col-12"><h6 className="border-bottom pb-1 mt-2">Why scale (3 cards)</h6></div>
+            <div className="col-12">
+              <label className="form-label small">Section title</label>
+              <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.whyScale?.title ?? ''} onChange={(e) => handleConfigChange('strategyLayout.whyScale.title', e.target.value)} />
+            </div>
+            <div className="col-12">
+              <label className="form-label small">Cards (one per line: icon|title|desc)</label>
+              <textarea className="form-control form-control-sm" rows={4} value={(editConfig.strategyLayout?.whyScale?.cards || []).map((c) => `${c.icon}|${c.title}|${c.desc || ''}`).join('\n')} onChange={(e) => handleConfigChange('strategyLayout.whyScale.cards', e.target.value.split('\n').filter(Boolean).map((line) => { const p = line.split('|'); return { icon: p[0] || 'help', title: p[1] || '', desc: p[2] || '' }; }))} />
+            </div>
+            <div className="col-12"><h6 className="border-bottom pb-1 mt-2">Founder trap</h6></div>
+            <div className="col-12">
+              <label className="form-label small">Founder trap image URL</label>
+              <div className="d-flex flex-wrap gap-2 align-items-center">
+                <input type="file" accept="image/*" className="form-control form-control-sm" style={{ maxWidth: '200px' }} onChange={(e) => handleImageUpload(e, 'strategyLayout.founderTrap.image')} disabled={!isSupabaseConfigured() || uploading} />
+                <input type="url" className="form-control form-control-sm flex-grow-1" placeholder="Or URL" value={editConfig.strategyLayout?.founderTrap?.image ?? ''} onChange={(e) => handleConfigChange('strategyLayout.founderTrap.image', e.target.value)} />
+              </div>
+            </div>
+            <div className="col-12">
+              <label className="form-label small">Title</label>
+              <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.founderTrap?.title ?? ''} onChange={(e) => handleConfigChange('strategyLayout.founderTrap.title', e.target.value)} />
+            </div>
+            <div className="col-12">
+              <label className="form-label small">Paragraph text</label>
+              <textarea className="form-control form-control-sm" rows={3} value={editConfig.strategyLayout?.founderTrap?.text ?? ''} onChange={(e) => handleConfigChange('strategyLayout.founderTrap.text', e.target.value)} />
+            </div>
+            <div className="col-12">
+              <label className="form-label small">Warning items (one per line)</label>
+              <textarea className="form-control form-control-sm" rows={2} value={(editConfig.strategyLayout?.founderTrap?.warningItems || []).join('\n')} onChange={(e) => handleConfigChange('strategyLayout.founderTrap.warningItems', e.target.value.split('\n').filter(Boolean))} />
+            </div>
+            <div className="col-12"><h6 className="border-bottom pb-1 mt-2">Coach (Meet Rahul)</h6></div>
+            <div className="col-12">
+              <label className="form-label small">Coach image</label>
+              <div className="d-flex flex-wrap gap-2 align-items-center">
+                <input type="file" accept="image/*" className="form-control form-control-sm" style={{ maxWidth: '200px' }} onChange={(e) => handleImageUpload(e, 'strategyLayout.coach.image')} disabled={!isSupabaseConfigured() || uploading} />
+                <input type="url" className="form-control form-control-sm flex-grow-1" placeholder="Or URL" value={editConfig.strategyLayout?.coach?.image ?? ''} onChange={(e) => handleConfigChange('strategyLayout.coach.image', e.target.value)} />
+              </div>
+            </div>
+            {['label', 'name', 'heading', 'ctaText'].map((k) => (
+              <div className="col-12" key={k}>
+                <label className="form-label small">Coach {k}</label>
+                <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.coach?.[k] ?? ''} onChange={(e) => handleConfigChange(`strategyLayout.coach.${k}`, e.target.value)} />
+              </div>
+            ))}
+            <div className="col-12">
+              <label className="form-label small">Bio (paragraphs separated by blank line)</label>
+              <textarea className="form-control form-control-sm" rows={4} value={editConfig.strategyLayout?.coach?.bio ?? ''} onChange={(e) => handleConfigChange('strategyLayout.coach.bio', e.target.value)} />
+            </div>
+            <div className="col-12">
+              <label className="form-label small">Coach stats (value | label one per line)</label>
+              <textarea className="form-control form-control-sm" rows={2} value={(editConfig.strategyLayout?.coach?.stats || []).map((s) => `${s.value}|${s.label}`).join('\n')} onChange={(e) => handleConfigChange('strategyLayout.coach.stats', e.target.value.split('\n').filter(Boolean).map((line) => { const [value, label] = line.split('|'); return { value: (value || '').trim(), label: (label || '').trim() }; }))} />
+            </div>
+            <div className="col-12"><h6 className="border-bottom pb-1 mt-2">What you will learn</h6></div>
+            <div className="col-12">
+              <label className="form-label small">Title</label>
+              <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.learn?.title ?? ''} onChange={(e) => handleConfigChange('strategyLayout.learn.title', e.target.value)} />
+            </div>
+            <div className="col-12">
+              <label className="form-label small">Subtitle</label>
+              <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.learn?.subtitle ?? ''} onChange={(e) => handleConfigChange('strategyLayout.learn.subtitle', e.target.value)} />
+            </div>
+            <div className="col-12">
+              <label className="form-label small">Items (one per line: icon|text)</label>
+              <textarea className="form-control form-control-sm" rows={6} value={(editConfig.strategyLayout?.learn?.items || []).map((i) => `${i.icon}|${i.text || ''}`).join('\n')} onChange={(e) => handleConfigChange('strategyLayout.learn.items', e.target.value.split('\n').filter(Boolean).map((line) => { const [icon, ...rest] = line.split('|'); return { icon: icon || 'check_circle', text: rest.join('|').trim() }; }))} />
+            </div>
+            <div className="col-12"><h6 className="border-bottom pb-1 mt-2">Founder model</h6></div>
+            <div className="col-12">
+              <label className="form-label small">Title</label>
+              <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.founderModel?.title ?? ''} onChange={(e) => handleConfigChange('strategyLayout.founderModel.title', e.target.value)} />
+            </div>
+            <div className="col-12">
+              <label className="form-label small">Subtitle</label>
+              <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.founderModel?.subtitle ?? ''} onChange={(e) => handleConfigChange('strategyLayout.founderModel.subtitle', e.target.value)} />
+            </div>
+            <div className="col-12">
+              <label className="form-label small">Steps (one per line: num|title|desc|highlight optional)</label>
+              <textarea className="form-control form-control-sm" rows={4} value={(editConfig.strategyLayout?.founderModel?.steps || []).map((s) => `${s.num}|${s.title}|${s.desc}${s.highlight ? '|1' : ''}`).join('\n')} onChange={(e) => handleConfigChange('strategyLayout.founderModel.steps', e.target.value.split('\n').filter(Boolean).map((line) => { const p = line.split('|'); return { num: parseInt(p[0], 10) || 0, title: p[1] || '', desc: p[2] || '', highlight: p[3] === '1' }; }))} />
+            </div>
+            <div className="col-12"><h6 className="border-bottom pb-1 mt-2">Why different</h6></div>
+            <div className="col-12">
+              <label className="form-label small">Title</label>
+              <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.whyDifferent?.title ?? ''} onChange={(e) => handleConfigChange('strategyLayout.whyDifferent.title', e.target.value)} />
+            </div>
+            <div className="col-12">
+              <label className="form-label small">Quote text</label>
+              <textarea className="form-control form-control-sm" rows={3} value={editConfig.strategyLayout?.whyDifferent?.quote ?? ''} onChange={(e) => handleConfigChange('strategyLayout.whyDifferent.quote', e.target.value)} />
+            </div>
+            <div className="col-12"><h6 className="border-bottom pb-1 mt-2">For / Not for</h6></div>
+            <div className="col-12">
+              <label className="form-label small">For title</label>
+              <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.forNotFor?.forTitle ?? ''} onChange={(e) => handleConfigChange('strategyLayout.forNotFor.forTitle', e.target.value)} />
+            </div>
+            <div className="col-12">
+              <label className="form-label small">For items (one per line)</label>
+              <textarea className="form-control form-control-sm" rows={3} value={(editConfig.strategyLayout?.forNotFor?.forItems || []).join('\n')} onChange={(e) => handleConfigChange('strategyLayout.forNotFor.forItems', e.target.value.split('\n').filter(Boolean))} />
+            </div>
+            <div className="col-12">
+              <label className="form-label small">Not for title</label>
+              <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.forNotFor?.notForTitle ?? ''} onChange={(e) => handleConfigChange('strategyLayout.forNotFor.notForTitle', e.target.value)} />
+            </div>
+            <div className="col-12">
+              <label className="form-label small">Not for items (one per line)</label>
+              <textarea className="form-control form-control-sm" rows={3} value={(editConfig.strategyLayout?.forNotFor?.notForItems || []).join('\n')} onChange={(e) => handleConfigChange('strategyLayout.forNotFor.notForItems', e.target.value.split('\n').filter(Boolean))} />
+            </div>
+            <div className="col-12"><h6 className="border-bottom pb-1 mt-2">FAQ</h6></div>
+            <div className="col-12">
+              <label className="form-label small">FAQ title</label>
+              <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.faq?.title ?? ''} onChange={(e) => handleConfigChange('strategyLayout.faq.title', e.target.value)} />
+            </div>
+            <div className="col-12">
+              <label className="form-label small">FAQ items (Q and A: one block per pair, separate with ---)</label>
+              <textarea className="form-control form-control-sm" rows={8} value={(editConfig.strategyLayout?.faq?.items || []).map((i) => `${i.q}\n---\n${i.a}`).join('\n\n')} onChange={(e) => handleConfigChange('strategyLayout.faq.items', e.target.value.split('\n\n').filter(Boolean).map((block) => { const [q, a] = block.split('\n---\n'); return { q: (q || '').trim(), a: (a || '').trim() }; }))} />
+            </div>
+            <div className="col-12"><h6 className="border-bottom pb-1 mt-2">Pricing</h6></div>
+            {['title', 'originalPrice', 'price', 'note', 'ctaText', 'ribbonText', 'secureText'].map((k) => (
+              <div className="col-12" key={k}>
+                <label className="form-label small">Pricing {k}</label>
+                {k === 'note' ? (
+                  <textarea className="form-control form-control-sm" rows={2} value={editConfig.strategyLayout?.pricing?.[k] ?? ''} onChange={(e) => handleConfigChange(`strategyLayout.pricing.${k}`, e.target.value)} />
+                ) : (
+                  <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.pricing?.[k] ?? ''} onChange={(e) => handleConfigChange(`strategyLayout.pricing.${k}`, e.target.value)} />
+                )}
+              </div>
+            ))}
+            <div className="col-12"><h6 className="border-bottom pb-1 mt-2">Footer</h6></div>
+            <div className="col-12">
+              <label className="form-label small">Headline</label>
+              <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.footer?.headline ?? ''} onChange={(e) => handleConfigChange('strategyLayout.footer.headline', e.target.value)} />
+            </div>
+            <div className="col-12">
+              <label className="form-label small">CTA button text</label>
+              <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.footer?.ctaText ?? ''} onChange={(e) => handleConfigChange('strategyLayout.footer.ctaText', e.target.value)} />
+            </div>
+            <div className="col-12">
+              <label className="form-label small">Copyright</label>
+              <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.footer?.copyright ?? ''} onChange={(e) => handleConfigChange('strategyLayout.footer.copyright', e.target.value)} />
+            </div>
+            <div className="col-12">
+              <label className="form-label small">Footer links (label | url one per line)</label>
+              <textarea className="form-control form-control-sm" rows={2} value={(editConfig.strategyLayout?.footer?.links || []).map((l) => `${l.label}|${l.url || '#'}`).join('\n')} onChange={(e) => handleConfigChange('strategyLayout.footer.links', e.target.value.split('\n').filter(Boolean).map((line) => { const [label, url] = line.split('|'); return { label: (label || '').trim(), url: (url || '#').trim() }; }))} />
             </div>
           </div>
-          {['name', 'title', 'tagline', 'stats', 'rating', 'reviewText'].map((key) => (
-            <div className="mb-3" key={key}>
-              <label className="form-label">{key}</label>
-              <input type="text" className="form-control" value={editConfig.instructor?.[key] || ''} onChange={(e) => handleConfigChange(`instructor.${key}`, e.target.value)} />
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="card shadow-sm mb-4">
-        <div className="card-header fw-bold">What Will Change (diagram)</div>
-        <div className="card-body">
-          <div className="mb-3">
-            <label className="form-label">Diagram image (optional)</label>
-            <p className="small text-muted mb-1">Upload an image to replace the built diagram. Leave empty to show the default diagram.</p>
-            <div className="d-flex gap-2 align-items-center flex-wrap">
-              <input type="file" accept="image/*" className="form-control" style={{ maxWidth: '220px' }} onChange={(e) => handleImageUpload(e, 'whatWillChange.diagramImage')} disabled={!isSupabaseConfigured() || uploading === 'whatWillChange_diagramImage'} />
-              {editConfig.whatWillChange?.diagramImage && <img src={editConfig.whatWillChange.diagramImage} alt="Diagram" className="rounded" style={{ maxHeight: '80px' }} />}
-              <input type="url" className="form-control" placeholder="Or paste image URL" value={editConfig.whatWillChange?.diagramImage || ''} onChange={(e) => handleConfigChange('whatWillChange.diagramImage', e.target.value)} />
-            </div>
-          </div>
-          <div className="mb-3">
-            <label className="form-label">Center label</label>
-            <input type="text" className="form-control" value={editConfig.whatWillChange?.centerLabel || ''} onChange={(e) => handleConfigChange('whatWillChange.centerLabel', e.target.value)} placeholder="Business Breakthrough" />
-          </div>
-          <div className="mb-3">
-            <label className="form-label">CTA button text</label>
-            <input type="text" className="form-control" value={editConfig.whatWillChange?.ctaText || ''} onChange={(e) => handleConfigChange('whatWillChange.ctaText', e.target.value)} placeholder="REGISTER NOW AT ₹99/- ONLY" />
-          </div>
-        </div>
-      </section>
-
-      <section className="card shadow-sm mb-4">
-        <div className="card-header fw-bold">Target Audience (Who This Workshop Will Help)</div>
-        <div className="card-body">
-          <div className="mb-3">
-            <label className="form-label">Section image (optional)</label>
-            <p className="small text-muted mb-1">Upload an image to replace the DON&apos;T JOIN IF diagram. Leave empty to show the default.</p>
-            <div className="d-flex gap-2 align-items-center flex-wrap">
-              <input type="file" accept="image/*" className="form-control" style={{ maxWidth: '220px' }} onChange={(e) => handleImageUpload(e, 'targetAudience.image')} disabled={!isSupabaseConfigured() || uploading === 'targetAudience_image'} />
-              {editConfig.targetAudience?.image && <img src={editConfig.targetAudience.image} alt="Target audience" className="rounded" style={{ maxHeight: '80px' }} />}
-              <input type="url" className="form-control" placeholder="Or paste image URL" value={editConfig.targetAudience?.image || ''} onChange={(e) => handleConfigChange('targetAudience.image', e.target.value)} />
-            </div>
-          </div>
-          <div className="mb-3">
-            <label className="form-label">Title line 2</label>
-            <input type="text" className="form-control" value={editConfig.targetAudience?.titleLine2 || ''} onChange={(e) => handleConfigChange('targetAudience.titleLine2', e.target.value)} placeholder="Help The Best?" />
-          </div>
-          <div className="mb-3">
-            <label className="form-label">DON&apos;T JOIN IF label</label>
-            <input type="text" className="form-control" value={editConfig.targetAudience?.dontJoinLabel || ''} onChange={(e) => handleConfigChange('targetAudience.dontJoinLabel', e.target.value)} placeholder="DON'T JOIN IF" />
-          </div>
-          {(editConfig.targetAudience?.items || []).map((item, i) => (
-            <div className="mb-3" key={i}>
-              <label className="form-label">Point {i + 1}</label>
-              <input type="text" className="form-control" value={item} onChange={(e) => { const arr = [...(editConfig.targetAudience?.items || [])]; arr[i] = e.target.value; handleConfigChange('targetAudience.items', arr); }} />
-            </div>
-          ))}
-          <div className="mb-3">
-            <label className="form-label">CTA button text</label>
-            <input type="text" className="form-control" value={editConfig.targetAudience?.ctaText || ''} onChange={(e) => handleConfigChange('targetAudience.ctaText', e.target.value)} placeholder="REGISTER NOW AT ₹99/- ONLY" />
-          </div>
-        </div>
-      </section>
-
-      <section className="card shadow-sm mb-4">
-        <div className="card-header fw-bold">Featured logos</div>
-        <div className="card-body">
-          {(editConfig.featuredLogos || []).map((url, i) => (
-            <div key={i} className="d-flex gap-2 align-items-center mb-2">
-              <input type="file" accept="image/*" className="form-control" style={{ maxWidth: '200px' }} onChange={(e) => { const file = e.target.files?.[0]; if (!file) return; uploadImage(file, `featured_${i}`).then((u) => u && handleConfigChange('featuredLogos', [...(editConfig.featuredLogos || [])].map((v, j) => (j === i ? u : v)))); }} disabled={!isSupabaseConfigured()} />
-              <input type="url" className="form-control" value={url} onChange={(e) => { const arr = [...(editConfig.featuredLogos || [])]; arr[i] = e.target.value; handleConfigChange('featuredLogos', arr); }} />
-              <img src={url} alt="" style={{ height: '32px' }} />
-            </div>
-          ))}
-          <button type="button" className="btn btn-outline-primary btn-sm" onClick={() => addArrayItem('featuredLogos', '')}>+ Add logo</button>
-        </div>
-      </section>
-
-      <section className="card shadow-sm mb-4">
-        <div className="card-header fw-bold">Bonus product images</div>
-        <div className="card-body">
-          <div className="mb-2">
-            <label className="form-label">Bonuses title</label>
-            <input type="text" className="form-control" value={editConfig.bonuses?.title || ''} onChange={(e) => handleConfigChange('bonuses.title', e.target.value)} />
-          </div>
-          {(editConfig.bonuses?.productImages || []).map((url, i) => (
-            <div key={i} className="d-flex gap-2 align-items-center mb-2">
-              <input type="file" accept="image/*" className="form-control" style={{ maxWidth: '200px' }} onChange={(e) => { const file = e.target.files?.[0]; if (!file) return; uploadImage(file, `bonus_${i}`).then((u) => { if (!u) return; const arr = [...(editConfig.bonuses?.productImages || [])]; arr[i] = u; handleConfigChange('bonuses.productImages', arr); }); }} disabled={!isSupabaseConfigured()} />
-              <input type="url" className="form-control" value={url} onChange={(e) => { const arr = [...(editConfig.bonuses?.productImages || [])]; arr[i] = e.target.value; handleConfigChange('bonuses.productImages', arr); }} />
-              <img src={url} alt="" style={{ height: '40px', objectFit: 'cover' }} />
-            </div>
-          ))}
-          <button type="button" className="btn btn-outline-primary btn-sm" onClick={() => addArrayItem('bonuses.productImages', '')}>+ Add image</button>
         </div>
       </section>
     </>

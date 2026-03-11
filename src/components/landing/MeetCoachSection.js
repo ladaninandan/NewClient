@@ -22,14 +22,14 @@ export function MeetCoachSection() {
   return (
     <section className="py-5">
       <div className="container">
-        <h2 className="h4 fw-bold text-center mb-4">{block.title}</h2>
-        <h3 className="h5 fw-bold text-center mb-2">{inv.name}</h3>
+        <h2 className="h4 fw-bold text-center mb-4 ">{block.title}</h2>
+        <h3 className="h5 fw-bold text-center mb-2 ">{inv.name}</h3>
         <p className="text-center mb-4" style={{ color: 'var(--bs-primary)' }}>{inv.tagline}</p>
         <div className="row g-3 mb-5">
           {STAT_KEYS.filter(({ key }) => inv[key]).map(({ key, label }) => (
             <div key={key} className="col-6 col-md-4 col-lg-3">
               <div className="card border-0 shadow-sm text-center p-3 h-100">
-                <p className="h4 fw-bold mb-0" style={{ color: 'var(--bs-primary)' }}>{inv[key]}</p>
+                <p className="h4 fw-bold mb-0 " style={{ color: 'var(--bs-primary)' }}>{inv[key]}</p>
                 <p className="small text-muted mb-0 mt-1">{label}</p>
               </div>
             </div>
@@ -37,9 +37,9 @@ export function MeetCoachSection() {
         </div>
         {block.missionTitle && (
           <>
-            <h3 className="h5 fw-bold text-center mb-2">{block.missionTitle}</h3>
+            <h3 className="h5 fw-bold text-center mb-2 ">{block.missionTitle}</h3>
             {block.missionSubtitle && (
-              <p className="text-center text-muted">{block.missionSubtitle}</p>
+              <p className="text-center text-muted ">{block.missionSubtitle}</p>
             )}
           </>
         )}

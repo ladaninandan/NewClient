@@ -1,0 +1,14 @@
+export { AnimateOnScroll } from './AnimateOnScroll';
+export { StrategyNav } from './StrategyNav';
+export { StrategyHero } from './StrategyHero';
+export { StrategyWhyScale } from './StrategyWhyScale';
+export { StrategyFounderTrap } from './StrategyFounderTrap';
+export { StrategyCoach } from './StrategyCoach';
+export { StrategyLearn } from './StrategyLearn';
+export { StrategyModel } from './StrategyModel';
+export { StrategyWhyDifferent } from './StrategyWhyDifferent';
+export { StrategyForNotFor } from './StrategyForNotFor';
+export { StrategyPricing } from './StrategyPricing';
+export { StrategyForm } from './StrategyForm';
+export { StrategyFAQ } from './StrategyFAQ';
+export { StrategyFooter } from './StrategyFooter';
