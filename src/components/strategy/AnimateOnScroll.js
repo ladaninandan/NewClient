@@ -8,7 +8,7 @@ import { useInView } from '../../hooks/useInView';
  * @param {string} [as='div'] - Wrapper element
  */
 export function AnimateOnScroll({ children, className = '', stagger, as: Tag = 'div' }) {
-  const [ref, isInView] = useInView({ rootMargin: '0px 0px -80px 0px', threshold: 0.05 });
+  const [ref, isInView] = useInView({ rootMargin: '0px 0px 0px 0px', threshold: 0.01 });
   const staggerClass = stagger ? ` stagger-${stagger}` : '';
   return (
     <Tag

@@ -92,13 +92,6 @@ export function AdminSettings() {
     else setMessage({ type: 'success', text: 'Image uploaded and saved. It will show on the landing page.' });
   };
 
-  const getNested = (obj, path) => path.split('.').reduce((o, k) => o?.[k], obj);
-  const addArrayItem = (path, defaultValue) => {
-    const current = getNested(editConfig, path);
-    const arr = [...(Array.isArray(current) ? current : []), defaultValue];
-    handleConfigChange(path, arr);
-  };
-
   return (
     <>
       <div className="d-flex flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3 mb-md-4">

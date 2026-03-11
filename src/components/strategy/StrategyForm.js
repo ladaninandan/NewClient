@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useConfig } from '../../context/ConfigContext';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 
 const SUBMISSIONS_TABLE = 'registrations';
@@ -29,10 +28,8 @@ function validateEmail(email) {
 }
 
 export function StrategyForm() {
-  const { config } = useConfig();
   const [form, setForm] = useState({ name: '', email: '', phone: '' });
   const [status, setStatus] = useState('idle');
-  const [message, setMessage] = useState('');
   const [modal, setModal] = useState(null); // { type: 'success' | 'error', title, message }
 
   const [fieldErrors, setFieldErrors] = useState({ email: '', phone: '' });
@@ -48,7 +45,6 @@ export function StrategyForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setMessage('');
     setFieldErrors({ email: '', phone: '' });
 
     const name = form.name.trim();

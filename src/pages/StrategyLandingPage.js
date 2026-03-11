@@ -60,7 +60,10 @@ export function StrategyLandingPage() {
   };
 
   return (
-    <div className="min-h-screen text-slate-900 dark:text-slate-100 font-display overflow-x-hidden" style={{ backgroundColor: theme.backgroundLight, ...themeVars }}>
+    <div
+      className="min-h-screen text-slate-900 dark:text-slate-100"
+      style={{ backgroundColor: theme.backgroundLight, ...themeVars }}
+    >
       <StrategyNav />
       <AnimateOnScroll><StrategyHero /></AnimateOnScroll>
       <AnimateOnScroll><StrategyWhyScale /></AnimateOnScroll>

@@ -12,7 +12,7 @@ export function ConfigProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const deepMerge = (target, source) => {
+  const deepMerge = useCallback((target, source) => {
     const out = { ...target };
     for (const key of Object.keys(source)) {
       if (source[key] != null && typeof source[key] === 'object' && !Array.isArray(source[key]) && typeof target[key] === 'object' && target[key] != null && !Array.isArray(target[key])) {
@@ -22,7 +22,7 @@ export function ConfigProvider({ children }) {
       }
     }
     return out;
-  };
+  }, []);
 
   const fetchConfig = useCallback(async () => {
     if (!isSupabaseConfigured()) {
@@ -52,7 +52,7 @@ export function ConfigProvider({ children }) {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [deepMerge]);
 
   useEffect(() => {
     fetchConfig();
@@ -72,7 +72,7 @@ export function ConfigProvider({ children }) {
       );
     if (!err) setConfig(merged);
     return { error: err };
-  }, [config]);
+  }, [config, deepMerge]);
 
   const value = useMemo(
     () => ({ config, loading, error, updateConfig, fetchConfig }),
