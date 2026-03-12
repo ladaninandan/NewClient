@@ -10,7 +10,7 @@ export function StrategyCoach() {
   return (
     <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6">
       <div className="max-w-5xl mx-auto bg-white dark:bg-slate-800 rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl flex flex-col md:flex-row border border-slate-100 dark:border-slate-700 hover-lift">
-        <div className="w-full md:w-2/5 relative h-64 sm:h-80 md:min-h-[320px]">
+        <div className="w-full md:w-2/5 relative h-64 sm:h-80 md:min-h-[520px]">
           {c.image ? (
             <img className="w-full h-full object-cover" alt={c.name} src={c.image} />
           ) : (

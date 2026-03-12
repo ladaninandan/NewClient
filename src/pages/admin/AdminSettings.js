@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useConfig } from '../../context/ConfigContext';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
+import * as tus from 'tus-js-client';
 
 const STORAGE_BUCKET = 'images';
+const MAX_VIDEO_UPLOAD_MB = 500;
+const RESUMABLE_THRESHOLD_MB = 50;
 
 function FeedbackSectionPreview({ feedback, theme }) {
   const f = feedback || {};
@@ -100,9 +103,12 @@ export function AdminSettings() {
     }
   };
 
+  const [uploadProgress, setUploadProgress] = useState(null);
+
   const uploadImage = async (file, pathPrefix) => {
     if (!supabase) return null;
     setUploading(pathPrefix);
+    setUploadProgress(null);
     const ext = file.name.split('.').pop() || 'jpg';
     const name = `${pathPrefix}_${Date.now()}.${ext}`;
     const { data, error } = await supabase.storage.from(STORAGE_BUCKET).upload(name, file, {
@@ -110,12 +116,88 @@ export function AdminSettings() {
       upsert: false,
     });
     setUploading(null);
+    setUploadProgress(null);
     if (error) {
       setMessage({ type: 'danger', text: `Upload failed: ${error.message}` });
       return null;
     }
     const { data: urlData } = supabase.storage.from(STORAGE_BUCKET).getPublicUrl(data.path);
     return urlData.publicUrl;
+  };
+
+  const uploadVideoResumable = (file, pathPrefix) => {
+    return new Promise((resolve, reject) => {
+      const ext = file.name.split('.').pop() || 'mp4';
+      const objectName = `${pathPrefix}_${Date.now()}.${ext}`;
+      const supabaseUrl = process.env.REACT_APP_SUPABASE_URL || '';
+      const anonKey = process.env.REACT_APP_SUPABASE_ANON_KEY || process.env.REACT_APP_SUPABASE_PUBLISHABLE_DEFAULT_KEY || '';
+      const projectRef = supabaseUrl ? new URL(supabaseUrl).hostname.replace('.supabase.co', '') : '';
+      if (!projectRef || !anonKey) {
+        reject(new Error('Supabase URL or key missing'));
+        return;
+      }
+      const endpoint = `https://${projectRef}.storage.supabase.co/storage/v1/upload/resumable`;
+      setUploading(pathPrefix);
+      setUploadProgress(0);
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        const token = session?.access_token || anonKey;
+        const upload = new tus.Upload(file, {
+          endpoint,
+          retryDelays: [0, 3000, 5000, 10000, 20000],
+          headers: {
+            authorization: `Bearer ${token}`,
+            apikey: anonKey,
+            'x-upsert': 'true',
+          },
+          uploadDataDuringCreation: true,
+          removeFingerprintOnSuccess: true,
+          chunkSize: 6 * 1024 * 1024,
+          metadata: {
+            bucketName: STORAGE_BUCKET,
+            objectName,
+            contentType: file.type || 'video/mp4',
+            cacheControl: 3600,
+          },
+          onError: (err) => {
+            setUploading(null);
+            setUploadProgress(null);
+            const msg = err.message || String(err);
+            const is413 = msg.includes('413') || msg.toLowerCase().includes('maximum size exceeded');
+            if (is413) {
+              setMessage({
+                type: 'danger',
+                text: 'File too large for your Supabase plan. Free tier allows ~50MB per file. Use YouTube: upload your video there (can be Unlisted), then paste the video link in the URL field below.',
+              });
+            } else {
+              setMessage({ type: 'danger', text: `Upload failed: ${msg}` });
+            }
+            reject(err);
+          },
+          onProgress: (bytesUploaded, bytesTotal) => {
+            const pct = bytesTotal ? Math.round((bytesUploaded / bytesTotal) * 100) : 0;
+            setUploadProgress(pct);
+          },
+          onSuccess: () => {
+            setUploading(null);
+            setUploadProgress(null);
+            const { data: urlData } = supabase.storage.from(STORAGE_BUCKET).getPublicUrl(objectName);
+            resolve(urlData.publicUrl);
+          },
+        });
+        upload.findPreviousUploads().then((previousUploads) => {
+          if (previousUploads.length) upload.resumeFromPreviousUpload(previousUploads[0]);
+          upload.start();
+        }).catch((err) => {
+          setUploading(null);
+          setUploadProgress(null);
+          reject(err);
+        });
+      }).catch((err) => {
+        setUploading(null);
+        setUploadProgress(null);
+        reject(err);
+      });
+    });
   };
 
   const buildPartialFromPath = (path, value) => {
@@ -144,13 +226,36 @@ export function AdminSettings() {
   const handleImageUpload = async (e, path) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const url = await uploadImage(file, path.replace(/\./g, '_'));
+    const pathPrefix = path.replace(/\./g, '_');
+    const isVideo = file.type.startsWith('video/');
+    const maxBytes = MAX_VIDEO_UPLOAD_MB * 1024 * 1024;
+    const resumableThresholdBytes = RESUMABLE_THRESHOLD_MB * 1024 * 1024;
+    if (isVideo && file.size > maxBytes) {
+      setMessage({
+        type: 'danger',
+        text: `Video is too large (${(file.size / 1024 / 1024).toFixed(0)}MB). Max ${MAX_VIDEO_UPLOAD_MB}MB. Use YouTube or another host and paste the link.`,
+      });
+      e.target.value = '';
+      return;
+    }
+    let url;
+    if (isVideo && file.size > resumableThresholdBytes) {
+      try {
+        url = await uploadVideoResumable(file, pathPrefix);
+      } catch (err) {
+        e.target.value = '';
+        return;
+      }
+    } else {
+      url = await uploadImage(file, pathPrefix);
+    }
     if (!url) return;
     handleConfigChange(path, url);
     const partial = buildPartialFromPath(path, url);
     const { error } = await updateConfig(partial);
-    if (error) setMessage({ type: 'danger', text: `Image saved but config update failed: ${error.message}` });
-    else setMessage({ type: 'success', text: 'Image uploaded and saved. It will show on the landing page.' });
+    if (error) setMessage({ type: 'danger', text: `Upload saved but config update failed: ${error.message}` });
+    else setMessage({ type: 'success', text: 'Uploaded and saved. It will show on the landing page.' });
+    e.target.value = '';
   };
 
   return (
@@ -166,6 +271,21 @@ export function AdminSettings() {
           {saving ? 'Saving...' : 'Save all'}
         </button>
       </div>
+      {(uploading || uploadProgress != null) && (
+        <div className="alert alert-info d-flex align-items-center gap-3 mb-3">
+          <div className="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true" />
+          {uploadProgress != null ? (
+            <>
+              <div className="progress flex-grow-1" style={{ height: '10px' }}>
+                <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style={{ width: `${uploadProgress}%` }} aria-valuenow={uploadProgress} aria-valuemin={0} aria-valuemax={100} />
+              </div>
+              <span className="small fw-medium">Uploading video… {uploadProgress}%</span>
+            </>
+          ) : (
+            <span className="small fw-medium">Uploading… Please wait.</span>
+          )}
+        </div>
+      )}
       {message.text && (
         <div className={`alert alert-${message.type} alert-dismissible fade show`} role="alert">
           {message.text}
@@ -252,6 +372,7 @@ export function AdminSettings() {
                 <input type="file" accept="video/*" className="form-control form-control-sm" style={{ maxWidth: '220px' }} onChange={(e) => handleImageUpload(e, 'strategyLayout.topVideo.video')} disabled={!isSupabaseConfigured() || uploading} />
                 <input type="url" className="form-control form-control-sm flex-grow-1" placeholder="Or paste YouTube / video URL" value={editConfig.strategyLayout?.topVideo?.video ?? ''} onChange={(e) => handleConfigChange('strategyLayout.topVideo.video', e.target.value)} />
               </div>
+              <p className="form-text small text-muted mb-0 mt-1">Supabase Free tier allows ~50MB per file. For larger videos, upload to YouTube and paste the link. Pro plan allows bigger uploads.</p>
             </div>
             <div className="col-12">
               <label className="form-label small">Subtext below video (e.g. Transform your business from founder-dependent...)</label>
@@ -397,6 +518,7 @@ export function AdminSettings() {
                         <input type="file" accept="video/*" className="form-control form-control-sm" style={{ maxWidth: '160px' }} onChange={(e) => handleImageUpload(e, `strategyLayout.testimonials.items.${idx}.video`)} disabled={!isSupabaseConfigured() || uploading} />
                         <input type="url" className="form-control form-control-sm flex-grow-1" placeholder="YouTube or video URL" value={item.video ?? ''} onChange={(e) => handleConfigChange(`strategyLayout.testimonials.items.${idx}.video`, e.target.value)} />
                       </div>
+                      <p className="form-text small text-muted mb-0 mt-1">Supabase Free: ~50MB max. For larger videos use YouTube and paste the link.</p>
                       {item.video && (
                         <div className="mt-2 small text-muted">
                           {/youtube\.com|youtu\.be/i.test(item.video) ? 'YouTube link' : 'Video URL'} saved
@@ -419,10 +541,34 @@ export function AdminSettings() {
             {[0, 1, 2, 3].map((idx) => {
               const items = editConfig.strategyLayout?.feedback?.items || [];
               const item = (items[idx] != null && typeof items[idx] === 'object') ? items[idx] : {};
+              const theme = editConfig.strategyLayout?.theme || {};
+              const primary = theme.primary || '#f77c18';
               return (
                 <div className="col-12 col-lg-6" key={idx}>
                   <div className="border rounded p-3 bg-white">
                     <h6 className="border-bottom pb-2 mb-3">Feedback card {idx + 1}</h6>
+                    {/* Card preview — same UI as website */}
+                    <div className="rounded border bg-light p-3 mb-3" style={{ minHeight: '140px' }}>
+                      <p className="small text-muted mb-2">Preview (how it looks on site)</p>
+                      <div className="rounded shadow-sm bg-white border p-3 pt-12 position-relative">
+                        <div className="position-absolute top-0 start-50 translate-middle" style={{ marginTop: '-1.5rem' }}>
+                          <div className="rounded-circle overflow-hidden border border-3 border-white shadow" style={{ width: 56, height: 56, backgroundColor: '#e2e8f0' }}>
+                            {item.image || item.avatar ? (
+                              <img src={item.image || item.avatar} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            ) : (
+                              <div className="w-100 h-100 d-flex align-items-center justify-content-center text-white fw-bold small" style={{ backgroundColor: primary }}>
+                                {(item.name || '?').charAt(0).toUpperCase()}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <p className="small text-dark mb-2 text-center" style={{ fontSize: '0.75rem', lineHeight: 1.3, minHeight: '2.5em' }}>
+                          {(item.text || 'Quote will appear here').slice(0, 60)}{(item.text || '').length > 60 ? '…' : ''}
+                        </p>
+                        <p className="small fw-bold text-center mb-0" style={{ color: primary }}>{item.name || 'Name'}</p>
+                        <p className="small text-muted text-center mb-0">{item.role || 'Role / Company'}</p>
+                      </div>
+                    </div>
                     <div className="mb-2">
                       <label className="form-label small mb-0">Name</label>
                       <input type="text" className="form-control form-control-sm" placeholder="e.g. Shanmuganathan C" value={item.name ?? ''} onChange={(e) => handleConfigChange(`strategyLayout.feedback.items.${idx}.name`, e.target.value)} />
@@ -441,9 +587,6 @@ export function AdminSettings() {
                         <input type="file" accept="image/*" className="form-control form-control-sm" style={{ maxWidth: '160px' }} onChange={(e) => handleImageUpload(e, `strategyLayout.feedback.items.${idx}.image`)} disabled={!isSupabaseConfigured() || uploading} />
                         <input type="url" className="form-control form-control-sm flex-grow-1" placeholder="Image URL" value={item.image || item.avatar || ''} onChange={(e) => handleConfigChange(`strategyLayout.feedback.items.${idx}.image`, e.target.value)} />
                       </div>
-                      {(item.image || item.avatar) && (
-                        <img src={item.image || item.avatar} alt="" className="mt-2 rounded border" style={{ maxHeight: '48px', width: 'auto' }} />
-                      )}
                     </div>
                   </div>
                 </div>

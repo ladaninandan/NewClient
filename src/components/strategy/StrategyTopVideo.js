@@ -11,7 +11,7 @@ function getYouTubeEmbedUrl(url) {
   const u = url.trim();
   const m = u.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
   const id = m ? m[1] : null;
-  return id ? `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&controls=0&showinfo=0&rel=0` : null;
+  return id ? `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&controls=1&showinfo=0&rel=0` : null;
 }
 
 export function StrategyTopVideo() {

@@ -40,7 +40,7 @@ export function StrategyFeedback() {
             {label}
           </p>
         )}
-        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white text-center mb-8 sm:mb-10">
+        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white text-center mb-8 sm:mb-10 text-black">
           {title}
         </h2>
         <div className="relative -mx-4 sm:mx-0">
