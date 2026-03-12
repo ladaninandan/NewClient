@@ -18,6 +18,14 @@ export const defaultConfig = {
       cardDark: '#1e3a32',
     },
     nav: { logo: '', brandShort: 'RR.', brandName: 'Rahul Revne', ctaText: 'Book Now' },
+    topVideo: {
+      badge: 'Limited Time Strategy Session',
+      headline: 'Is Your Business Running Because Of You… Or Despite You?',
+      video: '',
+      subtext: 'Transform your business from founder-dependent to data-driven. Get the roadmap to scaling without burnout.',
+      ctaText: 'Reserve My ₹199 Strategy Session',
+      slotNote: 'Limited slots available for this month',
+    },
     hero: {
       badge: '1-to-1 Clarity Session',
       headline: 'Is Your Business Running Because Of You…',
@@ -40,6 +48,9 @@ export const defaultConfig = {
         { icon: 'person_off', title: 'Owner Reliance', desc: "Everything stops when you take a day off. You've created a job, not a business." },
         { icon: 'account_tree', title: 'Lack of Systems', desc: 'Processes are stored in your head. Scaling is impossible because nobody else knows how to do it.' },
         { icon: 'trending_flat', title: 'Plateaued Growth', desc: "You've hit a ceiling. You're working harder, but your revenue isn't moving proportionately." },
+        { icon: 'group_off', title: 'No Delegation', desc: "You don't trust others with key tasks. Every decision still flows through you, creating a bottleneck." },
+        { icon: 'psychology', title: 'Mindset Trap', desc: "You're stuck in 'doer' mode. Scaling requires thinking like an architect, not the chief executor." },
+        { icon: 'schedule', title: 'Time Poverty', desc: "You're always firefighting. No time to build systems, so the same crises repeat every month." },
       ],
     },
     founderTrap: {
@@ -89,6 +100,24 @@ export const defaultConfig = {
       title: 'Why This Session Is Different?',
       quote: '"Most consultants give you \'strategies.\' I give you implementation. We don\'t just talk about theories; we look at your actual spreadsheet, your actual team, and your actual bottlenecks to build a real-world exit strategy for you from the daily grind."',
     },
+    testimonials: {
+      title: 'What Founders Say',
+      items: [
+        { name: 'Rajesh K.', role: 'Manufacturing, Pune', text: 'The session gave me a clear roadmap. I implemented one process and saved 10 hours a week.' },
+        { name: 'Priya M.', role: 'Services, Bangalore', text: 'Finally someone who understood the Indian MSME reality. Not theory—actual steps I could take.' },
+        { name: 'Vikram S.', role: 'Retail, Delhi NCR', text: 'Worth every rupee. I now have a delegation plan and my team is taking ownership.' },
+      ],
+    },
+    feedback: {
+      label: 'Feedbacks',
+      title: 'Here are some Real Screenshots & Feedbacks',
+      items: [
+        { name: 'Shanmuganathan C', role: 'Spider India', text: "Rajiv's training completely changed the way I've been doing my business for the last 20 years. I was wondering how do I grow, how do I build large organization, he gave all the answers and gave that one needed clarity of lifetime. Thanks to him and his team." },
+        { name: 'Nipun Chadha', role: 'Chadha Industries Pvt. Ltd. (aRKe Group)', text: "It's been an amazing learning experience so far with Rajiv and his team. Their insights are rock solid and help you streamline and improve all functions of the business. Can't recommend him enough! This should be mandatory for all SME's!" },
+        { name: 'Ramakrishnan K', role: 'Iyers Kitchen', text: 'Rajiv and Team provide an amazing service in business coaching. They want to keep adding value to their clients at every given point of time. They are very valuable to all business owners.' },
+        { name: 'Marzban Irani', role: 'Ardeshir and Sons', text: 'Rajiv Talreja is one of the few business coaches in the world who has gone that extra mile to create a program that goes to the very essence of taking entrepreneurship to the next level.' },
+      ],
+    },
     forNotFor: {
       forTitle: 'Who This Is For',
       forItems: [
@@ -111,6 +140,21 @@ export const defaultConfig = {
       ctaText: 'Reserve My ₹199 Strategy Session',
       ribbonText: 'BEST VALUE',
       secureText: '100% Secure Checkout',
+    },
+    stickyBar: {
+      enabled: true,
+      price: '₹99',
+      originalPrice: '₹999',
+      buttonText: 'BOOK YOUR SPOT NOW AT ₹99/-',
+      countdownLabel: 'Offer Ends in 14:40 Mins',
+      countdownEnd: '', // optional: ISO date string for live countdown (e.g. "2025-03-15T23:59:59")
+    },
+    moneyBackGuarantee: {
+      title: 'Still Not Sure? We got your Back!',
+      subheading: 'Our Guarantee',
+      description: "Get this amazing offer today for just Rs 99, and get a money-back guarantee. Join today, go through our seminar and if you don't like it for any reason, simply send us an email and we'll refund every penny - no questions asked!",
+      ctaText: 'REGISTER NOW AT ₹99/- ONLY',
+      image: '', // badge image URL
     },
     faq: {
       title: 'Frequently Asked Questions',

@@ -27,7 +27,8 @@ function validateEmail(email) {
   return { valid: true, normalized: trimmed };
 }
 
-export function StrategyForm() {
+export function StrategyForm({ embedded = false }) {
+  const idSuffix = embedded ? '-popup' : '';
   const [form, setForm] = useState({ name: '', email: '', phone: '' });
   const [status, setStatus] = useState('idle');
   const [modal, setModal] = useState(null); // { type: 'success' | 'error', title, message }
@@ -126,11 +127,17 @@ export function StrategyForm() {
     }
   };
 
+  const Wrapper = embedded ? 'div' : 'section';
+  const wrapperProps = embedded
+    ? { className: 'max-w-md' }
+    : { id: 'register-form', className: 'py-12 sm:py-16 px-4 sm:px-6 bg-slate-100 dark:bg-slate-900' };
+
   return (
-    <section id="register-form" className="py-12 sm:py-16 px-4 sm:px-6 bg-slate-100 dark:bg-slate-900">
-      <div className="max-w-md mx-auto">
+    <Wrapper {...wrapperProps}>
+      <div className={embedded ? '' : 'max-w-md mx-auto'}>
         <div className="bg-white dark:bg-slate-800 rounded-2xl sm:rounded-3xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
           <div className="p-6 sm:p-8 lg:p-10">
+            {!embedded && (
             <div className="text-center mb-6 sm:mb-8">
               <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mb-2 text-black">
                 Reserve Your Spot
@@ -139,16 +146,17 @@ export function StrategyForm() {
                 Fill in your details and we’ll confirm your session.
               </p>
             </div>
+            )}
 
             <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
               <div>
-                <label htmlFor="form-name" className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                <label htmlFor={`form-name${idSuffix}`} className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                   Full name
                 </label>
                 <div className="form-input-wrap bg-white">
                   <span className="form-icon material-symbols-outlined text-xl">person</span>
                   <input
-                    id="form-name"
+                    id={`form-name${idSuffix}`}
                     type="text"
                     name="name"
                     placeholder="e.g. Rajesh Kumar"
@@ -162,13 +170,13 @@ export function StrategyForm() {
               </div>
 
               <div>
-                <label htmlFor="form-email" className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                <label htmlFor={`form-email${idSuffix}`} className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                   Email
                 </label>
                 <div className={`form-input-wrap bg-white ${fieldErrors.email ? 'border-red-500 dark:border-red-500' : ''}`}>
                   <span className="form-icon material-symbols-outlined text-xl">mail</span>
                   <input
-                    id="form-email"
+                    id={`form-email${idSuffix}`}
                     type="email"
                     name="email"
                     placeholder="you@company.com"
@@ -185,13 +193,13 @@ export function StrategyForm() {
               </div>
 
               <div>
-                <label htmlFor="form-phone" className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                <label htmlFor={`form-phone${idSuffix}`} className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                   Phone
                 </label>
                 <div className={`form-input-wrap bg-white ${fieldErrors.phone ? 'border-red-500 dark:border-red-500' : ''}`}>
                   <span className="form-icon material-symbols-outlined text-xl">phone</span>
                   <input
-                    id="form-phone"
+                    id={`form-phone${idSuffix}`}
                     type="tel"
                     name="phone"
                     placeholder="10-digit mobile number"
@@ -234,10 +242,10 @@ export function StrategyForm() {
         </div>
       </div>
 
-      {/* Submit result modal */}
+      {/* Submit result modal - higher z when embedded so it appears above popup */}
       {modal && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+          className={`fixed inset-0 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm ${embedded ? 'z-[110]' : 'z-[100]'}`}
           onClick={closeModal}
           role="dialog"
           aria-modal="true"
@@ -277,6 +285,6 @@ export function StrategyForm() {
           </div>
         </div>
       )}
-    </section>
+    </Wrapper>
   );
 }

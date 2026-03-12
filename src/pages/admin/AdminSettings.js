@@ -4,6 +4,59 @@ import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 
 const STORAGE_BUCKET = 'images';
 
+function FeedbackSectionPreview({ feedback, theme }) {
+  const f = feedback || {};
+  const label = f.label ?? 'Feedbacks';
+  const title = f.title ?? 'Here are some Real Screenshots & Feedbacks';
+  const items = (f.items || []).filter((it) => it != null && typeof it === 'object');
+  const primary = theme?.primary || '#f77c18';
+
+  if (!items.length) {
+    return (
+      <div className="p-3 rounded border bg-light text-muted small">
+        Add at least one feedback card above (name | role | quote) to see preview.
+      </div>
+    );
+  }
+
+  return (
+    <div className="p-4 rounded border bg-light">
+      <p className="text-center small text-muted text-uppercase fw-semibold mb-1">{label}</p>
+      <h6 className="text-center fw-bold mb-3">{title}</h6>
+      <div className="row g-3">
+        {items.slice(0, 4).map((item, i) => {
+          const it = item || {};
+          return (
+            <div key={i} className="col-6">
+              <div className="border rounded p-3 shadow-sm bg-white">
+                <div className="d-flex justify-content-center mb-2" style={{ marginTop: '-2rem' }}>
+                  <div
+                    className="rounded-circle overflow-hidden border border-2 border-white shadow"
+                    style={{ width: 48, height: 48, backgroundColor: '#e2e8f0' }}
+                  >
+                    {it.image || it.avatar ? (
+                      <img src={it.image || it.avatar} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    ) : (
+                      <span className="d-flex align-items-center justify-content-center w-100 h-100 text-white fw-bold small" style={{ backgroundColor: primary }}>
+                        {(it.name || '?').charAt(0).toUpperCase()}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <p className="small text-dark mb-2 text-center" style={{ fontSize: '0.75rem', lineHeight: 1.35 }}>
+                  {(it.text || '').slice(0, 80)}{(it.text || '').length > 80 ? '…' : ''}
+                </p>
+                <p className="small fw-bold text-center mb-0" style={{ color: primary }}>{it.name || '—'}</p>
+                <p className="small text-muted text-center mb-0">{it.role || '—'}</p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export function AdminSettings() {
   const { config, updateConfig } = useConfig();
   const [editConfig, setEditConfig] = useState(() => JSON.parse(JSON.stringify(config)));
@@ -26,8 +79,8 @@ export function AdminSettings() {
       let cur = next;
       for (let i = 0; i < parts.length - 1; i++) {
         const p = parts[i];
-        const isObj = cur[p] != null && typeof cur[p] === 'object' && !Array.isArray(cur[p]);
-        cur[p] = isObj ? cur[p] : {};
+        const isObjOrArr = cur[p] != null && (typeof cur[p] === 'object' || Array.isArray(cur[p]));
+        cur[p] = isObjOrArr ? cur[p] : {};
         cur = cur[p];
       }
       cur[parts[parts.length - 1]] = value;
@@ -73,8 +126,16 @@ export function AdminSettings() {
     let cur = current;
     for (let i = 1; i < parts.length - 1; i++) {
       const p = parts[i];
-      cur[p] = cur[p] && typeof cur[p] === 'object' ? { ...cur[p] } : {};
-      cur = cur[p];
+      if (Array.isArray(cur[p])) {
+        cur[p] = [...cur[p]];
+        cur = cur[p];
+      } else if (cur[p] != null && typeof cur[p] === 'object') {
+        cur[p] = { ...cur[p] };
+        cur = cur[p];
+      } else {
+        cur[p] = /^\d+$/.test(parts[i + 1]) ? [] : {};
+        cur = cur[p];
+      }
     }
     cur[parts[parts.length - 1]] = value;
     return { [key]: current };
@@ -176,6 +237,34 @@ export function AdminSettings() {
                 <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.nav?.[k] ?? ''} onChange={(e) => handleConfigChange(`strategyLayout.nav.${k}`, e.target.value)} />
               </div>
             ))}
+            <div className="col-12"><h6 className="border-bottom pb-1 mt-2">Top section (video) — first on page, centered</h6></div>
+            <div className="col-12">
+              <label className="form-label small">Badge (e.g. Limited Time Strategy Session)</label>
+              <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.topVideo?.badge ?? ''} onChange={(e) => handleConfigChange('strategyLayout.topVideo.badge', e.target.value)} />
+            </div>
+            <div className="col-12">
+              <label className="form-label small">Headline (e.g. Is Your Business Running Because Of You… Or Despite You?)</label>
+              <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.topVideo?.headline ?? ''} onChange={(e) => handleConfigChange('strategyLayout.topVideo.headline', e.target.value)} />
+            </div>
+            <div className="col-12">
+              <label className="form-label small">Video (YouTube link or direct video URL; autoplay on page)</label>
+              <div className="d-flex flex-wrap gap-2 align-items-center">
+                <input type="file" accept="video/*" className="form-control form-control-sm" style={{ maxWidth: '220px' }} onChange={(e) => handleImageUpload(e, 'strategyLayout.topVideo.video')} disabled={!isSupabaseConfigured() || uploading} />
+                <input type="url" className="form-control form-control-sm flex-grow-1" placeholder="Or paste YouTube / video URL" value={editConfig.strategyLayout?.topVideo?.video ?? ''} onChange={(e) => handleConfigChange('strategyLayout.topVideo.video', e.target.value)} />
+              </div>
+            </div>
+            <div className="col-12">
+              <label className="form-label small">Subtext below video (e.g. Transform your business from founder-dependent...)</label>
+              <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.topVideo?.subtext ?? ''} onChange={(e) => handleConfigChange('strategyLayout.topVideo.subtext', e.target.value)} />
+            </div>
+            <div className="col-12">
+              <label className="form-label small">CTA button text below video</label>
+              <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.topVideo?.ctaText ?? ''} onChange={(e) => handleConfigChange('strategyLayout.topVideo.ctaText', e.target.value)} />
+            </div>
+            <div className="col-12">
+              <label className="form-label small">Slot note below CTA (e.g. Limited slots available for this month)</label>
+              <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.topVideo?.slotNote ?? ''} onChange={(e) => handleConfigChange('strategyLayout.topVideo.slotNote', e.target.value)} />
+            </div>
             <div className="col-12"><h6 className="border-bottom pb-1 mt-2">Hero</h6></div>
             {['badge', 'headline', 'headlineHighlight', 'subtext', 'ctaText', 'slotNote'].map((k) => (
               <div className="col-12" key={k}>
@@ -278,6 +367,88 @@ export function AdminSettings() {
               <label className="form-label small">Quote text</label>
               <textarea className="form-control form-control-sm" rows={3} value={editConfig.strategyLayout?.whyDifferent?.quote ?? ''} onChange={(e) => handleConfigChange('strategyLayout.whyDifferent.quote', e.target.value)} />
             </div>
+            <div className="col-12"><h6 className="border-bottom pb-1 mt-2">Testimonials — What Founders Say (4 video cards)</h6></div>
+            <div className="col-12 mb-2">
+              <label className="form-label small">Section title</label>
+              <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.testimonials?.title ?? ''} onChange={(e) => handleConfigChange('strategyLayout.testimonials.title', e.target.value)} placeholder="What Founders Say" />
+            </div>
+            {[0, 1, 2, 3].map((idx) => {
+              const items = editConfig.strategyLayout?.testimonials?.items || [];
+              const item = (items[idx] != null && typeof items[idx] === 'object') ? items[idx] : {};
+              return (
+                <div className="col-12 col-lg-6" key={idx}>
+                  <div className="border rounded p-3 bg-white">
+                    <h6 className="border-bottom pb-2 mb-3">Video card {idx + 1}</h6>
+                    <div className="mb-2">
+                      <label className="form-label small mb-0">Name</label>
+                      <input type="text" className="form-control form-control-sm" placeholder="e.g. Shanmuganathan C" value={item.name ?? ''} onChange={(e) => handleConfigChange(`strategyLayout.testimonials.items.${idx}.name`, e.target.value)} />
+                    </div>
+                    <div className="mb-2">
+                      <label className="form-label small mb-0">Role / Company</label>
+                      <input type="text" className="form-control form-control-sm" placeholder="e.g. Spider India" value={item.role ?? ''} onChange={(e) => handleConfigChange(`strategyLayout.testimonials.items.${idx}.role`, e.target.value)} />
+                    </div>
+                    <div>
+                      <label className="form-label small mb-0">Video (upload or paste YouTube / video URL)</label>
+                      <div className="d-flex flex-wrap gap-2 align-items-center">
+                        <input type="file" accept="video/*" className="form-control form-control-sm" style={{ maxWidth: '160px' }} onChange={(e) => handleImageUpload(e, `strategyLayout.testimonials.items.${idx}.video`)} disabled={!isSupabaseConfigured() || uploading} />
+                        <input type="url" className="form-control form-control-sm flex-grow-1" placeholder="YouTube or video URL" value={item.video ?? ''} onChange={(e) => handleConfigChange(`strategyLayout.testimonials.items.${idx}.video`, e.target.value)} />
+                      </div>
+                      {item.video && (
+                        <div className="mt-2 small text-muted">
+                          {/youtube\.com|youtu\.be/i.test(item.video) ? 'YouTube link' : 'Video URL'} saved
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+            <div className="col-12"><h6 className="border-bottom pb-1 mt-2">Feedback (Real Screenshots & Feedbacks — 2x2 cards with avatar on top)</h6></div>
+            <div className="col-12 col-md-6">
+              <label className="form-label small">Label above title (e.g. Feedbacks)</label>
+              <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.feedback?.label ?? ''} onChange={(e) => handleConfigChange('strategyLayout.feedback.label', e.target.value)} placeholder="Feedbacks" />
+            </div>
+            <div className="col-12 col-md-6">
+              <label className="form-label small">Section title</label>
+              <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.feedback?.title ?? ''} onChange={(e) => handleConfigChange('strategyLayout.feedback.title', e.target.value)} placeholder="Here are some Real Screenshots & Feedbacks" />
+            </div>
+            {[0, 1, 2, 3].map((idx) => {
+              const items = editConfig.strategyLayout?.feedback?.items || [];
+              const item = (items[idx] != null && typeof items[idx] === 'object') ? items[idx] : {};
+              return (
+                <div className="col-12 col-lg-6" key={idx}>
+                  <div className="border rounded p-3 bg-white">
+                    <h6 className="border-bottom pb-2 mb-3">Feedback card {idx + 1}</h6>
+                    <div className="mb-2">
+                      <label className="form-label small mb-0">Name</label>
+                      <input type="text" className="form-control form-control-sm" placeholder="e.g. Shanmuganathan C" value={item.name ?? ''} onChange={(e) => handleConfigChange(`strategyLayout.feedback.items.${idx}.name`, e.target.value)} />
+                    </div>
+                    <div className="mb-2">
+                      <label className="form-label small mb-0">Role / Company</label>
+                      <input type="text" className="form-control form-control-sm" placeholder="e.g. Spider India" value={item.role ?? ''} onChange={(e) => handleConfigChange(`strategyLayout.feedback.items.${idx}.role`, e.target.value)} />
+                    </div>
+                    <div className="mb-2">
+                      <label className="form-label small mb-0">Quote / Feedback text</label>
+                      <textarea className="form-control form-control-sm" rows={3} placeholder="Their testimonial or feedback..." value={item.text ?? ''} onChange={(e) => handleConfigChange(`strategyLayout.feedback.items.${idx}.text`, e.target.value)} />
+                    </div>
+                    <div>
+                      <label className="form-label small mb-0">Avatar (upload or paste URL)</label>
+                      <div className="d-flex flex-wrap gap-2 align-items-center">
+                        <input type="file" accept="image/*" className="form-control form-control-sm" style={{ maxWidth: '160px' }} onChange={(e) => handleImageUpload(e, `strategyLayout.feedback.items.${idx}.image`)} disabled={!isSupabaseConfigured() || uploading} />
+                        <input type="url" className="form-control form-control-sm flex-grow-1" placeholder="Image URL" value={item.image || item.avatar || ''} onChange={(e) => handleConfigChange(`strategyLayout.feedback.items.${idx}.image`, e.target.value)} />
+                      </div>
+                      {(item.image || item.avatar) && (
+                        <img src={item.image || item.avatar} alt="" className="mt-2 rounded border" style={{ maxHeight: '48px', width: 'auto' }} />
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+            <div className="col-12 mt-3">
+              <h6 className="border-bottom pb-1 mb-2">Preview — how feedback section will look</h6>
+              <FeedbackSectionPreview feedback={editConfig.strategyLayout?.feedback} theme={editConfig.strategyLayout?.theme} />
+            </div>
             <div className="col-12"><h6 className="border-bottom pb-1 mt-2">For / Not for</h6></div>
             <div className="col-12">
               <label className="form-label small">For title</label>
@@ -294,6 +465,33 @@ export function AdminSettings() {
             <div className="col-12">
               <label className="form-label small">Not for items (one per line)</label>
               <textarea className="form-control form-control-sm" rows={3} value={(editConfig.strategyLayout?.forNotFor?.notForItems || []).join('\n')} onChange={(e) => handleConfigChange('strategyLayout.forNotFor.notForItems', e.target.value.split('\n').filter(Boolean))} />
+            </div>
+            <div className="col-12"><h6 className="border-bottom pb-1 mt-2">Money Back Guarantee (before FAQ)</h6></div>
+            <div className="col-12">
+              <label className="form-label small">Section title (e.g. Still Not Sure? We got your Back!)</label>
+              <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.moneyBackGuarantee?.title ?? ''} onChange={(e) => handleConfigChange('strategyLayout.moneyBackGuarantee.title', e.target.value)} />
+            </div>
+            <div className="col-12">
+              <label className="form-label small">Subheading (e.g. Our Guarantee)</label>
+              <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.moneyBackGuarantee?.subheading ?? ''} onChange={(e) => handleConfigChange('strategyLayout.moneyBackGuarantee.subheading', e.target.value)} />
+            </div>
+            <div className="col-12">
+              <label className="form-label small">Description (guarantee text)</label>
+              <textarea className="form-control form-control-sm" rows={4} value={editConfig.strategyLayout?.moneyBackGuarantee?.description ?? ''} onChange={(e) => handleConfigChange('strategyLayout.moneyBackGuarantee.description', e.target.value)} />
+            </div>
+            <div className="col-12">
+              <label className="form-label small">CTA button text (e.g. REGISTER NOW AT ₹99/- ONLY)</label>
+              <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.moneyBackGuarantee?.ctaText ?? ''} onChange={(e) => handleConfigChange('strategyLayout.moneyBackGuarantee.ctaText', e.target.value)} />
+            </div>
+            <div className="col-12">
+              <label className="form-label small">Badge image (100% Money Back Guaranteed)</label>
+              <div className="d-flex flex-wrap gap-2 align-items-center">
+                <input type="file" accept="image/*" className="form-control form-control-sm" style={{ maxWidth: '200px' }} onChange={(e) => handleImageUpload(e, 'strategyLayout.moneyBackGuarantee.image')} disabled={!isSupabaseConfigured() || uploading} />
+                <input type="url" className="form-control form-control-sm flex-grow-1" placeholder="Or paste image URL" value={editConfig.strategyLayout?.moneyBackGuarantee?.image ?? ''} onChange={(e) => handleConfigChange('strategyLayout.moneyBackGuarantee.image', e.target.value)} />
+              </div>
+              {editConfig.strategyLayout?.moneyBackGuarantee?.image && (
+                <img src={editConfig.strategyLayout.moneyBackGuarantee.image} alt="Badge preview" className="mt-2 rounded border" style={{ maxHeight: '120px', width: 'auto' }} />
+              )}
             </div>
             <div className="col-12"><h6 className="border-bottom pb-1 mt-2">FAQ</h6></div>
             <div className="col-12">
@@ -315,6 +513,33 @@ export function AdminSettings() {
                 )}
               </div>
             ))}
+            <div className="col-12"><h6 className="border-bottom pb-1 mt-2">Sticky bottom bar (mobile + web)</h6></div>
+            <div className="col-12">
+              <label className="form-label small">
+                <input type="checkbox" className="form-check-input me-2" checked={editConfig.strategyLayout?.stickyBar?.enabled !== false} onChange={(e) => handleConfigChange('strategyLayout.stickyBar.enabled', e.target.checked)} />
+                Show sticky bar
+              </label>
+            </div>
+            <div className="col-12 col-md-4">
+              <label className="form-label small">Sticky bar price</label>
+              <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.stickyBar?.price ?? ''} onChange={(e) => handleConfigChange('strategyLayout.stickyBar.price', e.target.value)} />
+            </div>
+            <div className="col-12 col-md-4">
+              <label className="form-label small">Original price (strikethrough)</label>
+              <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.stickyBar?.originalPrice ?? ''} onChange={(e) => handleConfigChange('strategyLayout.stickyBar.originalPrice', e.target.value)} />
+            </div>
+            <div className="col-12">
+              <label className="form-label small">Button text</label>
+              <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.stickyBar?.buttonText ?? ''} onChange={(e) => handleConfigChange('strategyLayout.stickyBar.buttonText', e.target.value)} />
+            </div>
+            <div className="col-12">
+              <label className="form-label small">Countdown label (e.g. Offer Ends in 14:40 Mins)</label>
+              <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.stickyBar?.countdownLabel ?? ''} onChange={(e) => handleConfigChange('strategyLayout.stickyBar.countdownLabel', e.target.value)} />
+            </div>
+            <div className="col-12">
+              <label className="form-label small">Countdown end (optional ISO date for live countdown, e.g. 2025-03-15T23:59:59)</label>
+              <input type="text" className="form-control form-control-sm" placeholder="Leave empty to use label only" value={editConfig.strategyLayout?.stickyBar?.countdownEnd ?? ''} onChange={(e) => handleConfigChange('strategyLayout.stickyBar.countdownEnd', e.target.value)} />
+            </div>
             <div className="col-12"><h6 className="border-bottom pb-1 mt-2">Footer</h6></div>
             <div className="col-12">
               <label className="form-label small">Headline</label>

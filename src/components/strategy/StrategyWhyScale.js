@@ -19,6 +19,9 @@ export function StrategyWhyScale() {
           { icon: 'person_off', title: 'Owner Reliance', desc: "Everything stops when you take a day off. You've created a job, not a business." },
           { icon: 'account_tree', title: 'Lack of Systems', desc: 'Processes are stored in your head. Scaling is impossible because nobody else knows how to do it.' },
           { icon: 'trending_flat', title: 'Plateaued Growth', desc: "You've hit a ceiling. You're working harder, but your revenue isn't moving proportionately." },
+          { icon: 'group_off', title: 'No Delegation', desc: "You don't trust others with key tasks. Every decision still flows through you, creating a bottleneck." },
+          { icon: 'psychology', title: 'Mindset Trap', desc: "You're stuck in 'doer' mode. Scaling requires thinking like an architect, not the chief executor." },
+          { icon: 'schedule', title: 'Time Poverty', desc: "You're always firefighting. No time to build systems, so the same crises repeat every month." },
         ]).map((card, i) => (
           <div
             key={i}
