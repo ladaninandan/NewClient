@@ -33,7 +33,7 @@ export function StrategyTestimonials() {
   return (
     <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6" style={{ backgroundColor: 'var(--theme-background-light)' }}>
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white text-center mb-8 sm:mb-10">
+        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white text-center mb-8 sm:mb-10 text-black">
           {title}
         </h2>
         <div className="relative -mx-4 sm:mx-0">
@@ -57,7 +57,8 @@ export function StrategyTestimonials() {
           </button>
           <div
             ref={scrollRef}
-            className="flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 overflow-x-auto overflow-y-hidden snap-x snap-mandatory sm:overflow-visible sm:snap-none pb-2 sm:pb-0 px-4 sm:px-0 scrollbar-none"
+            className="flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 overflow-x-scroll overflow-y-hidden snap-x snap-mandatory sm:overflow-visible sm:snap-none pb-2 sm:pb-0 px-4 sm:px-0 scrollbar-none overscroll-x-contain min-w-0"
+            style={{ WebkitOverflowScrolling: 'touch', scrollPaddingLeft: '1rem', scrollPaddingRight: '1rem' }}
           >
             {videoItems.map((item, i) => {
               const videoUrl = (item.video || '').trim();
@@ -66,7 +67,7 @@ export function StrategyTestimonials() {
               return (
                 <div
                   key={i}
-                  className="flex-shrink-0 w-[85vw] sm:w-auto sm:min-w-0 snap-center bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-600 overflow-hidden shadow-md hover:shadow-lg transition-all duration-200 flex flex-col"
+                  className="flex-shrink-0 w-[85vw] max-w-[320px] sm:w-auto sm:min-w-0 sm:max-w-none snap-start bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-600 overflow-hidden shadow-md hover:shadow-lg transition-all duration-200 flex flex-col"
                 >
                   <div className="aspect-video bg-black relative">
                     {isYt && embedUrl ? (
@@ -92,6 +93,11 @@ export function StrategyTestimonials() {
                     )}
                   </div>
                   <div className="p-4">
+                    {(item.details || item.text) && (
+                      <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm leading-relaxed mb-3 line-clamp-3">
+                        {item.details || item.text}
+                      </p>
+                    )}
                     {item.name && (
                       <p className="font-bold text-slate-900 dark:text-white text-sm sm:text-base" style={{ color: 'var(--theme-primary)' }}>
                         {item.name}

@@ -1,5 +1,6 @@
 export { AnimateOnScroll } from './AnimateOnScroll';
 export { StrategyNav } from './StrategyNav';
+export { StrategyScrollingBanner } from './StrategyScrollingBanner';
 export { StrategyTopVideo } from './StrategyTopVideo';
 export { StrategyHero } from './StrategyHero';
 export { StrategyWhyScale } from './StrategyWhyScale';

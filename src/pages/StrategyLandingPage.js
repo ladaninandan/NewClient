@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import {
   AnimateOnScroll,
-  StrategyNav,
+  StrategyScrollingBanner,
   StrategyTopVideo,
   StrategyHero,
   StrategyWhyScale,
@@ -85,7 +85,7 @@ export function StrategyLandingPage() {
       className="min-h-screen text-slate-900 dark:text-slate-100 pb-20"
       style={{ backgroundColor: theme.backgroundLight, ...themeVars }}
     >
-      <StrategyNav />
+      <StrategyScrollingBanner />
       <AnimateOnScroll><StrategyTopVideo /></AnimateOnScroll>
       {/* <AnimateOnScroll><StrategyHero /></AnimateOnScroll> */}
       <AnimateOnScroll><StrategyWhyScale /></AnimateOnScroll>

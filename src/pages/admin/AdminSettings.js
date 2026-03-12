@@ -367,7 +367,7 @@ export function AdminSettings() {
               <label className="form-label small">Quote text</label>
               <textarea className="form-control form-control-sm" rows={3} value={editConfig.strategyLayout?.whyDifferent?.quote ?? ''} onChange={(e) => handleConfigChange('strategyLayout.whyDifferent.quote', e.target.value)} />
             </div>
-            <div className="col-12"><h6 className="border-bottom pb-1 mt-2">Testimonials — What Founders Say (4 video cards)</h6></div>
+            <div className="col-12"><h6 className="border-bottom pb-1 mt-2 ">Testimonials — What Founders Say (4 video cards)</h6></div>
             <div className="col-12 mb-2">
               <label className="form-label small">Section title</label>
               <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.testimonials?.title ?? ''} onChange={(e) => handleConfigChange('strategyLayout.testimonials.title', e.target.value)} placeholder="What Founders Say" />
@@ -386,6 +386,10 @@ export function AdminSettings() {
                     <div className="mb-2">
                       <label className="form-label small mb-0">Role / Company</label>
                       <input type="text" className="form-control form-control-sm" placeholder="e.g. Spider India" value={item.role ?? ''} onChange={(e) => handleConfigChange(`strategyLayout.testimonials.items.${idx}.role`, e.target.value)} />
+                    </div>
+                    <div className="mb-2">
+                      <label className="form-label small mb-0">Details (short quote or description — shown on website below video)</label>
+                      <textarea className="form-control form-control-sm" rows={2} placeholder="e.g. The session gave me a clear roadmap. I implemented one process and saved 10 hours a week." value={item.details ?? item.text ?? ''} onChange={(e) => handleConfigChange(`strategyLayout.testimonials.items.${idx}.details`, e.target.value)} />
                     </div>
                     <div>
                       <label className="form-label small mb-0">Video (upload or paste YouTube / video URL)</label>
