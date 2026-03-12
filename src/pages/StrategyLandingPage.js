@@ -3,7 +3,6 @@ import {
   AnimateOnScroll,
   StrategyScrollingBanner,
   StrategyTopVideo,
-  StrategyHero,
   StrategyWhyScale,
   StrategyFounderTrap,
   StrategyCoach,
