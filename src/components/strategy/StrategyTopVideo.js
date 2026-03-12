@@ -11,7 +11,7 @@ function getYouTubeEmbedUrl(url) {
   const u = url.trim();
   const m = u.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
   const id = m ? m[1] : null;
-  return id ? `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&controls=1&showinfo=0&rel=0` : null;
+  return id ? `https://www.youtube.com/embed/${id}?autoplay=1&controls=1&showinfo=0&rel=0` : null;
 }
 
 export function StrategyTopVideo() {
@@ -43,7 +43,7 @@ export function StrategyTopVideo() {
         <span
           className="inline-block px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase mb-5"
           style={{ backgroundColor: 'color-mix(in srgb, var(--theme-primary) 25%, transparent)', color: 'var(--theme-primary)' }}
-        >dfghjmk,./nandan
+        >
           {badge}
         </span>
         <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-black text-white leading-tight mb-8 sm:mb-10 px-2">
