@@ -7,6 +7,7 @@ import {
   StrategyWhyScale,
   StrategyFounderTrap,
   StrategyCoach,
+  StrategyCoachAchievements,
   StrategyLearn,
   StrategyModel,
   StrategyWhyDifferent,
@@ -35,7 +36,7 @@ const defaultTheme = {
 const POPUP_DELAY_MS = 60 * 1000; // 1 minute
 
 const DEFAULT_SECTION_ORDER = [
-  'topVideo', 'whyScale', 'problem', 'founderTrap', 'coach', 'learn', 'founderModel',
+  'topVideo', 'whyScale', 'problem', 'founderTrap', 'coach', 'coachAchievements', 'learn', 'founderModel',
   'whyDifferent', 'testimonials', 'feedback', 'forNotFor', 'pricing', 'priceJustification',
   'form', 'moneyBackGuarantee', 'faq', 'footer',
 ];
@@ -46,6 +47,7 @@ const SECTION_COMPONENTS = {
   problem: StrategyProblem,
   founderTrap: StrategyFounderTrap,
   coach: StrategyCoach,
+  coachAchievements: StrategyCoachAchievements,
   learn: StrategyLearn,
   founderModel: StrategyModel,
   whyDifferent: StrategyWhyDifferent,
@@ -121,9 +123,7 @@ export function StrategyLandingPage() {
       className="min-h-screen text-slate-900 dark:text-slate-100 pb-20"
       style={{ backgroundColor: theme.backgroundLight, ...themeVars }}
     >
-      <AnimateOnScroll>
-        <StrategyScrollingBanner />
-      </AnimateOnScroll>
+      <StrategyScrollingBanner />
       {visibleIds.map((id) => {
         const Comp = SECTION_COMPONENTS[id];
         return Comp ? <AnimateOnScroll key={id}><Comp /></AnimateOnScroll> : null;

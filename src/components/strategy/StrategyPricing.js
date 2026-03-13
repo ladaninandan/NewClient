@@ -1,6 +1,6 @@
 import React from 'react';
 import { useConfig } from '../../context/ConfigContext';
-import { AnimatedNumber, TextWithAnimatedNumbers } from './AnimatedNumber';
+import { AnimatedNumber } from './AnimatedNumber';
 
 export function StrategyPricing() {
   const { config } = useConfig();
@@ -29,7 +29,7 @@ export function StrategyPricing() {
             className="w-full text-white text-base sm:text-xl font-black py-4 sm:py-5 rounded-xl sm:rounded-2xl shadow-xl mb-4 btn-hover"
             style={{ backgroundColor: 'var(--theme-primary)' }}
           >
-            <TextWithAnimatedNumbers text={p.ctaText || 'Reserve My ₹199 Strategy Session'} />
+            {p.ctaText || 'Reserve My ₹199 Strategy Session'}
           </button>
           <p className="text-xs sm:text-sm text-slate-400 flex items-center justify-center gap-1">
             <span className="material-symbols-outlined text-sm">lock</span>

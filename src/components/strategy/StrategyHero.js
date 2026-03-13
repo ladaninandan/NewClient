@@ -1,6 +1,5 @@
 import React from 'react';
 import { useConfig } from '../../context/ConfigContext';
-import { TextWithAnimatedNumbers } from './AnimatedNumber';
 
 export function StrategyHero() {
   const { config } = useConfig();
@@ -50,7 +49,7 @@ export function StrategyHero() {
           className="text-white text-base sm:text-lg font-bold py-3 sm:py-4 px-6 sm:px-8 rounded-xl shadow-xl btn-hover"
           style={{ backgroundColor: 'var(--theme-primary)' }}
         >
-          <TextWithAnimatedNumbers text={hero.ctaText || 'Reserve My ₹199 Strategy Session'} />
+          {hero.ctaText || 'Reserve My ₹199 Strategy Session'}
         </button>
         <p className="text-emerald-200/60 text-sm italic mt-4">{hero.slotNote || 'Limited slots available for this month'}</p>
       </div>

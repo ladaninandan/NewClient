@@ -8,7 +8,7 @@ const MAX_VIDEO_UPLOAD_MB = 500;
 const RESUMABLE_THRESHOLD_MB = 50;
 
 const defaultSectionOrder = [
-  'topVideo', 'whyScale', 'problem', 'founderTrap', 'coach', 'learn', 'founderModel',
+  'topVideo', 'whyScale', 'problem', 'founderTrap', 'coach', 'coachAchievements', 'learn', 'founderModel',
   'whyDifferent', 'testimonials', 'feedback', 'forNotFor', 'pricing', 'priceJustification',
   'form', 'moneyBackGuarantee', 'faq', 'footer',
 ];
@@ -19,6 +19,7 @@ const sectionOrderLabels = {
   problem: 'Problem (Are you facing these…)',
   founderTrap: 'Founder Trap',
   coach: 'Coach (Meet Rahul)',
+  coachAchievements: 'Coach Achievements (150+, 10x, etc.)',
   learn: 'Learn',
   founderModel: 'Founder Model',
   whyDifferent: 'Why Different',
@@ -34,7 +35,9 @@ const sectionOrderLabels = {
 };
 
 function SectionOrderEditor({ order, onChange, labels }) {
-  const list = Array.isArray(order) && order.length > 0 ? [...order] : [...defaultSectionOrder];
+  const saved = Array.isArray(order) && order.length > 0 ? [...order] : [];
+  const missing = defaultSectionOrder.filter((id) => !saved.includes(id));
+  const list = saved.length > 0 ? [...saved, ...missing] : [...defaultSectionOrder];
   const move = (index, dir) => {
     const next = [...list];
     const j = index + dir;
@@ -450,7 +453,7 @@ export function AdminSettings() {
       <section className="card shadow-sm mb-4 admin-card">
         <div className="card-header fw-bold">Section order</div>
         <div className="card-body">
-          <p className="text-muted mb-3" style={{ fontSize: '0.9375rem' }}>Scrolling banner is always first; sticky bar is always last. Use arrows to change order.</p>
+          <p className="text-muted mb-3" style={{ fontSize: '0.9375rem' }}>Scrolling banner is always first; sticky bar is always last. Use arrows to change order. Coach Achievements (StrategyCoachAchievements) is in the list—reorder it with the arrows.</p>
           <SectionOrderEditor
             order={editConfig.strategyLayout?.sectionOrder || defaultSectionOrder}
             onChange={(newOrder) => handleConfigChange('strategyLayout.sectionOrder', newOrder)}
@@ -646,6 +649,111 @@ export function AdminSettings() {
             <div className="col-12">
               <label className="form-label small">Coach stats (value | label one per line)</label>
               <textarea className="form-control form-control-sm" rows={2} value={(editConfig.strategyLayout?.coach?.stats || []).map((s) => `${s.value}|${s.label}`).join('\n')} onChange={(e) => handleConfigChange('strategyLayout.coach.stats', e.target.value.split('\n').filter(Boolean).map((line) => { const [value, label] = line.split('|'); return { value: (value || '').trim(), label: (label || '').trim() }; }))} />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="card shadow-sm mb-4 admin-card">
+        <div className="card-header fw-bold">Coach Achievements (150+, 10x, etc.)</div>
+        <div className="card-body">
+          <p className="text-muted small mb-3">Section order and visibility: use &quot;Section order&quot; and &quot;Section visibility&quot; above. All content and styling for this section is below.</p>
+          <div className="row g-3">
+            <div className="col-12 col-md-6">
+              <label className="form-label small">Section heading (optional)</label>
+              <input type="text" className="form-control form-control-sm" placeholder="e.g. Our Impact" value={editConfig.strategyLayout?.coachAchievements?.heading ?? ''} onChange={(e) => handleConfigChange('strategyLayout.coachAchievements.heading', e.target.value)} />
+            </div>
+            <div className="col-12 col-md-6">
+              <label className="form-label small">Section background</label>
+              <div className="d-flex gap-2 align-items-center">
+                <input type="color" className="form-control form-control-color p-1" style={{ width: 40, height: 32 }} value={editConfig.strategyLayout?.coachAchievements?.sectionBg || '#f8fafc'} onChange={(e) => handleConfigChange('strategyLayout.coachAchievements.sectionBg', e.target.value)} />
+                <input type="text" className="form-control form-control-sm" placeholder="Leave blank for default" value={editConfig.strategyLayout?.coachAchievements?.sectionBg ?? ''} onChange={(e) => handleConfigChange('strategyLayout.coachAchievements.sectionBg', e.target.value)} />
+              </div>
+            </div>
+            <div className="col-12 col-md-6">
+              <label className="form-label small">Section padding (CSS value)</label>
+              <input type="text" className="form-control form-control-sm" placeholder="e.g. 2rem 1rem or 40px 24px (blank = default)" value={editConfig.strategyLayout?.coachAchievements?.sectionPadding ?? ''} onChange={(e) => handleConfigChange('strategyLayout.coachAchievements.sectionPadding', e.target.value)} />
+            </div>
+            <div className="col-12 col-md-6">
+              <label className="form-label small">Section margin (CSS value)</label>
+              <input type="text" className="form-control form-control-sm" placeholder="e.g. 0 auto or 2rem 0 (blank = default)" value={editConfig.strategyLayout?.coachAchievements?.sectionMargin ?? ''} onChange={(e) => handleConfigChange('strategyLayout.coachAchievements.sectionMargin', e.target.value)} />
+            </div>
+            <div className="col-12">
+              <label className="form-label small">Achievement cards (value, description, icon — reorder with arrows)</label>
+              {(editConfig.strategyLayout?.coachAchievements?.achievements || editConfig.strategyLayout?.coach?.achievements || []).map((item, idx) => {
+                const a = item && typeof item === 'object' ? item : { value: '', description: '', icon: 'star' };
+                const list = editConfig.strategyLayout?.coachAchievements?.achievements ?? editConfig.strategyLayout?.coach?.achievements ?? [];
+                const path = 'strategyLayout.coachAchievements.achievements';
+                const move = (dir) => {
+                  const next = [...list];
+                  const j = idx + dir;
+                  if (j < 0 || j >= next.length) return;
+                  [next[idx], next[j]] = [next[j], next[idx]];
+                  handleConfigChange(path, next);
+                };
+                return (
+                  <div key={idx} className="border rounded p-3 mb-2 bg-light">
+                    <div className="d-flex gap-2 align-items-start mb-2">
+                      <span className="text-muted fw-semibold" style={{ minWidth: '1.5rem', fontSize: '0.875rem' }}>{idx + 1}</span>
+                      <div className="flex-grow-1">
+                        <input type="text" className="form-control form-control-sm mb-2" placeholder="Value (e.g. 150+, 10x)" value={a.value ?? ''} onChange={(e) => { const arr = [...list]; arr[idx] = { ...a, value: e.target.value }; handleConfigChange(path, arr); }} />
+                        <input type="text" className="form-control form-control-sm mb-2" placeholder="Description" value={a.description ?? ''} onChange={(e) => { const arr = [...list]; arr[idx] = { ...a, description: e.target.value }; handleConfigChange(path, arr); }} />
+                        <input type="text" className="form-control form-control-sm" placeholder="Icon (e.g. groups, trending_up, schedule, handshake)" value={a.icon ?? ''} onChange={(e) => { const arr = [...list]; arr[idx] = { ...a, icon: e.target.value }; handleConfigChange(path, arr); }} />
+                      </div>
+                      <div className="d-flex flex-column gap-1 flex-shrink-0">
+                        <button type="button" className="btn btn-outline-secondary btn-sm" onClick={() => move(-1)} disabled={idx === 0} aria-label="Move up">↑</button>
+                        <button type="button" className="btn btn-outline-secondary btn-sm" onClick={() => move(1)} disabled={idx === list.length - 1} aria-label="Move down">↓</button>
+                        <button type="button" className="btn btn-outline-danger btn-sm" onClick={() => handleConfigChange(path, list.filter((_, i) => i !== idx))} aria-label="Remove">×</button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+              <button
+                type="button"
+                className="btn btn-outline-primary btn-sm"
+                onClick={() => handleConfigChange('strategyLayout.coachAchievements.achievements', [...(editConfig.strategyLayout?.coachAchievements?.achievements ?? editConfig.strategyLayout?.coach?.achievements ?? []), { value: '', description: '', icon: 'star' }])}
+              >
+                + Add achievement
+              </button>
+            </div>
+            <div className="col-12 pt-2 border-top">
+              <label className="form-label small fw-bold">Card &amp; icon colors (leave blank to use theme)</label>
+            </div>
+            <div className="col-12 col-md-6">
+              <label className="form-label small">Icon background</label>
+              <div className="d-flex gap-2 align-items-center">
+                <input type="color" className="form-control form-control-color p-1" style={{ width: 40, height: 32 }} value={editConfig.strategyLayout?.coachAchievements?.iconBg || '#f77c18'} onChange={(e) => handleConfigChange('strategyLayout.coachAchievements.iconBg', e.target.value)} />
+                <input type="text" className="form-control form-control-sm" placeholder="Theme primary" value={editConfig.strategyLayout?.coachAchievements?.iconBg ?? ''} onChange={(e) => handleConfigChange('strategyLayout.coachAchievements.iconBg', e.target.value)} />
+              </div>
+            </div>
+            <div className="col-12 col-md-6">
+              <label className="form-label small">Icon color (inside circle)</label>
+              <div className="d-flex gap-2 align-items-center">
+                <input type="color" className="form-control form-control-color p-1" style={{ width: 40, height: 32 }} value={editConfig.strategyLayout?.coachAchievements?.iconColor || '#ffffff'} onChange={(e) => handleConfigChange('strategyLayout.coachAchievements.iconColor', e.target.value)} />
+                <input type="text" className="form-control form-control-sm" placeholder="White" value={editConfig.strategyLayout?.coachAchievements?.iconColor ?? ''} onChange={(e) => handleConfigChange('strategyLayout.coachAchievements.iconColor', e.target.value)} />
+              </div>
+            </div>
+            <div className="col-12 col-md-6">
+              <label className="form-label small">Card background</label>
+              <div className="d-flex gap-2 align-items-center">
+                <input type="color" className="form-control form-control-color p-1" style={{ width: 40, height: 32 }} value={editConfig.strategyLayout?.coachAchievements?.cardBg || '#ffffff'} onChange={(e) => handleConfigChange('strategyLayout.coachAchievements.cardBg', e.target.value)} />
+                <input type="text" className="form-control form-control-sm" placeholder="White" value={editConfig.strategyLayout?.coachAchievements?.cardBg ?? ''} onChange={(e) => handleConfigChange('strategyLayout.coachAchievements.cardBg', e.target.value)} />
+              </div>
+            </div>
+            <div className="col-12 col-md-6">
+              <label className="form-label small">Number color</label>
+              <div className="d-flex gap-2 align-items-center">
+                <input type="color" className="form-control form-control-color p-1" style={{ width: 40, height: 32 }} value={editConfig.strategyLayout?.coachAchievements?.numberColor || '#000000'} onChange={(e) => handleConfigChange('strategyLayout.coachAchievements.numberColor', e.target.value)} />
+                <input type="text" className="form-control form-control-sm" placeholder="Black" value={editConfig.strategyLayout?.coachAchievements?.numberColor ?? ''} onChange={(e) => handleConfigChange('strategyLayout.coachAchievements.numberColor', e.target.value)} />
+              </div>
+            </div>
+            <div className="col-12 col-md-6">
+              <label className="form-label small">Description text color</label>
+              <div className="d-flex gap-2 align-items-center">
+                <input type="color" className="form-control form-control-color p-1" style={{ width: 40, height: 32 }} value={editConfig.strategyLayout?.coachAchievements?.descriptionColor || '#374151'} onChange={(e) => handleConfigChange('strategyLayout.coachAchievements.descriptionColor', e.target.value)} />
+                <input type="text" className="form-control form-control-sm" placeholder="Slate 700" value={editConfig.strategyLayout?.coachAchievements?.descriptionColor ?? ''} onChange={(e) => handleConfigChange('strategyLayout.coachAchievements.descriptionColor', e.target.value)} />
+              </div>
             </div>
           </div>
         </div>

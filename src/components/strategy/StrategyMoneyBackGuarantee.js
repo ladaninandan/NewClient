@@ -1,6 +1,5 @@
 import React from 'react';
 import { useConfig } from '../../context/ConfigContext';
-import { TextWithAnimatedNumbers } from './AnimatedNumber';
 
 export function StrategyMoneyBackGuarantee() {
   const { config } = useConfig();
@@ -40,7 +39,7 @@ export function StrategyMoneyBackGuarantee() {
                 background: `linear-gradient(135deg, var(--theme-primary) 0%, color-mix(in srgb, var(--theme-primary) 85%, white) 100%)`,
               }}
             >
-              <TextWithAnimatedNumbers text={ctaText} />
+              {ctaText}
             </button>
           </div>
           <div className="flex justify-center order-1 md:order-2">

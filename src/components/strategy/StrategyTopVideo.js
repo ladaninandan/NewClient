@@ -1,6 +1,5 @@
 import React from 'react';
 import { useConfig } from '../../context/ConfigContext';
-import { TextWithAnimatedNumbers } from './AnimatedNumber';
 
 function isYouTubeUrl(url) {
   if (!url || typeof url !== 'string') return false;
@@ -28,7 +27,7 @@ export function StrategyTopVideo() {
 
   return (
     <section
-      className="relative overflow-hidden py-12 sm:py-16 lg:py-20"
+      className="relative overflow-hidden py-10 sm:py-7 lg:py-7 "
       style={{ backgroundColor: 'var(--theme-background-dark)' }}
     >
       <div className="absolute inset-0 opacity-10 pointer-events-none">
@@ -86,8 +85,8 @@ export function StrategyTopVideo() {
             className="text-white font-bold text-base sm:text-lg py-3 sm:py-4 px-6 sm:px-8 rounded-xl shadow-xl btn-hover"
             style={{ backgroundColor: 'var(--theme-primary)' }}
           >
-<TextWithAnimatedNumbers text={ctaText} />
-            </button>
+            {ctaText}
+          </button>
           <p className="text-emerald-200/60 text-sm italic mt-4">{slotNote}</p>
         </div>
       </div>

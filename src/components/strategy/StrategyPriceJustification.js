@@ -1,6 +1,6 @@
 import React from 'react';
 import { useConfig } from '../../context/ConfigContext';
-import { AnimatedNumber, TextWithAnimatedNumbers } from './AnimatedNumber';
+import { AnimatedNumber } from './AnimatedNumber';
 
 export function StrategyPriceJustification() {
   const { config } = useConfig();
@@ -89,7 +89,7 @@ export function StrategyPriceJustification() {
               style={{ backgroundColor: primary }}
             >
               <span className="material-symbols-outlined text-xl">arrow_forward</span>
-              <TextWithAnimatedNumbers text={ctaText} />
+              {ctaText}
             </button>
           </div>
         </div>

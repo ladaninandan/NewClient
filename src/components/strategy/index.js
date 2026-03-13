@@ -7,6 +7,7 @@ export { StrategyProblem } from './StrategyProblem';
 export { StrategyWhyScale } from './StrategyWhyScale';
 export { StrategyFounderTrap } from './StrategyFounderTrap';
 export { StrategyCoach } from './StrategyCoach';
+export { StrategyCoachAchievements } from './StrategyCoachAchievements';
 export { StrategyLearn } from './StrategyLearn';
 export { StrategyModel } from './StrategyModel';
 export { StrategyWhyDifferent } from './StrategyWhyDifferent';

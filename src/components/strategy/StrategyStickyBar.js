@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useConfig } from '../../context/ConfigContext';
-import { AnimatedNumber, TextWithAnimatedNumbers } from './AnimatedNumber';
 
 function useCountdown(endIso) {
   const [text, setText] = useState('');
@@ -50,8 +49,8 @@ export function StrategyStickyBar() {
       <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 flex items-center justify-between gap-4">
         <div className="flex flex-col min-w-0">
           <div className="flex items-baseline gap-2">
-            <AnimatedNumber value={price} className="text-2xl font-black" style={{ color: 'var(--theme-primary)' }} />
-            <span className="text-sm text-slate-500 line-through"><AnimatedNumber value={originalPrice} /></span>
+            <span className="text-2xl font-black" style={{ color: 'var(--theme-primary)' }}>{price}</span>
+            <span className="text-sm text-slate-500 line-through">{originalPrice}</span>
           </div>
           <p className="text-xs sm:text-sm font-semibold text-slate-900 dark:text-white truncate text-black">
             {displayCountdown}
@@ -63,7 +62,7 @@ export function StrategyStickyBar() {
           className="flex-shrink-0 py-3 px-3 sm:px-5 rounded-xl font-bold text-sm sm:text-base text-white shadow-lg btn-hover text-center min-w-0 max-w-[55%] sm:max-w-none sm:whitespace-nowrap leading-tight"
           style={{ backgroundColor: 'var(--theme-primary)' }}
         >
-          <TextWithAnimatedNumbers text={buttonText} />
+          {buttonText}
         </button>
       </div>
     </div>
