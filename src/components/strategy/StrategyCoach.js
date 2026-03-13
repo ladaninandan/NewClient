@@ -1,11 +1,14 @@
 import React from 'react';
 import { useConfig } from '../../context/ConfigContext';
+import { useInView } from '../../hooks/useInView';
+import { AnimatedNumber } from './AnimatedNumber';
 
 export function StrategyCoach() {
   const { config } = useConfig();
   const c = config.strategyLayout?.coach || {};
   const stats = c.stats || [];
   const bioParagraphs = (c.bio || '').split('\n\n').filter(Boolean);
+  const [statsRef, statsInView] = useInView({ rootMargin: '0px 0px -40px 0px', threshold: 0.2 });
 
   return (
     <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6">
@@ -32,17 +35,20 @@ export function StrategyCoach() {
               <p key={i}>{p}</p>
             ))}
           </div>
-          <div className="grid grid-cols-2 gap-3 sm:gap-4 pt-4 border-t border-slate-100 dark:border-slate-700 mb-6 sm:mb-8">
+          <div ref={statsRef} className="grid grid-cols-2 gap-3 sm:gap-4 pt-4 border-t border-slate-100 dark:border-slate-700 mb-6 sm:mb-8">
             {stats.map((s, i) => (
               <div key={i}>
-                <p className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white text-black">{s.value}</p>
+                <p className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white text-black">
+                  <AnimatedNumber value={s.value} isInView={statsInView} />
+                </p>
                 <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">{s.label}</p>
               </div>
             ))}
           </div>
           <button
             type="button"
-            className="w-full bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-900 dark:text-white font-bold py-3 rounded-xl transition-colors text-sm sm:text-base"
+            className="w-full text-white py-3 px-4 rounded-xl font-bold text-sm shadow-lg text-center btn-hover"
+            style={{ backgroundColor: 'var(--theme-primary)' }}
           >
             {c.ctaText || 'Learn More About Rahul'}
           </button>

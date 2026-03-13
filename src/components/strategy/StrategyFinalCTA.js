@@ -1,5 +1,6 @@
 import React from 'react';
 import { useConfig } from '../../context/ConfigContext';
+import { AnimatedNumber, TextWithAnimatedNumbers } from './AnimatedNumber';
 
 export function StrategyFinalCTA() {
   const { config } = useConfig();
@@ -17,7 +18,7 @@ export function StrategyFinalCTA() {
         <div className="bg-white/10 backdrop-blur-md p-8 rounded-2xl border border-white/20 inline-block mb-10">
           <p className="text-white text-sm uppercase tracking-widest mb-2 font-bold">Limited Time Investment</p>
           <div className="flex items-center justify-center gap-4">
-            <span className="text-5xl font-black" style={{ color: 'var(--theme-accent)' }}>{c.price || '₹199'}</span>
+            <AnimatedNumber value={c.price || '₹199'} className="text-5xl font-black" style={{ color: 'var(--theme-accent)' }} />
             <span className="text-slate-400 line-through text-2xl">{c.originalPrice || '₹2,999'}</span>
           </div>
         </div>
@@ -27,7 +28,7 @@ export function StrategyFinalCTA() {
           className="w-full md:w-auto flex min-w-[320px] mx-auto cursor-pointer items-center justify-center rounded-xl h-16 px-10 text-white text-xl font-black shadow-2xl hover:scale-105 transition-transform"
           style={{ backgroundColor: 'var(--theme-accent)' }}
         >
-          {c.ctaText || 'Book My ₹199 Strategy Session'}
+          <TextWithAnimatedNumbers text={c.ctaText || 'Book My ₹199 Strategy Session'} />
         </button>
         <p className="text-slate-400 mt-6 text-sm flex items-center justify-center gap-2">
           <span className="material-symbols-outlined text-sm">lock</span>

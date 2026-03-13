@@ -121,7 +121,9 @@ export function StrategyLandingPage() {
       className="min-h-screen text-slate-900 dark:text-slate-100 pb-20"
       style={{ backgroundColor: theme.backgroundLight, ...themeVars }}
     >
-      <StrategyScrollingBanner />
+      <AnimateOnScroll>
+        <StrategyScrollingBanner />
+      </AnimateOnScroll>
       {visibleIds.map((id) => {
         const Comp = SECTION_COMPONENTS[id];
         return Comp ? <AnimateOnScroll key={id}><Comp /></AnimateOnScroll> : null;

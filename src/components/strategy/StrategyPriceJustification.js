@@ -1,5 +1,6 @@
 import React from 'react';
 import { useConfig } from '../../context/ConfigContext';
+import { AnimatedNumber, TextWithAnimatedNumbers } from './AnimatedNumber';
 
 export function StrategyPriceJustification() {
   const { config } = useConfig();
@@ -61,7 +62,7 @@ export function StrategyPriceJustification() {
                 }}
               >
                 <span className="text-white/90 text-sm sm:text-base font-bold tracking-widest uppercase">Only</span>
-                <span className="text-white text-4xl sm:text-5xl font-black mt-1">₹199</span>
+                <AnimatedNumber value="₹199" className="text-white text-4xl sm:text-5xl font-black mt-1" />
                 <span className="text-white/80 text-xs sm:text-sm mt-1 font-medium">Session</span>
               </div>
               <div className="absolute -bottom-3 -right-3 w-20 h-20 rounded-2xl bg-slate-200/50 dark:bg-slate-600/30 -z-10" />
@@ -84,11 +85,11 @@ export function StrategyPriceJustification() {
             <button
               type="button"
               onClick={scrollToForm}
-              className="price-justify-cta mt-7 sm:mt-8 w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl font-bold text-base sm:text-lg text-white shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+              className="price-justify-cta mt-7 sm:mt-8 w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl font-bold text-base sm:text-lg text-white shadow-lg btn-hover"
               style={{ backgroundColor: primary }}
             >
               <span className="material-symbols-outlined text-xl">arrow_forward</span>
-              {ctaText}
+              <TextWithAnimatedNumbers text={ctaText} />
             </button>
           </div>
         </div>

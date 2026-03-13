@@ -59,7 +59,7 @@ export function StrategyNav() {
           <button
             type="button"
             onClick={scrollToForm}
-            className="w-full text-white py-3 px-4 rounded-xl font-bold text-sm shadow-lg text-center"
+            className="w-full text-white py-3 px-4 rounded-xl font-bold text-sm shadow-lg text-center btn-hover"
             style={{ backgroundColor: 'var(--theme-primary)' }}
           >
             {c.ctaText || 'Book Now'}

@@ -65,8 +65,8 @@ code {
 
 .animate-on-scroll {
   opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+  transform: translateY(20px);
+  transition: opacity 0.55s ease-out, transform 0.55s ease-out;
 }
 
 .animate-on-scroll.in-view {
@@ -116,17 +116,41 @@ code {
   box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05);
 }
 
-/* Button hover */
+/* Button: soft halo glow like reference image (no hard shadow, orange luminescence) */
+@keyframes button-glow {
+  0% {
+    box-shadow: 0 0 20px 3px color-mix(in srgb, var(--theme-primary, #f77c18) 50%, transparent);
+  }
+  100% {
+    box-shadow: 0 0 32px 8px color-mix(in srgb, var(--theme-primary, #f77c18) 48%, transparent);
+  }
+}
+
 .btn-hover {
-  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+  transition: transform 0.25s ease, box-shadow 0.4s ease, filter 0.25s ease;
+  /* Soft diffused glow around entire button – halo in theme orange */
+  box-shadow: 0 0 24px 4px color-mix(in srgb, var(--theme-primary, #f77c18) 48%, transparent);
 }
 .btn-hover:hover {
   transform: scale(1.03);
-  box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.25);
-  filter: brightness(1.05);
+  filter: brightness(1.08);
+  animation: button-glow 0.35s ease forwards;
+  /* Brighter, wider halo */
+  box-shadow: 0 0 36px 10px color-mix(in srgb, var(--theme-primary, #f77c18) 48%, transparent);
 }
 .btn-hover:active {
   transform: scale(0.98);
+  animation: none;
+  box-shadow: 0 0 16px 2px color-mix(in srgb, var(--theme-primary, #f77c18) 40%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-hover:hover {
+    animation: none;
+  }
+  .btn-hover:hover {
+    box-shadow: 0 0 28px 6px color-mix(in srgb, var(--theme-primary, #f77c18) 45%, transparent);
+  }
 }
 
 /* FAQ details: smooth summary */

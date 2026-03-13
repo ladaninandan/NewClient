@@ -1,5 +1,6 @@
 import React from 'react';
 import { useConfig } from '../../context/ConfigContext';
+import { AnimatedNumber, TextWithAnimatedNumbers } from './AnimatedNumber';
 
 export function StrategyPricing() {
   const { config } = useConfig();
@@ -19,7 +20,7 @@ export function StrategyPricing() {
           <h2 className="text-2xl sm:text-3xl font-black mb-3 sm:mb-4 text-slate-900 dark:text-white text-black px-2">{p.title || 'Start Your Transformation'}</h2>
           <div className="flex flex-wrap items-center justify-center gap-2 mb-4 sm:mb-6">
             <span className="text-slate-400 line-through text-lg sm:text-2xl">{p.originalPrice || '₹4,999'}</span>
-            <span className="text-4xl sm:text-5xl lg:text-6xl font-black" style={{ color: 'var(--theme-primary)' }}>{p.price || '₹199'}</span>
+            <AnimatedNumber value={p.price || '₹199'} className="text-4xl sm:text-5xl lg:text-6xl font-black" style={{ color: 'var(--theme-primary)' }} />
           </div>
           <p className="text-slate-600 dark:text-slate-400 mb-6 sm:mb-8 text-sm sm:text-base">{p.note}</p>
           <button
@@ -28,7 +29,7 @@ export function StrategyPricing() {
             className="w-full text-white text-base sm:text-xl font-black py-4 sm:py-5 rounded-xl sm:rounded-2xl shadow-xl mb-4 btn-hover"
             style={{ backgroundColor: 'var(--theme-primary)' }}
           >
-            {p.ctaText || 'Reserve My ₹199 Strategy Session'}
+            <TextWithAnimatedNumbers text={p.ctaText || 'Reserve My ₹199 Strategy Session'} />
           </button>
           <p className="text-xs sm:text-sm text-slate-400 flex items-center justify-center gap-1">
             <span className="material-symbols-outlined text-sm">lock</span>
