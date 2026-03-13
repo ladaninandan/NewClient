@@ -7,6 +7,56 @@ const STORAGE_BUCKET = 'images';
 const MAX_VIDEO_UPLOAD_MB = 500;
 const RESUMABLE_THRESHOLD_MB = 50;
 
+const defaultSectionOrder = [
+  'topVideo', 'whyScale', 'problem', 'founderTrap', 'coach', 'learn', 'founderModel',
+  'whyDifferent', 'testimonials', 'feedback', 'forNotFor', 'pricing', 'priceJustification',
+  'form', 'moneyBackGuarantee', 'faq', 'footer',
+];
+
+const sectionOrderLabels = {
+  topVideo: 'Top Video',
+  whyScale: 'Why Scale',
+  problem: 'Problem (Are you facing these…)',
+  founderTrap: 'Founder Trap',
+  coach: 'Coach (Meet Rahul)',
+  learn: 'Learn',
+  founderModel: 'Founder Model',
+  whyDifferent: 'Why Different',
+  testimonials: 'Testimonials (Video cards)',
+  feedback: 'Feedback (Screenshots & cards)',
+  forNotFor: 'For / Not For',
+  pricing: 'Pricing',
+  priceJustification: 'Price Justification (Why ₹199)',
+  form: 'Registration Form',
+  moneyBackGuarantee: 'Money Back Guarantee',
+  faq: 'FAQ',
+  footer: 'Footer',
+};
+
+function SectionOrderEditor({ order, onChange, labels }) {
+  const list = Array.isArray(order) && order.length > 0 ? [...order] : [...defaultSectionOrder];
+  const move = (index, dir) => {
+    const next = [...list];
+    const j = index + dir;
+    if (j < 0 || j >= next.length) return;
+    [next[index], next[j]] = [next[j], next[index]];
+    onChange(next);
+  };
+  return (
+    <div className="rounded-3 border border-secondary border-opacity-25 p-3 bg-white section-order-list">
+      {list.map((id, i) => (
+        <div key={id} className="d-flex align-items-center gap-3 py-2 px-2 border-bottom border-secondary border-opacity-25">
+          <span className="text-muted fw-semibold" style={{ minWidth: '1.75rem', fontSize: '0.875rem' }}>{i + 1}</span>
+          <span className="flex-grow-1" style={{ fontSize: '0.9375rem' }}>{labels[id] ?? id}</span>
+          <button type="button" className="btn btn-outline-secondary btn-sm" onClick={() => move(i, -1)} disabled={i === 0} aria-label="Move up">↑</button>
+          <button type="button" className="btn btn-outline-secondary btn-sm" onClick={() => move(i, 1)} disabled={i === list.length - 1} aria-label="Move down">↓</button>
+        </div>
+      ))}
+      <style>{`.section-order-list > div:last-child { border-bottom: 0 !important; }`}</style>
+    </div>
+  );
+}
+
 function FeedbackSectionPreview({ feedback, theme }) {
   const f = feedback || {};
   const label = f.label ?? 'Feedbacks';
@@ -60,13 +110,18 @@ function FeedbackSectionPreview({ feedback, theme }) {
   );
 }
 
+const HIGHLIGHT_CLASS = 'admin-search-highlight';
+
 export function AdminSettings() {
   const { config, updateConfig } = useConfig();
   const [editConfig, setEditConfig] = useState(() => JSON.parse(JSON.stringify(config)));
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(null);
   const [message, setMessage] = useState({ type: '', text: '' });
+  const [searchTerm, setSearchTerm] = useState('');
   const prevConfigRef = useRef(config);
+  const settingsContentRef = useRef(null);
+  const highlightedRef = useRef(null);
 
   useEffect(() => {
     if (prevConfigRef.current !== config) {
@@ -74,6 +129,25 @@ export function AdminSettings() {
       setEditConfig(JSON.parse(JSON.stringify(config)));
     }
   }, [config]);
+
+  useEffect(() => {
+    if (highlightedRef.current) {
+      highlightedRef.current.classList.remove(HIGHLIGHT_CLASS);
+      highlightedRef.current = null;
+    }
+    const term = (searchTerm || '').trim().toLowerCase();
+    if (!term || !settingsContentRef.current) return;
+    const candidates = settingsContentRef.current.querySelectorAll('h6, .form-label, .card-header');
+    const first = Array.from(candidates).find((el) => el.textContent && el.textContent.toLowerCase().includes(term));
+    if (first) {
+      first.classList.add(HIGHLIGHT_CLASS);
+      highlightedRef.current = first;
+      first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    return () => {
+      if (highlightedRef.current) highlightedRef.current.classList.remove(HIGHLIGHT_CLASS);
+    };
+  }, [searchTerm]);
 
   const handleConfigChange = (path, value) => {
     setEditConfig((prev) => {
@@ -260,16 +334,53 @@ export function AdminSettings() {
 
   return (
     <>
-      <div className="d-flex flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3 mb-md-4">
-        <h1 className="h4 h5-md fw-bold mb-0">Site settings</h1>
+      <style>{`
+        .admin-settings-page { max-width: full; }
+        .admin-card { border-radius: 12px; border: 1px solid rgba(0,0,0,0.08); overflow: hidden; }
+        .admin-card .card-header {
+          font-size: 1rem;
+          font-weight: 600;
+          padding: 0.875rem 1.25rem;
+          background: linear-gradient(to bottom, #f8f9fa, #f1f3f5);
+          border-bottom: 1px solid rgba(0,0,0,0.06);
+          color: #212529;
+        }
+        .admin-card .card-body { padding: 1.25rem 1.5rem; }
+        .admin-settings-page .form-label { font-weight: 500; color: #374151; }
+        .admin-settings-page .form-label.small { font-size: 0.875rem; }
+        .admin-settings-page .form-control-sm { border-radius: 8px; min-height: 2rem; }
+        .admin-settings-page .form-control { border-radius: 8px; }
+        .admin-settings-page .form-control:focus { border-color: #0d6efd; box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15); }
+        .admin-search-wrap { background: #f8f9fa; border-radius: 10px; padding: 1rem 1.25rem; border: 1px solid #e9ecef; }
+        .admin-settings-page .row.g-3 > [class*="col-"] { margin-bottom: 0.25rem; }
+        .admin-settings-page .form-label { margin-bottom: 0.35rem; }
+      `}</style>
+      <div className="admin-settings-page">
+      <div className="d-flex flex-sm-row justify-content-between align-items-center gap-3 mb-4 pb-3 border-bottom">
+        <div>
+          <h1 className="h5 fw-bold mb-1 text-dark">Site settings</h1>
+          <p className="text-muted small mb-0">Edit landing page content and options. Click Save all to apply.</p>
+        </div>
         <button
           type="button"
-          className="btn btn-primary btn-sm"
+          className="btn btn-primary px-4"
           onClick={handleSaveConfig}
           disabled={saving || !isSupabaseConfigured()}
         >
-          {saving ? 'Saving...' : 'Save all'}
+          {saving ? 'Saving…' : 'Save all'}
         </button>
+      </div>
+      <div className="admin-search-wrap mb-4">
+        <label htmlFor="admin-settings-search" className="form-label small fw-semibold text-dark mb-2">Search settings</label>
+        <input
+          id="admin-settings-search"
+          type="search"
+          className="form-control"
+          placeholder="e.g. video, pricing, nav, FAQ…"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          autoComplete="off"
+        />
       </div>
       {(uploading || uploadProgress != null) && (
         <div className="alert alert-info d-flex align-items-center gap-3 mb-3">
@@ -298,10 +409,11 @@ export function AdminSettings() {
         </div>
       )}
 
-      <section className="card shadow-sm mb-4">
+      <div ref={settingsContentRef}>
+      <section className="card shadow-sm mb-4 admin-card">
         <div className="card-header fw-bold">Theme (colors)</div>
         <div className="card-body">
-          <p className="small text-muted mb-3">Control the landing page colors. Primary = main brand (nav button, hero background). Accent = CTAs and highlights.</p>
+          <p className="text-muted mb-4" style={{ fontSize: '0.9375rem' }}>Control the landing page colors. Primary = main brand; Accent = CTAs and highlights.</p>
           <div className="row g-3">
             {[
               { key: 'primary', label: 'Primary (nav, hero &amp; section backgrounds)' },
@@ -335,12 +447,52 @@ export function AdminSettings() {
         </div>
       </section>
 
-      <section className="card shadow-sm mb-4">
-        <div className="card-header fw-bold">Landing page content (RRTCS / Business Clarity)</div>
+      <section className="card shadow-sm mb-4 admin-card">
+        <div className="card-header fw-bold">Section order</div>
         <div className="card-body">
-          <p className="small text-muted mb-3">Edit all content for the landing page. Changes appear after you click &quot;Save all&quot;.</p>
+          <p className="text-muted mb-3" style={{ fontSize: '0.9375rem' }}>Scrolling banner is always first; sticky bar is always last. Use arrows to change order.</p>
+          <SectionOrderEditor
+            order={editConfig.strategyLayout?.sectionOrder || defaultSectionOrder}
+            onChange={(newOrder) => handleConfigChange('strategyLayout.sectionOrder', newOrder)}
+            labels={sectionOrderLabels}
+          />
+        </div>
+      </section>
+
+      <section className="card shadow-sm mb-4 admin-card">
+        <div className="card-header fw-bold">Section visibility (hide / show on page)</div>
+        <div className="card-body">
+          <p className="text-muted mb-3" style={{ fontSize: '0.9375rem' }}>Uncheck to hide a section from the landing page. Order still applies when shown.</p>
           <div className="row g-3">
-            <div className="col-12"><h6 className="border-bottom pb-1">Nav</h6></div>
+            {defaultSectionOrder.map((id) => {
+              const visible = editConfig.strategyLayout?.sectionVisibility?.[id] !== false;
+              return (
+                <div className="col-12 col-md-6 col-lg-4" key={id}>
+                  <label className="d-flex align-items-center gap-2 py-2 px-3 rounded-2 border border-opacity-25 cursor-pointer mb-0 border-secondary bg-white" style={{ fontSize: '0.9375rem' }}>
+                    <input
+                      type="checkbox"
+                      className="form-check-input mt-0"
+                      checked={visible}
+                      onChange={(e) => {
+                        const next = { ...(editConfig.strategyLayout?.sectionVisibility || {}) };
+                        if (e.target.checked) delete next[id];
+                        else next[id] = false;
+                        handleConfigChange('strategyLayout.sectionVisibility', next);
+                      }}
+                    />
+                    <span>{sectionOrderLabels[id] ?? id}</span>
+                  </label>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section className="card shadow-sm mb-4 admin-card">
+        <div className="card-header fw-bold">Nav</div>
+        <div className="card-body">
+          <div className="row g-3">
             <div className="col-12">
               <label className="form-label small">Nav logo (shows on navbar left)</label>
               <div className="d-flex flex-wrap gap-2 align-items-center">
@@ -357,7 +509,14 @@ export function AdminSettings() {
                 <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.nav?.[k] ?? ''} onChange={(e) => handleConfigChange(`strategyLayout.nav.${k}`, e.target.value)} />
               </div>
             ))}
-            <div className="col-12"><h6 className="border-bottom pb-1 mt-2">Top section (video) — first on page, centered</h6></div>
+          </div>
+        </div>
+      </section>
+
+      <section className="card shadow-sm mb-4 admin-card">
+        <div className="card-header fw-bold">Top Video</div>
+        <div className="card-body">
+          <div className="row g-3">
             <div className="col-12">
               <label className="form-label small">Badge (e.g. Limited Time Strategy Session)</label>
               <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.topVideo?.badge ?? ''} onChange={(e) => handleConfigChange('strategyLayout.topVideo.badge', e.target.value)} />
@@ -386,14 +545,28 @@ export function AdminSettings() {
               <label className="form-label small">Slot note below CTA (e.g. Limited slots available for this month)</label>
               <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.topVideo?.slotNote ?? ''} onChange={(e) => handleConfigChange('strategyLayout.topVideo.slotNote', e.target.value)} />
             </div>
-            <div className="col-12"><h6 className="border-bottom pb-1 mt-2">Hero</h6></div>
+          </div>
+        </div>
+      </section>
+
+      <section className="card shadow-sm mb-4 admin-card">
+        <div className="card-header fw-bold">Hero</div>
+        <div className="card-body">
+          <div className="row g-3">
             {['badge', 'headline', 'headlineHighlight', 'subtext', 'ctaText', 'slotNote'].map((k) => (
               <div className="col-12" key={k}>
                 <label className="form-label small">Hero {k}</label>
                 <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.hero?.[k] ?? ''} onChange={(e) => handleConfigChange(`strategyLayout.hero.${k}`, e.target.value)} />
               </div>
             ))}
-            <div className="col-12"><h6 className="border-bottom pb-1 mt-2">Offer card (hero right)</h6></div>
+          </div>
+        </div>
+      </section>
+
+      <section className="card shadow-sm mb-4 admin-card">
+        <div className="card-header fw-bold">Offer card</div>
+        <div className="card-body">
+          <div className="row g-3">
             <div className="col-12">
               <label className="form-label small">Price badge</label>
               <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.offerCard?.price ?? ''} onChange={(e) => handleConfigChange('strategyLayout.offerCard.price', e.target.value)} />
@@ -402,7 +575,14 @@ export function AdminSettings() {
               <label className="form-label small">Offer items (one per line: title | desc)</label>
               <textarea className="form-control form-control-sm" rows={4} value={(editConfig.strategyLayout?.offerCard?.items || []).map((i) => `${i.title}|${i.desc || ''}`).join('\n')} onChange={(e) => handleConfigChange('strategyLayout.offerCard.items', e.target.value.split('\n').filter(Boolean).map((line) => { const [title, ...rest] = line.split('|'); return { title: (title || '').trim(), desc: rest.join('|').trim() }; }))} />
             </div>
-            <div className="col-12"><h6 className="border-bottom pb-1 mt-2">Why scale (3 cards)</h6></div>
+          </div>
+        </div>
+      </section>
+
+      <section className="card shadow-sm mb-4 admin-card">
+        <div className="card-header fw-bold">Why Scale</div>
+        <div className="card-body">
+          <div className="row g-3">
             <div className="col-12">
               <label className="form-label small">Section title</label>
               <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.whyScale?.title ?? ''} onChange={(e) => handleConfigChange('strategyLayout.whyScale.title', e.target.value)} />
@@ -411,7 +591,14 @@ export function AdminSettings() {
               <label className="form-label small">Cards (one per line: icon|title|desc)</label>
               <textarea className="form-control form-control-sm" rows={4} value={(editConfig.strategyLayout?.whyScale?.cards || []).map((c) => `${c.icon}|${c.title}|${c.desc || ''}`).join('\n')} onChange={(e) => handleConfigChange('strategyLayout.whyScale.cards', e.target.value.split('\n').filter(Boolean).map((line) => { const p = line.split('|'); return { icon: p[0] || 'help', title: p[1] || '', desc: p[2] || '' }; }))} />
             </div>
-            <div className="col-12"><h6 className="border-bottom pb-1 mt-2">Founder trap</h6></div>
+          </div>
+        </div>
+      </section>
+
+      <section className="card shadow-sm mb-4 admin-card">
+        <div className="card-header fw-bold">Founder Trap</div>
+        <div className="card-body">
+          <div className="row g-3">
             <div className="col-12">
               <label className="form-label small">Founder trap image URL</label>
               <div className="d-flex flex-wrap gap-2 align-items-center">
@@ -431,7 +618,14 @@ export function AdminSettings() {
               <label className="form-label small">Warning items (one per line)</label>
               <textarea className="form-control form-control-sm" rows={2} value={(editConfig.strategyLayout?.founderTrap?.warningItems || []).join('\n')} onChange={(e) => handleConfigChange('strategyLayout.founderTrap.warningItems', e.target.value.split('\n').filter(Boolean))} />
             </div>
-            <div className="col-12"><h6 className="border-bottom pb-1 mt-2">Coach (Meet Rahul)</h6></div>
+          </div>
+        </div>
+      </section>
+
+      <section className="card shadow-sm mb-4 admin-card">
+        <div className="card-header fw-bold">Coach (Meet Rahul)</div>
+        <div className="card-body">
+          <div className="row g-3">
             <div className="col-12">
               <label className="form-label small">Coach image</label>
               <div className="d-flex flex-wrap gap-2 align-items-center">
@@ -453,7 +647,14 @@ export function AdminSettings() {
               <label className="form-label small">Coach stats (value | label one per line)</label>
               <textarea className="form-control form-control-sm" rows={2} value={(editConfig.strategyLayout?.coach?.stats || []).map((s) => `${s.value}|${s.label}`).join('\n')} onChange={(e) => handleConfigChange('strategyLayout.coach.stats', e.target.value.split('\n').filter(Boolean).map((line) => { const [value, label] = line.split('|'); return { value: (value || '').trim(), label: (label || '').trim() }; }))} />
             </div>
-            <div className="col-12"><h6 className="border-bottom pb-1 mt-2">What you will learn</h6></div>
+          </div>
+        </div>
+      </section>
+
+      <section className="card shadow-sm mb-4 admin-card">
+        <div className="card-header fw-bold">What you will learn</div>
+        <div className="card-body">
+          <div className="row g-3">
             <div className="col-12">
               <label className="form-label small">Title</label>
               <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.learn?.title ?? ''} onChange={(e) => handleConfigChange('strategyLayout.learn.title', e.target.value)} />
@@ -466,7 +667,14 @@ export function AdminSettings() {
               <label className="form-label small">Items (one per line: icon|text)</label>
               <textarea className="form-control form-control-sm" rows={6} value={(editConfig.strategyLayout?.learn?.items || []).map((i) => `${i.icon}|${i.text || ''}`).join('\n')} onChange={(e) => handleConfigChange('strategyLayout.learn.items', e.target.value.split('\n').filter(Boolean).map((line) => { const [icon, ...rest] = line.split('|'); return { icon: icon || 'check_circle', text: rest.join('|').trim() }; }))} />
             </div>
-            <div className="col-12"><h6 className="border-bottom pb-1 mt-2">Founder model</h6></div>
+          </div>
+        </div>
+      </section>
+
+      <section className="card shadow-sm mb-4 admin-card">
+        <div className="card-header fw-bold">Founder Model</div>
+        <div className="card-body">
+          <div className="row g-3">
             <div className="col-12">
               <label className="form-label small">Title</label>
               <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.founderModel?.title ?? ''} onChange={(e) => handleConfigChange('strategyLayout.founderModel.title', e.target.value)} />
@@ -479,7 +687,14 @@ export function AdminSettings() {
               <label className="form-label small">Steps (one per line: num|title|desc|highlight optional)</label>
               <textarea className="form-control form-control-sm" rows={4} value={(editConfig.strategyLayout?.founderModel?.steps || []).map((s) => `${s.num}|${s.title}|${s.desc}${s.highlight ? '|1' : ''}`).join('\n')} onChange={(e) => handleConfigChange('strategyLayout.founderModel.steps', e.target.value.split('\n').filter(Boolean).map((line) => { const p = line.split('|'); return { num: parseInt(p[0], 10) || 0, title: p[1] || '', desc: p[2] || '', highlight: p[3] === '1' }; }))} />
             </div>
-            <div className="col-12"><h6 className="border-bottom pb-1 mt-2">Why different</h6></div>
+          </div>
+        </div>
+      </section>
+
+      <section className="card shadow-sm mb-4 admin-card">
+        <div className="card-header fw-bold">Why Different</div>
+        <div className="card-body">
+          <div className="row g-3">
             <div className="col-12">
               <label className="form-label small">Title</label>
               <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.whyDifferent?.title ?? ''} onChange={(e) => handleConfigChange('strategyLayout.whyDifferent.title', e.target.value)} />
@@ -488,7 +703,14 @@ export function AdminSettings() {
               <label className="form-label small">Quote text</label>
               <textarea className="form-control form-control-sm" rows={3} value={editConfig.strategyLayout?.whyDifferent?.quote ?? ''} onChange={(e) => handleConfigChange('strategyLayout.whyDifferent.quote', e.target.value)} />
             </div>
-            <div className="col-12"><h6 className="border-bottom pb-1 mt-2 ">Testimonials — What Founders Say (4 video cards)</h6></div>
+          </div>
+        </div>
+      </section>
+
+      <section className="card shadow-sm mb-4 admin-card">
+        <div className="card-header fw-bold">Testimonials (What Founders Say)</div>
+        <div className="card-body">
+          <div className="row g-3">
             <div className="col-12 mb-2">
               <label className="form-label small">Section title</label>
               <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.testimonials?.title ?? ''} onChange={(e) => handleConfigChange('strategyLayout.testimonials.title', e.target.value)} placeholder="What Founders Say" />
@@ -529,7 +751,14 @@ export function AdminSettings() {
                 </div>
               );
             })}
-            <div className="col-12"><h6 className="border-bottom pb-1 mt-2">Feedback (Real Screenshots & Feedbacks — 2x2 cards with avatar on top)</h6></div>
+          </div>
+        </div>
+      </section>
+
+      <section className="card shadow-sm mb-4 admin-card">
+        <div className="card-header fw-bold">Feedback (Screenshots & cards)</div>
+        <div className="card-body">
+          <div className="row g-3">
             <div className="col-12 col-md-6">
               <label className="form-label small">Label above title (e.g. Feedbacks)</label>
               <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.feedback?.label ?? ''} onChange={(e) => handleConfigChange('strategyLayout.feedback.label', e.target.value)} placeholder="Feedbacks" />
@@ -593,27 +822,212 @@ export function AdminSettings() {
               );
             })}
             <div className="col-12 mt-3">
-              <h6 className="border-bottom pb-1 mb-2">Preview — how feedback section will look</h6>
+              <p className="small text-muted mb-2">Preview — how feedback section will look</p>
               <FeedbackSectionPreview feedback={editConfig.strategyLayout?.feedback} theme={editConfig.strategyLayout?.theme} />
             </div>
-            <div className="col-12"><h6 className="border-bottom pb-1 mt-2">For / Not for</h6></div>
+          </div>
+        </div>
+      </section>
+
+      <section className="card shadow-sm mb-4 admin-card">
+        <div className="card-header fw-bold">Problem Identification</div>
+        <div className="card-body">
+          <div className="row g-3">
+            <div className="col-12">
+              <label className="form-label small">Title</label>
+              <input
+                type="text"
+                className="form-control form-control-sm"
+                value={editConfig.strategyLayout?.problem?.title ?? ''}
+                onChange={(e) => handleConfigChange('strategyLayout.problem.title', e.target.value)}
+                placeholder="Are You Facing These Problems In Your Business?"
+              />
+            </div>
+            <div className="col-12">
+              <label className="form-label small">Problem bullets (one per line)</label>
+              <textarea
+                className="form-control form-control-sm"
+                rows={4}
+                value={(editConfig.strategyLayout?.problem?.items || []).join('\n')}
+                onChange={(e) =>
+                  handleConfigChange(
+                    'strategyLayout.problem.items',
+                    e.target.value.split('\n').map((v) => v.trim()).filter(Boolean),
+                  )
+                }
+                placeholder={`Business cannot run without you\nTeam lacks ownership\nProcesses are unclear\nRevenue leaks happening silently\nFounder stuck in daily operations\nNo clear systems for scaling`}
+              />
+            </div>
+            <div className="col-12 mb-2">
+              <label className="form-label small">Ending line</label>
+              <input
+                type="text"
+                className="form-control form-control-sm"
+                value={editConfig.strategyLayout?.problem?.endLine ?? ''}
+                onChange={(e) => handleConfigChange('strategyLayout.problem.endLine', e.target.value)}
+                placeholder="If this sounds familiar, you are not alone."
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="card shadow-sm mb-4 admin-card">
+        <div className="card-header fw-bold">For / Not for</div>
+        <div className="card-body">
+          <div className="row g-3">
             <div className="col-12">
               <label className="form-label small">For title</label>
               <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.forNotFor?.forTitle ?? ''} onChange={(e) => handleConfigChange('strategyLayout.forNotFor.forTitle', e.target.value)} />
             </div>
             <div className="col-12">
-              <label className="form-label small">For items (one per line)</label>
-              <textarea className="form-control form-control-sm" rows={3} value={(editConfig.strategyLayout?.forNotFor?.forItems || []).join('\n')} onChange={(e) => handleConfigChange('strategyLayout.forNotFor.forItems', e.target.value.split('\n').filter(Boolean))} />
+              <label className="form-label small">For items (one field per line — use &quot;Add new&quot; to add a line)</label>
+              {(editConfig.strategyLayout?.forNotFor?.forItems || []).map((item, idx) => (
+                <div key={idx} className="d-flex gap-2 align-items-center mb-2">
+                  <input
+                    type="text"
+                    className="form-control form-control-sm flex-grow-1"
+                    value={item ?? ''}
+                    onChange={(e) => {
+                      const items = [...(editConfig.strategyLayout?.forNotFor?.forItems || [])];
+                      items[idx] = e.target.value;
+                      handleConfigChange('strategyLayout.forNotFor.forItems', items);
+                    }}
+                    placeholder={`For item ${idx + 1}`}
+                  />
+                  <button
+                    type="button"
+                    className="btn btn-outline-danger btn-sm flex-shrink-0"
+                    onClick={() => {
+                      const items = (editConfig.strategyLayout?.forNotFor?.forItems || []).filter((_, i) => i !== idx);
+                      handleConfigChange('strategyLayout.forNotFor.forItems', items);
+                    }}
+                    aria-label="Remove"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                className="btn btn-outline-primary btn-sm mt-1"
+                onClick={() => handleConfigChange('strategyLayout.forNotFor.forItems', [...(editConfig.strategyLayout?.forNotFor?.forItems || []), ''])}
+              >
+                + Add new
+              </button>
+            </div>
+            <div className="col-12 col-md-6">
+              <label className="form-label small">For — background</label>
+              <div className="d-flex gap-2 align-items-center">
+                <input type="color" className="form-control form-control-color p-1" style={{ width: 40, height: 32 }} value={editConfig.strategyLayout?.forNotFor?.forBg ?? '#ecfdf5'} onChange={(e) => handleConfigChange('strategyLayout.forNotFor.forBg', e.target.value)} />
+                <input type="text" className="form-control form-control-sm" placeholder="#ecfdf5" value={editConfig.strategyLayout?.forNotFor?.forBg ?? ''} onChange={(e) => handleConfigChange('strategyLayout.forNotFor.forBg', e.target.value)} />
+              </div>
+            </div>
+            <div className="col-12 col-md-6">
+              <label className="form-label small">For — border</label>
+              <div className="d-flex gap-2 align-items-center">
+                <input type="color" className="form-control form-control-color p-1" style={{ width: 40, height: 32 }} value={editConfig.strategyLayout?.forNotFor?.forBorder ?? '#a7f3d0'} onChange={(e) => handleConfigChange('strategyLayout.forNotFor.forBorder', e.target.value)} />
+                <input type="text" className="form-control form-control-sm" placeholder="#a7f3d0" value={editConfig.strategyLayout?.forNotFor?.forBorder ?? ''} onChange={(e) => handleConfigChange('strategyLayout.forNotFor.forBorder', e.target.value)} />
+              </div>
+            </div>
+            <div className="col-12 col-md-6">
+              <label className="form-label small">For — title color</label>
+              <div className="d-flex gap-2 align-items-center">
+                <input type="color" className="form-control form-control-color p-1" style={{ width: 40, height: 32 }} value={editConfig.strategyLayout?.forNotFor?.forTitleColor ?? '#065f46'} onChange={(e) => handleConfigChange('strategyLayout.forNotFor.forTitleColor', e.target.value)} />
+                <input type="text" className="form-control form-control-sm" placeholder="#065f46" value={editConfig.strategyLayout?.forNotFor?.forTitleColor ?? ''} onChange={(e) => handleConfigChange('strategyLayout.forNotFor.forTitleColor', e.target.value)} />
+              </div>
+            </div>
+            <div className="col-12 col-md-6">
+              <label className="form-label small">For — text & icon color</label>
+              <div className="d-flex gap-2 align-items-center">
+                <input type="color" className="form-control form-control-color p-1" style={{ width: 40, height: 32 }} value={editConfig.strategyLayout?.forNotFor?.forTextColor ?? '#334155'} onChange={(e) => handleConfigChange('strategyLayout.forNotFor.forTextColor', e.target.value)} />
+                <input type="text" className="form-control form-control-sm" placeholder="Text" value={editConfig.strategyLayout?.forNotFor?.forTextColor ?? ''} onChange={(e) => handleConfigChange('strategyLayout.forNotFor.forTextColor', e.target.value)} />
+              </div>
+              <div className="d-flex gap-2 align-items-center mt-1">
+                <input type="color" className="form-control form-control-color p-1" style={{ width: 40, height: 32 }} value={editConfig.strategyLayout?.forNotFor?.forIconColor ?? '#059669'} onChange={(e) => handleConfigChange('strategyLayout.forNotFor.forIconColor', e.target.value)} />
+                <input type="text" className="form-control form-control-sm" placeholder="Icon #059669" value={editConfig.strategyLayout?.forNotFor?.forIconColor ?? ''} onChange={(e) => handleConfigChange('strategyLayout.forNotFor.forIconColor', e.target.value)} />
+              </div>
             </div>
             <div className="col-12">
               <label className="form-label small">Not for title</label>
               <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.forNotFor?.notForTitle ?? ''} onChange={(e) => handleConfigChange('strategyLayout.forNotFor.notForTitle', e.target.value)} />
             </div>
             <div className="col-12">
-              <label className="form-label small">Not for items (one per line)</label>
-              <textarea className="form-control form-control-sm" rows={3} value={(editConfig.strategyLayout?.forNotFor?.notForItems || []).join('\n')} onChange={(e) => handleConfigChange('strategyLayout.forNotFor.notForItems', e.target.value.split('\n').filter(Boolean))} />
+              <label className="form-label small">Not for items (one field per line — use &quot;Add new&quot; to add a line)</label>
+              {(editConfig.strategyLayout?.forNotFor?.notForItems || []).map((item, idx) => (
+                <div key={idx} className="d-flex gap-2 align-items-center mb-2">
+                  <input
+                    type="text"
+                    className="form-control form-control-sm flex-grow-1"
+                    value={item ?? ''}
+                    onChange={(e) => {
+                      const items = [...(editConfig.strategyLayout?.forNotFor?.notForItems || [])];
+                      items[idx] = e.target.value;
+                      handleConfigChange('strategyLayout.forNotFor.notForItems', items);
+                    }}
+                    placeholder={`Not for item ${idx + 1}`}
+                  />
+                  <button
+                    type="button"
+                    className="btn btn-outline-danger btn-sm flex-shrink-0"
+                    onClick={() => {
+                      const items = (editConfig.strategyLayout?.forNotFor?.notForItems || []).filter((_, i) => i !== idx);
+                      handleConfigChange('strategyLayout.forNotFor.notForItems', items);
+                    }}
+                    aria-label="Remove"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                className="btn btn-outline-primary btn-sm mt-1"
+                onClick={() => handleConfigChange('strategyLayout.forNotFor.notForItems', [...(editConfig.strategyLayout?.forNotFor?.notForItems || []), ''])}
+              >
+                + Add new
+              </button>
             </div>
-            <div className="col-12"><h6 className="border-bottom pb-1 mt-2">Money Back Guarantee (before FAQ)</h6></div>
+            <div className="col-12 col-md-6">
+              <label className="form-label small">Not for — background</label>
+              <div className="d-flex gap-2 align-items-center">
+                <input type="color" className="form-control form-control-color p-1" style={{ width: 40, height: 32 }} value={editConfig.strategyLayout?.forNotFor?.notForBg ?? '#fef2f2'} onChange={(e) => handleConfigChange('strategyLayout.forNotFor.notForBg', e.target.value)} />
+                <input type="text" className="form-control form-control-sm" placeholder="#fef2f2" value={editConfig.strategyLayout?.forNotFor?.notForBg ?? ''} onChange={(e) => handleConfigChange('strategyLayout.forNotFor.notForBg', e.target.value)} />
+              </div>
+            </div>
+            <div className="col-12 col-md-6">
+              <label className="form-label small">Not for — border</label>
+              <div className="d-flex gap-2 align-items-center">
+                <input type="color" className="form-control form-control-color p-1" style={{ width: 40, height: 32 }} value={editConfig.strategyLayout?.forNotFor?.notForBorder ?? '#fecaca'} onChange={(e) => handleConfigChange('strategyLayout.forNotFor.notForBorder', e.target.value)} />
+                <input type="text" className="form-control form-control-sm" placeholder="#fecaca" value={editConfig.strategyLayout?.forNotFor?.notForBorder ?? ''} onChange={(e) => handleConfigChange('strategyLayout.forNotFor.notForBorder', e.target.value)} />
+              </div>
+            </div>
+            <div className="col-12 col-md-6">
+              <label className="form-label small">Not for — title color</label>
+              <div className="d-flex gap-2 align-items-center">
+                <input type="color" className="form-control form-control-color p-1" style={{ width: 40, height: 32 }} value={editConfig.strategyLayout?.forNotFor?.notForTitleColor ?? '#991b1b'} onChange={(e) => handleConfigChange('strategyLayout.forNotFor.notForTitleColor', e.target.value)} />
+                <input type="text" className="form-control form-control-sm" placeholder="#991b1b" value={editConfig.strategyLayout?.forNotFor?.notForTitleColor ?? ''} onChange={(e) => handleConfigChange('strategyLayout.forNotFor.notForTitleColor', e.target.value)} />
+              </div>
+            </div>
+            <div className="col-12 col-md-6">
+              <label className="form-label small">Not for — text & icon color</label>
+              <div className="d-flex gap-2 align-items-center">
+                <input type="color" className="form-control form-control-color p-1" style={{ width: 40, height: 32 }} value={editConfig.strategyLayout?.forNotFor?.notForTextColor ?? '#334155'} onChange={(e) => handleConfigChange('strategyLayout.forNotFor.notForTextColor', e.target.value)} />
+                <input type="text" className="form-control form-control-sm" placeholder="Text" value={editConfig.strategyLayout?.forNotFor?.notForTextColor ?? ''} onChange={(e) => handleConfigChange('strategyLayout.forNotFor.notForTextColor', e.target.value)} />
+              </div>
+              <div className="d-flex gap-2 align-items-center mt-1">
+                <input type="color" className="form-control form-control-color p-1" style={{ width: 40, height: 32 }} value={editConfig.strategyLayout?.forNotFor?.notForIconColor ?? '#dc2626'} onChange={(e) => handleConfigChange('strategyLayout.forNotFor.notForIconColor', e.target.value)} />
+                <input type="text" className="form-control form-control-sm" placeholder="Icon #dc2626" value={editConfig.strategyLayout?.forNotFor?.notForIconColor ?? ''} onChange={(e) => handleConfigChange('strategyLayout.forNotFor.notForIconColor', e.target.value)} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="card shadow-sm mb-4 admin-card">
+        <div className="card-header fw-bold">Money Back Guarantee</div>
+        <div className="card-body">
+          <div className="row g-3">
             <div className="col-12">
               <label className="form-label small">Section title (e.g. Still Not Sure? We got your Back!)</label>
               <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.moneyBackGuarantee?.title ?? ''} onChange={(e) => handleConfigChange('strategyLayout.moneyBackGuarantee.title', e.target.value)} />
@@ -640,7 +1054,14 @@ export function AdminSettings() {
                 <img src={editConfig.strategyLayout.moneyBackGuarantee.image} alt="Badge preview" className="mt-2 rounded border" style={{ maxHeight: '120px', width: 'auto' }} />
               )}
             </div>
-            <div className="col-12"><h6 className="border-bottom pb-1 mt-2">FAQ</h6></div>
+          </div>
+        </div>
+      </section>
+
+      <section className="card shadow-sm mb-4 admin-card">
+        <div className="card-header fw-bold">FAQ</div>
+        <div className="card-body">
+          <div className="row g-3">
             <div className="col-12">
               <label className="form-label small">FAQ title</label>
               <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.faq?.title ?? ''} onChange={(e) => handleConfigChange('strategyLayout.faq.title', e.target.value)} />
@@ -649,7 +1070,34 @@ export function AdminSettings() {
               <label className="form-label small">FAQ items (Q and A: one block per pair, separate with ---)</label>
               <textarea className="form-control form-control-sm" rows={8} value={(editConfig.strategyLayout?.faq?.items || []).map((i) => `${i.q}\n---\n${i.a}`).join('\n\n')} onChange={(e) => handleConfigChange('strategyLayout.faq.items', e.target.value.split('\n\n').filter(Boolean).map((block) => { const [q, a] = block.split('\n---\n'); return { q: (q || '').trim(), a: (a || '').trim() }; }))} />
             </div>
-            <div className="col-12"><h6 className="border-bottom pb-1 mt-2">Pricing</h6></div>
+          </div>
+        </div>
+      </section>
+
+      <section className="card shadow-sm mb-4 admin-card">
+        <div className="card-header fw-bold">Price Justification (Why ₹199)</div>
+        <div className="card-body">
+          <div className="row g-3">
+            <div className="col-12">
+              <label className="form-label small">Title</label>
+              <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.priceJustification?.title ?? ''} onChange={(e) => handleConfigChange('strategyLayout.priceJustification.title', e.target.value)} placeholder="Why This Session Is Only ₹199" />
+            </div>
+            <div className="col-12">
+              <label className="form-label small">Explain (paragraphs — separate with blank line)</label>
+              <textarea className="form-control form-control-sm" rows={4} value={editConfig.strategyLayout?.priceJustification?.explain ?? ''} onChange={(e) => handleConfigChange('strategyLayout.priceJustification.explain', e.target.value)} placeholder={'Normally consulting sessions cost thousands.\n\nBut this session is offered at ₹199 so business owners can experience the process.'} />
+            </div>
+            <div className="col-12">
+              <label className="form-label small">CTA button text (scrolls to form on click)</label>
+              <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.priceJustification?.ctaText ?? ''} onChange={(e) => handleConfigChange('strategyLayout.priceJustification.ctaText', e.target.value)} placeholder="Reserve My ₹199 Strategy Session" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="card shadow-sm mb-4 admin-card">
+        <div className="card-header fw-bold">Pricing</div>
+        <div className="card-body">
+          <div className="row g-3">
             {['title', 'originalPrice', 'price', 'note', 'ctaText', 'ribbonText', 'secureText'].map((k) => (
               <div className="col-12" key={k}>
                 <label className="form-label small">Pricing {k}</label>
@@ -660,7 +1108,14 @@ export function AdminSettings() {
                 )}
               </div>
             ))}
-            <div className="col-12"><h6 className="border-bottom pb-1 mt-2">Sticky bottom bar (mobile + web)</h6></div>
+          </div>
+        </div>
+      </section>
+
+      <section className="card shadow-sm mb-4 admin-card">
+        <div className="card-header fw-bold">Sticky bottom bar</div>
+        <div className="card-body">
+          <div className="row g-3">
             <div className="col-12">
               <label className="form-label small">
                 <input type="checkbox" className="form-check-input me-2" checked={editConfig.strategyLayout?.stickyBar?.enabled !== false} onChange={(e) => handleConfigChange('strategyLayout.stickyBar.enabled', e.target.checked)} />
@@ -687,7 +1142,14 @@ export function AdminSettings() {
               <label className="form-label small">Countdown end (optional ISO date for live countdown, e.g. 2025-03-15T23:59:59)</label>
               <input type="text" className="form-control form-control-sm" placeholder="Leave empty to use label only" value={editConfig.strategyLayout?.stickyBar?.countdownEnd ?? ''} onChange={(e) => handleConfigChange('strategyLayout.stickyBar.countdownEnd', e.target.value)} />
             </div>
-            <div className="col-12"><h6 className="border-bottom pb-1 mt-2">Footer</h6></div>
+          </div>
+        </div>
+      </section>
+
+      <section className="card shadow-sm mb-4 admin-card">
+        <div className="card-header fw-bold">Footer</div>
+        <div className="card-body">
+          <div className="row g-3">
             <div className="col-12">
               <label className="form-label small">Headline</label>
               <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.footer?.headline ?? ''} onChange={(e) => handleConfigChange('strategyLayout.footer.headline', e.target.value)} />
@@ -707,6 +1169,15 @@ export function AdminSettings() {
           </div>
         </div>
       </section>
+      </div>
+
+      <style>{`
+        .${HIGHLIGHT_CLASS} {
+          background-color: rgba(255, 193, 7, 0.45) !important;
+          border-radius: 0.25rem;
+        }
+      `}</style>
+      </div>
     </>
   );
 }

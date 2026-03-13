@@ -9,6 +9,26 @@ export const defaultConfig = {
 
   // Strategy layout (Rahul Revne Business Clarity Session) — all editable in admin
   strategyLayout: {
+    sectionOrder: [
+      'topVideo',
+      'whyScale',
+      'problem',
+      'founderTrap',
+      'coach',
+      'learn',
+      'founderModel',
+      'whyDifferent',
+      'testimonials',
+      'feedback',
+      'forNotFor',
+      'pricing',
+      'priceJustification',
+      'form',
+      'moneyBackGuarantee',
+      'faq',
+      'footer',
+    ],
+    sectionVisibility: {},
     theme: {
       primary: '#f77c18',
       accent: '#f77c18',
@@ -41,6 +61,18 @@ export const defaultConfig = {
         { title: '90-Minute Strategic Roadmap', desc: 'Step-by-step plan to automate operations.' },
         { title: 'Scale-Up Blueprint', desc: 'Indian-market specific scaling strategies.' },
       ],
+    },
+    problem: {
+      title: 'Are You Facing These Problems In Your Business?',
+      items: [
+        'Business cannot run without you',
+        'Team lacks ownership',
+        'Processes are unclear',
+        'Revenue leaks happening silently',
+        'Founder stuck in daily operations',
+        'No clear systems for scaling',
+      ],
+      endLine: 'If this sounds familiar, you are not alone.',
     },
     whyScale: {
       title: 'Why Most Businesses In India Never Scale',
@@ -125,12 +157,27 @@ export const defaultConfig = {
         'Founders tired of micro-managing every small detail.',
         'Action-takers ready to change how they work.',
       ],
+      forBg: '#ecfdf5',
+      forBorder: '#a7f3d0',
+      forTitleColor: '#065f46',
+      forTextColor: '#334155',
+      forIconColor: '#059669',
       notForTitle: 'Who This Is Not For',
       notForItems: [
         'People looking for a "Get Rich Quick" scheme.',
         'Freelancers who don\'t want to build a team.',
         'Business owners unwilling to share their current numbers.',
       ],
+      notForBg: '#fef2f2',
+      notForBorder: '#fecaca',
+      notForTitleColor: '#991b1b',
+      notForTextColor: '#334155',
+      notForIconColor: '#dc2626',
+    },
+    priceJustification: {
+      title: 'Why This Session Is Only ₹199',
+      explain: 'Normally consulting sessions cost thousands.\n\nBut this session is offered at ₹199 so business owners can experience the process.',
+      ctaText: 'Reserve My ₹199 Strategy Session',
     },
     pricing: {
       title: 'Start Your Transformation',

@@ -3,6 +3,7 @@ import {
   AnimateOnScroll,
   StrategyScrollingBanner,
   StrategyTopVideo,
+  StrategyProblem,
   StrategyWhyScale,
   StrategyFounderTrap,
   StrategyCoach,
@@ -12,6 +13,7 @@ import {
   StrategyTestimonials,
   StrategyFeedback,
   StrategyForNotFor,
+  StrategyPriceJustification,
   StrategyPricing,
   StrategyForm,
   StrategyStickyBar,
@@ -31,6 +33,32 @@ const defaultTheme = {
 };
 
 const POPUP_DELAY_MS = 60 * 1000; // 1 minute
+
+const DEFAULT_SECTION_ORDER = [
+  'topVideo', 'whyScale', 'problem', 'founderTrap', 'coach', 'learn', 'founderModel',
+  'whyDifferent', 'testimonials', 'feedback', 'forNotFor', 'pricing', 'priceJustification',
+  'form', 'moneyBackGuarantee', 'faq', 'footer',
+];
+
+const SECTION_COMPONENTS = {
+  topVideo: StrategyTopVideo,
+  whyScale: StrategyWhyScale,
+  problem: StrategyProblem,
+  founderTrap: StrategyFounderTrap,
+  coach: StrategyCoach,
+  learn: StrategyLearn,
+  founderModel: StrategyModel,
+  whyDifferent: StrategyWhyDifferent,
+  testimonials: StrategyTestimonials,
+  feedback: StrategyFeedback,
+  forNotFor: StrategyForNotFor,
+  pricing: StrategyPricing,
+  priceJustification: StrategyPriceJustification,
+  form: StrategyForm,
+  moneyBackGuarantee: StrategyMoneyBackGuarantee,
+  faq: StrategyFAQ,
+  footer: StrategyFooter,
+};
 
 export function StrategyLandingPage() {
   const { config, loading } = useConfig();
@@ -79,28 +107,25 @@ export function StrategyLandingPage() {
     '--theme-card-dark': theme.cardDark,
   };
 
+  const order = config.strategyLayout?.sectionOrder;
+  const sectionOrder = Array.isArray(order) && order.length > 0
+    ? [...order].filter((id) => SECTION_COMPONENTS[id])
+    : DEFAULT_SECTION_ORDER;
+  const missing = DEFAULT_SECTION_ORDER.filter((id) => !sectionOrder.includes(id));
+  const orderedIds = [...sectionOrder, ...missing];
+  const visibility = config.strategyLayout?.sectionVisibility || {};
+  const visibleIds = orderedIds.filter((id) => visibility[id] !== false);
+
   return (
     <div
       className="min-h-screen text-slate-900 dark:text-slate-100 pb-20"
       style={{ backgroundColor: theme.backgroundLight, ...themeVars }}
     >
       <StrategyScrollingBanner />
-      <AnimateOnScroll><StrategyTopVideo /></AnimateOnScroll>
-      {/* <AnimateOnScroll><StrategyHero /></AnimateOnScroll> */}
-      <AnimateOnScroll><StrategyWhyScale /></AnimateOnScroll>
-      <AnimateOnScroll><StrategyFounderTrap /></AnimateOnScroll>
-      <AnimateOnScroll><StrategyCoach /></AnimateOnScroll>
-      <AnimateOnScroll><StrategyLearn /></AnimateOnScroll>
-      <AnimateOnScroll><StrategyModel /></AnimateOnScroll>
-      <AnimateOnScroll><StrategyWhyDifferent /></AnimateOnScroll>
-      <AnimateOnScroll><StrategyTestimonials /></AnimateOnScroll>
-      <AnimateOnScroll><StrategyFeedback /></AnimateOnScroll>
-      <AnimateOnScroll><StrategyForNotFor /></AnimateOnScroll>
-      <AnimateOnScroll><StrategyPricing /></AnimateOnScroll>
-      <AnimateOnScroll><StrategyForm /></AnimateOnScroll>
-      <AnimateOnScroll><StrategyMoneyBackGuarantee /></AnimateOnScroll>
-      <AnimateOnScroll><StrategyFAQ /></AnimateOnScroll>
-      <AnimateOnScroll><StrategyFooter /></AnimateOnScroll>
+      {visibleIds.map((id) => {
+        const Comp = SECTION_COMPONENTS[id];
+        return Comp ? <AnimateOnScroll key={id}><Comp /></AnimateOnScroll> : null;
+      })}
       <StrategyStickyBar />
 
       {showPopup && (
