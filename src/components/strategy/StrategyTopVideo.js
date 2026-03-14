@@ -27,7 +27,7 @@ export function StrategyTopVideo() {
 
   return (
     <section
-      className="relative overflow-hidden py-10 sm:py-7 lg:py-7 "
+      className="relative overflow-hidden py-4 sm:py-7 lg:py-7 "
       style={{ backgroundColor: 'var(--theme-background-dark)' }}
     >
       <div className="absolute inset-0 opacity-10 pointer-events-none">

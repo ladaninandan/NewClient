@@ -25,7 +25,7 @@ export function StrategyProblem() {
     'If this sounds familiar, you are not alone.';
 
   return (
-    <section className="relative pt-10 sm:pt-14 px-4 sm:px-6 overflow-hidden">
+    <section className="relative pt-4 sm:pt-14 px-4 sm:px-6 overflow-hidden">
       <style>{`
         @keyframes problemCardIn {
           from { opacity: 0; transform: translateY(24px) scale(0.97); }

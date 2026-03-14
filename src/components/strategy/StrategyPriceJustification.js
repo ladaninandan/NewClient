@@ -16,7 +16,7 @@ export function StrategyPriceJustification() {
   const paragraphs = (explain || '').split(/\n\n+/).filter(Boolean);
 
   return (
-    <section className="relative py-16 sm:py-20 px-4 sm:px-6 overflow-hidden">
+    <section className="relative py-3 sm:py-20 px-4 sm:px-6 overflow-hidden">
       <style>{`
         @keyframes priceJustifySlideLeft {
           from { opacity: 0; transform: translateX(-32px) scale(0.95); }
