@@ -217,6 +217,15 @@ code {
   }
 }
 
+/* Opt-out: no animation (e.g. popup close button) */
+.strategy-landing button.btn-no-animate {
+  animation: none !important;
+  outline: none !important;
+  outline-offset: 0;
+  text-shadow: none;
+  box-shadow: none;
+}
+
 /* FAQ details: smooth summary */
 details.animate-faq summary {
   transition: color 0.2s ease;

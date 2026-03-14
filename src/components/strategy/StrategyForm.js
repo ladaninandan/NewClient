@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 
 const SUBMISSIONS_TABLE = 'registrations';
@@ -34,6 +34,12 @@ export function StrategyForm({ embedded = false }) {
   const [modal, setModal] = useState(null); // { type: 'success' | 'error', title, message }
 
   const [fieldErrors, setFieldErrors] = useState({ email: '', phone: '' });
+  const [showTitleBlack, setShowTitleBlack] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setShowTitleBlack(true), 3000);
+    return () => clearTimeout(t);
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -136,11 +142,11 @@ export function StrategyForm({ embedded = false }) {
     <Wrapper {...wrapperProps}>
       <div className={embedded ? '' : 'max-w-md mx-auto'}>
         <div className="bg-white dark:bg-slate-800 rounded-2xl sm:rounded-3xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
-          <div className="p-6 sm:p-8 lg:p-10">
+          <div className="p-4 sm:p-5 lg:p-10">
             {!embedded && (
             <div className="text-center mb-6 sm:mb-8">
-              <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mb-2 text-black">
-                Reserve Your Spot
+              <h2 className={`text-xl sm:text-2xl font-black mb-2 transition-colors duration-500 text-black ${showTitleBlack ? 'text-black' : 'text-slate-900 dark:text-white'}`}>
+               Book your 1:1 business consultation
               </h2>
               <p className="text-slate-500 dark:text-slate-400 text-sm sm:text-base">
                 Fill in your details and we’ll confirm your session.

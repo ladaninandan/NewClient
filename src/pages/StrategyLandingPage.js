@@ -130,34 +130,52 @@ export function StrategyLandingPage() {
       })}
       <StrategyStickyBar />
 
-      {showPopup && (
-        <div
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
-          onClick={() => setShowPopup(false)}
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="popup-title"
+    {showPopup && (
+  <div
+    className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+    onClick={() => setShowPopup(false)}
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="popup-title"
+  >
+    <div
+      className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto border border-slate-200 dark:border-slate-700"
+      onClick={(e) => e.stopPropagation()}
+    >
+
+      {/* Header */}
+      <div className="flex items-center justify-between pt-4 px-4 border-slate-200 dark:border-slate-700">
+        
+        {/* Empty div for perfect center alignment */}
+        <div className="w-6"></div>
+
+        <h2
+          id="popup-title"
+          className="text-xl font-semibold text-black dark:text-white text-center flex-1"
         >
-          <div
-            className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto border border-slate-200 dark:border-slate-700"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="p-4 flex justify-end">
-              <button
-                type="button"
-                onClick={() => setShowPopup(false)}
-                className="p-1 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700"
-                aria-label="Close"
-              >
-                <span className="material-symbols-outlined text-2xl">close</span>
-              </button>
-            </div>
-            <div className="px-6 pb-6 pt-0">
-              <StrategyForm embedded />
-            </div>
-          </div>
-        </div>
-      )}
+          Book your 1:1 business consultation
+        </h2>
+
+        <button
+          type="button"
+          onClick={() => setShowPopup(false)}
+          className="btn-no-animate p-1 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700"
+          aria-label="Close"
+        >
+          <span className="material-symbols-outlined text-2xl">close</span>
+        </button>
+
+      </div>
+
+      {/* Body */}
+      <div className="px-6 pb-6 pt-4">
+        <StrategyForm embedded />
+      </div>
+
+    </div>
+  </div>
+)}
+
     </div>
   );
 }

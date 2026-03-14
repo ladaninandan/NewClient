@@ -41,7 +41,7 @@ export function StrategyTopVideo() {
       </div>
       <div className="max-w-5xl mx-auto px-4 sm:px-6 relative z-10 text-center">
         <span
-          className="inline-block px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase mb-5"
+          className="inline-block px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase mb-2"
           style={{ backgroundColor: 'color-mix(in srgb, var(--theme-primary) 25%, transparent)', color: 'var(--theme-primary)' }}
         >
           {badge}
