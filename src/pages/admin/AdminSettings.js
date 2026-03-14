@@ -1243,8 +1243,12 @@ export function AdminSettings() {
               <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.stickyBar?.buttonText ?? ''} onChange={(e) => handleConfigChange('strategyLayout.stickyBar.buttonText', e.target.value)} />
             </div>
             <div className="col-12">
-              <label className="form-label small">Countdown label (e.g. Offer Ends in 14:40 Mins)</label>
+              <label className="form-label small">Countdown label (e.g. Offer Ends in 14:00 Mins)</label>
               <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.stickyBar?.countdownLabel ?? ''} onChange={(e) => handleConfigChange('strategyLayout.stickyBar.countdownLabel', e.target.value)} />
+            </div>
+            <div className="col-12">
+              <label className="form-label small">Countdown duration (minutes, when end date is empty; resets at 00:00)</label>
+              <input type="number" min={1} className="form-control form-control-sm" placeholder="14" value={editConfig.strategyLayout?.stickyBar?.countdownDurationMinutes ?? ''} onChange={(e) => handleConfigChange('strategyLayout.stickyBar.countdownDurationMinutes', e.target.value ? parseInt(e.target.value, 10) : undefined)} />
             </div>
             <div className="col-12">
               <label className="form-label small">Countdown end (optional ISO date for live countdown, e.g. 2025-03-15T23:59:59)</label>

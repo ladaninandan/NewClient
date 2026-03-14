@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useConfig } from '../../context/ConfigContext';
 
+function formatMmSs(totalSeconds) {
+  const mins = Math.floor(totalSeconds / 60);
+  const secs = totalSeconds % 60;
+  return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+}
+
 function useCountdown(endIso) {
   const [text, setText] = useState('');
   useEffect(() => {
@@ -10,12 +16,13 @@ function useCountdown(endIso) {
       const now = Date.now();
       const diff = Math.max(0, end - now);
       if (diff <= 0) {
-        setText('Offer ended');
+        setText('Offer Ends in 00:00 Mins');
         return;
       }
-      const mins = Math.floor(diff / 60000);
-      const secs = Math.floor((diff % 60000) / 1000);
-      setText(`Offer Ends in ${mins}:${secs.toString().padStart(2, '0')} Mins`);
+      const totalSecs = Math.floor(diff / 1000);
+      const mins = Math.floor(totalSecs / 60);
+      const secs = totalSecs % 60;
+      setText(`Offer Ends in ${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')} Mins`);
     };
     tick();
     const id = setInterval(tick, 1000);
@@ -24,10 +31,29 @@ function useCountdown(endIso) {
   return text;
 }
 
+function useCountdownDuration(durationMinutes) {
+  const totalSeconds = durationMinutes * 60;
+  const [remaining, setRemaining] = useState(totalSeconds);
+  useEffect(() => {
+    if (!durationMinutes || durationMinutes < 1) return;
+    const id = setInterval(() => {
+      setRemaining((prev) => {
+        if (prev <= 0) return totalSeconds;
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(id);
+  }, [durationMinutes, totalSeconds]);
+  return `Offer Ends in ${formatMmSs(remaining)} Mins`;
+}
+
 export function StrategyStickyBar() {
   const { config } = useConfig();
   const bar = config.strategyLayout?.stickyBar || {};
-  const countdownFromEnd = useCountdown(bar.countdownEnd);
+  const hasEndDate = bar.countdownEnd && String(bar.countdownEnd).trim();
+  const durationMinutes = hasEndDate ? 0 : (bar.countdownDurationMinutes ?? 14);
+  const countdownFromEnd = useCountdown(hasEndDate ? bar.countdownEnd : '');
+  const countdownFromDuration = useCountdownDuration(durationMinutes);
   const scrollToForm = () => document.getElementById('register-form')?.scrollIntoView({ behavior: 'smooth' });
 
   if (bar.enabled === false) return null;
@@ -35,8 +61,8 @@ export function StrategyStickyBar() {
   const price = bar.price ?? '₹99';
   const originalPrice = bar.originalPrice ?? '₹999';
   const buttonText = bar.buttonText ?? 'BOOK YOUR SPOT NOW AT ₹99/-';
-  const countdownLabel = bar.countdownLabel ?? 'Offer Ends in 14:40 Mins';
-  const displayCountdown = countdownFromEnd || countdownLabel;
+  const countdownLabel = bar.countdownLabel ?? 'Offer Ends in 14:00 Mins';
+  const displayCountdown = hasEndDate ? countdownFromEnd : (durationMinutes > 0 ? countdownFromDuration : countdownLabel);
 
   return (
     <div

@@ -211,7 +211,8 @@ export const defaultConfig = {
       price: '₹99',
       originalPrice: '₹999',
       buttonText: 'BOOK YOUR SPOT NOW AT ₹99/-',
-      countdownLabel: 'Offer Ends in 14:40 Mins',
+      countdownLabel: 'Offer Ends in 14:00 Mins',
+      countdownDurationMinutes: 14, // when countdownEnd is empty, use this many minutes; countdown resets at 00:00
       countdownEnd: '', // optional: ISO date string for live countdown (e.g. "2025-03-15T23:59:59")
     },
     moneyBackGuarantee: {
