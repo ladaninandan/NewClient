@@ -153,6 +153,70 @@ code {
   }
 }
 
+/* Strategy page (user website) only: multiple attraction animations on ALL buttons */
+@keyframes btn-blink-unblink {
+  0%, 100% {
+    opacity: 1;
+    filter: brightness(1);
+    transform: scale(1) translateY(0);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15), 0 0 16px 2px color-mix(in srgb, var(--theme-primary, #f77c18) 35%, transparent);
+  }
+  50% {
+    opacity: 0.9;
+    filter: brightness(0.95);
+    transform: scale(1.02) translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22), 0 0 32px 10px color-mix(in srgb, var(--theme-primary, #f77c18) 55%, transparent);
+  }
+}
+
+/* Subtle ring glow pulse */
+@keyframes btn-ring-pulse {
+  0%, 100% {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+  }
+  50% {
+    outline: 2px solid color-mix(in srgb, var(--theme-primary, #f77c18) 60%, transparent);
+    outline-offset: 3px;
+  }
+}
+
+/* Soft text glow at peak for extra attraction */
+@keyframes btn-text-glow {
+  0%, 100% {
+    text-shadow: 0 0 0 transparent;
+  }
+  50% {
+    text-shadow: 0 0 14px color-mix(in srgb, var(--theme-primary, #f77c18) 50%, transparent), 0 0 24px color-mix(in srgb, var(--theme-primary, #f77c18) 25%, transparent);
+  }
+}
+
+.strategy-landing button {
+  animation:
+    btn-blink-unblink 1.8s cubic-bezier(0.34, 1.2, 0.64, 1) infinite,
+    btn-ring-pulse 1.8s ease-in-out infinite,
+    btn-text-glow 1.8s ease-in-out infinite;
+}
+
+.strategy-landing button:hover,
+.strategy-landing button:active {
+  animation: none;
+  opacity: 1;
+  filter: brightness(1);
+  transform: scale(1) translateY(0);
+  outline: none;
+  outline-offset: 0;
+  text-shadow: none;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2), 0 0 24px 6px color-mix(in srgb, var(--theme-primary, #f77c18) 48%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .strategy-landing button {
+    animation: none;
+    outline: none;
+  }
+}
+
 /* FAQ details: smooth summary */
 details.animate-faq summary {
   transition: color 0.2s ease;

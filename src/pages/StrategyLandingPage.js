@@ -120,7 +120,7 @@ export function StrategyLandingPage() {
 
   return (
     <div
-      className="min-h-screen text-slate-900 dark:text-slate-100 pb-20"
+      className="strategy-landing min-h-screen text-slate-900 dark:text-slate-100 pb-20"
       style={{ backgroundColor: theme.backgroundLight, ...themeVars }}
     >
       <StrategyScrollingBanner />

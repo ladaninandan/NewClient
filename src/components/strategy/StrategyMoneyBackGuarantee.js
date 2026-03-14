@@ -34,7 +34,7 @@ export function StrategyMoneyBackGuarantee() {
             <button
               type="button"
               onClick={scrollToForm}
-              className="w-full sm:w-auto block mx-auto md:mx-0 text-white font-bold text-sm sm:text-base py-4 px-6 sm:px-8 rounded-xl shadow-lg btn-hover uppercase tracking-wide"
+              className="w-full sm:w-auto block mx-auto md:mx-0 text-white font-bold text-sm sm:text-base py-4 px-6 sm:px-8 rounded-xl shadow-lg btn-hover btn-blink uppercase tracking-wide"
               style={{
                 background: `linear-gradient(135deg, var(--theme-primary) 0%, color-mix(in srgb, var(--theme-primary) 85%, white) 100%)`,
               }}

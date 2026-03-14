@@ -32,7 +32,7 @@ export function StrategyNav() {
           <button
             type="button"
             onClick={scrollToForm}
-            className="text-white px-5 py-2 rounded-lg font-bold text-sm shadow-lg btn-hover"
+            className="text-white px-5 py-2 rounded-lg font-bold text-sm shadow-lg btn-hover btn-blink"
             style={{ backgroundColor: 'var(--theme-primary)' }}
           >
             {c.ctaText || 'Book Now'}
@@ -59,7 +59,7 @@ export function StrategyNav() {
           <button
             type="button"
             onClick={scrollToForm}
-            className="w-full text-white py-3 px-4 rounded-xl font-bold text-sm shadow-lg text-center btn-hover"
+            className="w-full text-white py-3 px-4 rounded-xl font-bold text-sm shadow-lg text-center btn-hover btn-blink"
             style={{ backgroundColor: 'var(--theme-primary)' }}
           >
             {c.ctaText || 'Book Now'}

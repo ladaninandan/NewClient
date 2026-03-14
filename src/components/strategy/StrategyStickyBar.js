@@ -59,7 +59,7 @@ export function StrategyStickyBar() {
         <button
           type="button"
           onClick={scrollToForm}
-          className="flex-shrink-0 py-3 px-3 sm:px-5 rounded-xl font-bold text-sm sm:text-base text-white shadow-lg btn-hover text-center min-w-0 max-w-[55%] sm:max-w-none sm:whitespace-nowrap leading-tight"
+          className="flex-shrink-0 py-3 px-3 sm:px-5 rounded-xl font-bold text-sm sm:text-base text-white shadow-lg btn-hover btn-blink text-center min-w-0 max-w-[55%] sm:max-w-none sm:whitespace-nowrap leading-tight"
           style={{ backgroundColor: 'var(--theme-primary)' }}
         >
           {buttonText}

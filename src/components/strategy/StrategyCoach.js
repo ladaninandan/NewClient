@@ -47,7 +47,7 @@ export function StrategyCoach() {
           </div>
           <button
             type="button"
-            className="w-full text-white py-3 px-4 rounded-xl font-bold text-sm shadow-lg text-center btn-hover"
+            className="w-full text-white py-3 px-4 rounded-xl font-bold text-sm shadow-lg text-center btn-hover btn-blink"
             style={{ backgroundColor: 'var(--theme-primary)' }}
           >
             {c.ctaText || 'Learn More About Rahul'}

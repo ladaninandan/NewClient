@@ -276,7 +276,7 @@ export function StrategyForm({ embedded = false }) {
               <button
                 type="button"
                 onClick={closeModal}
-                className="w-full py-3 px-4 rounded-xl font-bold text-white btn-hover"
+                className="w-full py-3 px-4 rounded-xl font-bold text-white btn-hover btn-blink"
                 style={{ backgroundColor: 'var(--theme-primary)' }}
               >
                 OK
