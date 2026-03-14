@@ -51,7 +51,7 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
-/* Scroll-triggered animations */
+/* Scroll-triggered animations (small to big + fade up on scroll) */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -63,15 +63,26 @@ code {
   }
 }
 
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
 .animate-on-scroll {
   opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+  transform: scale(0.92) translateY(24px);
+  transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1), transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .animate-on-scroll.in-view {
   opacity: 1;
-  transform: translateY(0);
+  transform: scale(1) translateY(0);
 }
 
 /* Respect reduced-motion preferences */
@@ -90,10 +101,10 @@ code {
 .animate-on-scroll.stagger-4 { transition-delay: 0.4s; }
 .animate-on-scroll.stagger-5 { transition-delay: 0.5s; }
 
-/* Staggered children: when parent .animate-on-scroll gets .in-view, animate descendants */
+/* Staggered children: when parent .animate-on-scroll gets .in-view, animate descendants (small to big) */
 .animate-on-scroll.in-view .stagger-children-item {
   opacity: 0;
-  animation: fadeInUp 0.5s ease-out forwards;
+  animation: scaleIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 .animate-on-scroll.in-view .stagger-children-item:nth-child(1) { animation-delay: 0.05s; }
 .animate-on-scroll.in-view .stagger-children-item:nth-child(2) { animation-delay: 0.12s; }
