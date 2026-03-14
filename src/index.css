@@ -118,6 +118,39 @@ code {
 .animate-on-scroll.in-view .stagger-children-item:nth-child(10) { animation-delay: 0.68s; }
 .animate-on-scroll.in-view .stagger-children-item:nth-child(n+11) { animation-delay: 0.75s; }
 
+/* Strategy page: cards and text blocks animate on scroll (small to big) */
+.strategy-landing .scroll-reveal {
+  opacity: 0;
+  transform: scale(0.94) translateY(20px);
+  transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1), transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.strategy-landing .scroll-reveal.in-view {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+/* Text inside scroll-reveal blocks: transform-only (no opacity) so card + text both animate */
+.strategy-landing .scroll-reveal-text {
+  opacity: 1;
+  transform: translateY(14px) scale(0.98);
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.strategy-landing .scroll-reveal-text.in-view {
+  transform: translateY(0) scale(1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .strategy-landing .scroll-reveal,
+  .strategy-landing .scroll-reveal.in-view {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .strategy-landing .scroll-reveal-text,
+  .strategy-landing .scroll-reveal-text.in-view {
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
 /* Hover: card lift */
 .hover-lift {
   transition: transform 0.25s ease, box-shadow 0.25s ease;

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import {
   AnimateOnScroll,
+  ScrollRevealObserver,
   StrategyScrollingBanner,
   StrategyTopVideo,
   StrategyProblem,
@@ -22,6 +23,7 @@ import {
   StrategyFAQ,
   StrategyFooter,
 } from '../components/strategy';
+import { LoadingPage } from '../components/LoadingPage';
 import { useConfig } from '../context/ConfigContext';
 
 const defaultTheme = {
@@ -94,9 +96,10 @@ export function StrategyLandingPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: theme.backgroundLight }}>
-        <div className="text-slate-900 dark:text-white">Loading...</div>
-      </div>
+      <LoadingPage
+        backgroundColor={theme.backgroundLight}
+        primaryColor={theme.primary}
+      />
     );
   }
 
@@ -123,7 +126,8 @@ export function StrategyLandingPage() {
       className="strategy-landing min-h-screen text-slate-900 dark:text-slate-100 pb-20"
       style={{ backgroundColor: theme.backgroundLight, ...themeVars }}
     >
-      <StrategyScrollingBanner />
+      <ScrollRevealObserver dependency={visibleIds.join(',')} />
+      <AnimateOnScroll key="scrolling-banner"><StrategyScrollingBanner /></AnimateOnScroll>
       {visibleIds.map((id) => {
         const Comp = SECTION_COMPONENTS[id];
         return Comp ? <AnimateOnScroll key={id}><Comp /></AnimateOnScroll> : null;

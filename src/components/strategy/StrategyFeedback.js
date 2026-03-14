@@ -40,7 +40,7 @@ export function StrategyFeedback() {
             {label}
           </p>
         )}
-        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white text-center mb-8 sm:mb-10 text-black">
+        <h2 className="scroll-reveal text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white text-center mb-8 sm:mb-10 text-black">
           {title}
         </h2>
         <div className="relative -mx-4 sm:mx-0">
@@ -69,7 +69,7 @@ export function StrategyFeedback() {
             {items.map((it, i) => (
               <div
                 key={i}
-                className="flex-shrink-0 w-[85vw] sm:w-auto sm:min-w-0 snap-center bg-white dark:bg-slate-800 rounded-xl sm:rounded-2xl p-6 pt-14 shadow-md hover:shadow-lg transition-all duration-200 flex flex-col border-0"
+                className="scroll-reveal flex-shrink-0 w-[85vw] sm:w-auto sm:min-w-0 snap-center bg-white dark:bg-slate-800 rounded-xl sm:rounded-2xl p-6 pt-14 shadow-md hover:shadow-lg transition-all duration-200 flex flex-col border-0"
               >
                 <div className="flex justify-center -mt-16 mb-4 pt-5">
                   <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-white dark:border-slate-800 shadow-md flex-shrink-0 bg-slate-200 dark:bg-slate-600">

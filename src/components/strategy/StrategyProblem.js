@@ -57,7 +57,7 @@ export function StrategyProblem() {
 
       <div className="relative max-w-5xl mx-auto">
         {/* Title block */}
-        <div className="text-center mb-12 sm:mb-16">
+        <div className="scroll-reveal text-center mb-12 sm:mb-16">
           <p
             className="inline-block text-xs sm:text-sm font-semibold tracking-widest uppercase mb-3 opacity-80"
             style={{ color: primary }}
@@ -74,7 +74,7 @@ export function StrategyProblem() {
           {items.map((text, i) => (
             <div
               key={i}
-              className="problem-card group relative rounded-2xl sm:rounded-[1.25rem] p-4 sm:p-5 bg-white dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-600/60 shadow-sm hover:shadow-lg hover:border-slate-300 dark:hover:border-slate-500/80 transition-all duration-300 ease-out hover:-translate-y-0.5 backdrop-blur-sm"
+              className="scroll-reveal problem-card group relative rounded-2xl sm:rounded-[1.25rem] p-4 sm:p-5 bg-white dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-600/60 shadow-sm hover:shadow-lg hover:border-slate-300 dark:hover:border-slate-500/80 transition-all duration-300 ease-out hover:-translate-y-0.5 backdrop-blur-sm"
             >
               <div
                 className="absolute top-3 left-3 sm:top-4 sm:left-4 w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center text-white font-bold text-sm opacity-90 group-hover:scale-110 transition-transform duration-300"

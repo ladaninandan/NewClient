@@ -9,7 +9,7 @@ export function StrategyModel() {
   return (
     <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-10 sm:mb-16">
+        <div className="scroll-reveal text-center mb-10 sm:mb-16">
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black mb-3 sm:mb-4 text-slate-900 dark:text-white text-black px-2">
             {m.title || 'The Founder Freedom Model'}
           </h2>
@@ -20,7 +20,7 @@ export function StrategyModel() {
           {steps.map((step) => (
             <div
               key={step.num}
-              className="bg-white dark:bg-slate-800 p-4 sm:p-6 rounded-2xl border border-slate-100 dark:border-slate-700 text-center relative hover-lift stagger-children-item"
+              className="scroll-reveal bg-white dark:bg-slate-800 p-4 sm:p-6 rounded-2xl border border-slate-100 dark:border-slate-700 text-center relative hover-lift stagger-children-item"
             >
               <div
                 className="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 font-bold text-white shadow-lg text-sm sm:text-base"

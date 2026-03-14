@@ -1,4 +1,5 @@
 export { AnimateOnScroll } from './AnimateOnScroll';
+export { ScrollRevealObserver } from './ScrollRevealObserver';
 export { StrategyNav } from './StrategyNav';
 export { StrategyScrollingBanner } from './StrategyScrollingBanner';
 export { StrategyTopVideo } from './StrategyTopVideo';

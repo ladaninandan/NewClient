@@ -8,7 +8,7 @@ export function StrategyWhyScale() {
 
   return (
     <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 max-w-7xl mx-auto">
-      <div className="text-center mb-10 sm:mb-16">
+      <div className="scroll-reveal text-center mb-10 sm:mb-16">
         <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black mb-4 text-slate-900 dark:text-white text-black px-2">
           {s.title || 'Why Most Businesses In India Never Scale'}
         </h2>
@@ -25,7 +25,7 @@ export function StrategyWhyScale() {
         ]).map((card, i) => (
           <div
             key={i}
-            className="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md transition-shadow"
+            className="scroll-reveal bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md transition-shadow"
           >
             <span
               className="material-symbols-outlined text-3xl sm:text-4xl mb-3 sm:mb-4 block"

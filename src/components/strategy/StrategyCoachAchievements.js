@@ -53,7 +53,7 @@ export function StrategyCoachAchievements() {
       `}</style>
       <div ref={ref} className="max-w-6xl mx-auto">
         {heading && (
-          <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white text-center mb-8 sm:mb-10">
+          <h2 className="scroll-reveal text-2xl sm:text-3xl font-black text-slate-900 dark:text-white text-center mb-8 sm:mb-10">
             {heading}
           </h2>
         )}
@@ -66,7 +66,7 @@ export function StrategyCoachAchievements() {
           return (
             <div
               key={i}
-              className={`coach-achieve-card group rounded-2xl sm:rounded-3xl p-5 sm:p-6 lg:p-7 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col text-center sm:text-left items-center sm:items-start ${!cardBg ? 'bg-white dark:bg-slate-800' : ''}`}
+              className={`scroll-reveal coach-achieve-card group rounded-2xl sm:rounded-3xl p-5 sm:p-6 lg:p-7 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col text-center sm:text-left items-center sm:items-start ${!cardBg ? 'bg-white dark:bg-slate-800' : ''}`}
               style={cardStyle}
             >
               <div

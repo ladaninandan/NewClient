@@ -42,7 +42,7 @@ export function StrategyForNotFor() {
     <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 max-w-7xl mx-auto">
       <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
         <div
-          className="p-5 sm:p-6 lg:p-8 rounded-2xl sm:rounded-3xl border min-w-0"
+          className="scroll-reveal p-5 sm:p-6 lg:p-8 rounded-2xl sm:rounded-3xl border min-w-0"
           style={{ ...forStyle, borderWidth: 1, borderStyle: 'solid' }}
         >
           <h3 className="text-xl sm:text-2xl font-black mb-4 sm:mb-6 flex items-center gap-2" style={{ color: forTitleColor }}>
@@ -59,7 +59,7 @@ export function StrategyForNotFor() {
           </ul>
         </div>
         <div
-          className="p-5 sm:p-6 lg:p-8 rounded-2xl sm:rounded-3xl border min-w-0"
+          className="scroll-reveal p-5 sm:p-6 lg:p-8 rounded-2xl sm:rounded-3xl border min-w-0"
           style={{ ...notForStyle, borderWidth: 1, borderStyle: 'solid' }}
         >
           <h3 className="text-xl sm:text-2xl font-black mb-4 sm:mb-6 flex items-center gap-2" style={{ color: notForTitleColor }}>

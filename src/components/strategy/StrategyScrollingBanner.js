@@ -18,7 +18,7 @@ export function StrategyScrollingBanner() {
 
   return (
     <div
-      className="relative overflow-hidden py-2.5 sm:py-3 border-b border-slate-200 dark:border-slate-700"
+      className="scroll-reveal relative overflow-hidden py-2.5 sm:py-3 border-b border-slate-200 dark:border-slate-700"
       style={{ backgroundColor: 'var(--theme-background-light)' }}
     >
       <div

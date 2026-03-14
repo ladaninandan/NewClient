@@ -41,16 +41,16 @@ export function StrategyTopVideo() {
       </div>
       <div className="max-w-5xl mx-auto px-4 sm:px-6 relative z-10 text-center">
         <span
-          className="inline-block px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase mb-2"
+          className="scroll-reveal inline-block px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase mb-2"
           style={{ backgroundColor: 'color-mix(in srgb, var(--theme-primary) 25%, transparent)', color: 'var(--theme-primary)' }}
         >
           {badge}
         </span>
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-black text-white leading-tight mb-8 sm:mb-10 px-2">
+        <h1 className="scroll-reveal text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-black text-white leading-tight mb-8 sm:mb-10 px-2">
           {headline}
         </h1>
         {videoUrl && (
-          <div className="rounded-2xl overflow-hidden shadow-2xl mx-auto bg-black mb-8 sm:mb-10" style={{ maxWidth: '900px' }}>
+          <div className="scroll-reveal rounded-2xl overflow-hidden shadow-2xl mx-auto bg-black mb-8 sm:mb-10" style={{ maxWidth: '900px' }}>
             {isYouTubeUrl(videoUrl) ? (
               <div className="relative aspect-video">
                 <iframe
@@ -75,7 +75,7 @@ export function StrategyTopVideo() {
             )}
           </div>
         )}
-        <div className="max-w-2xl mx-auto">
+        <div className="scroll-reveal max-w-2xl mx-auto">
           <p className="text-emerald-100 text-base sm:text-lg lg:text-xl font-medium opacity-90 mb-6">
             {subtext}
           </p>

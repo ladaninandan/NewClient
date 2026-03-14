@@ -10,7 +10,7 @@ export function StrategyFooter() {
   return (
     <footer className="py-12 sm:py-16 text-white text-center" style={{ backgroundColor: 'var(--theme-background-dark)' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black mb-6 sm:mb-8 px-2">{f.headline || 'Ready to exit the grind?'}</h2>
+        <h2 className="scroll-reveal text-2xl sm:text-3xl lg:text-4xl font-black mb-6 sm:mb-8 px-2">{f.headline || 'Ready to exit the grind?'}</h2>
         <button
           type="button"
           onClick={scrollToForm}

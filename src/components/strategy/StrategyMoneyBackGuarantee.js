@@ -15,7 +15,7 @@ export function StrategyMoneyBackGuarantee() {
   return (
     <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 bg-white">
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-slate-100 text-center mb-2 text-black pb-5" >
+        <h2 className="scroll-reveal text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-slate-100 text-center mb-2 text-black pb-5" >
           {title}
         </h2>
         <div
@@ -24,7 +24,7 @@ export function StrategyMoneyBackGuarantee() {
         />
         <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-center">
          
-          <div className="order-2 md:order-1 text-center md:text-left">
+          <div className="scroll-reveal order-2 md:order-1 text-center md:text-left">
             <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-slate-100 mb-4 text-black">
               {subheading}
             </h3>
@@ -42,7 +42,7 @@ export function StrategyMoneyBackGuarantee() {
               {ctaText}
             </button>
           </div>
-          <div className="flex justify-center order-1 md:order-2">
+          <div className="scroll-reveal flex justify-center order-1 md:order-2">
             {imageUrl ? (
               <img
                 src={imageUrl}

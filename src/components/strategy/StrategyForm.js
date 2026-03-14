@@ -141,7 +141,7 @@ export function StrategyForm({ embedded = false }) {
   return (
     <Wrapper {...wrapperProps}>
       <div className={embedded ? '' : 'max-w-md mx-auto'}>
-        <div className="bg-white dark:bg-slate-800 rounded-2xl sm:rounded-3xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+        <div className={`${!embedded ? 'scroll-reveal ' : ''}bg-white dark:bg-slate-800 rounded-2xl sm:rounded-3xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden`}>
           <div className="p-4 sm:p-5 lg:p-10">
             {!embedded && ( 
             <div className="text-center mb-6 sm:mb-8">

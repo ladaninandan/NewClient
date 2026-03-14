@@ -53,7 +53,7 @@ export function StrategyPriceJustification() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
           {/* Left: price visual */}
           <div className="lg:col-span-5 order-2 lg:order-1 flex justify-center lg:justify-end">
-            <div className="relative price-justify-card">
+            <div className="scroll-reveal relative price-justify-card">
               <div
                 className="price-justify-card-inner w-44 h-44 sm:w-52 sm:h-52 rounded-3xl flex flex-col items-center justify-center shadow-xl border-4 border-white dark:border-slate-700"
                 style={{
@@ -70,7 +70,7 @@ export function StrategyPriceJustification() {
           </div>
 
           {/* Right: copy + CTA */}
-          <div className="lg:col-span-7 order-1 lg:order-2">
+          <div className="scroll-reveal lg:col-span-7 order-1 lg:order-2">
             <p className="price-justify-label text-xs sm:text-sm font-semibold tracking-widest uppercase mb-2" style={{ color: primary }}>
               Value without the barrier
             </p>

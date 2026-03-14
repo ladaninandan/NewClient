@@ -10,7 +10,7 @@ export function StrategyPricing() {
   return (
     <section className="py-12 sm:py-16 lg:py-20 dark:bg-slate-900 px-4 sm:px-6" style={{ backgroundColor: 'var(--theme-background-light)' }}>
       <div className="max-w-3xl mx-auto text-center">
-        <div className="bg-white dark:bg-slate-800 p-5 sm:p-8 lg:p-12 rounded-2xl sm:rounded-[2.5rem] shadow-2xl border-2 sm:border-4 relative overflow-hidden border-slate-200 dark:border-slate-700 hover-lift" style={{ borderColor: 'color-mix(in srgb, var(--theme-primary) 20%, transparent)' }}>
+        <div className="scroll-reveal bg-white dark:bg-slate-800 p-5 sm:p-8 lg:p-12 rounded-2xl sm:rounded-[2.5rem] shadow-2xl border-2 sm:border-4 relative overflow-hidden border-slate-200 dark:border-slate-700 hover-lift" style={{ borderColor: 'color-mix(in srgb, var(--theme-primary) 20%, transparent)' }}>
           <div
             className="absolute top-0 right-0 text-white py-1.5 px-6 sm:py-2 sm:px-10 rotate-45 translate-x-8 sm:translate-x-10 translate-y-4 sm:translate-y-6 font-bold text-xs sm:text-sm"
             style={{ backgroundColor: 'var(--theme-primary)' }}

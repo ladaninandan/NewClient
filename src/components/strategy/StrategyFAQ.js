@@ -8,7 +8,7 @@ export function StrategyFAQ() {
 
   return (
     <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 max-w-4xl mx-auto">
-      <h2 className="text-center text-2xl sm:text-3xl font-black mb-8 sm:mb-12 text-slate-900 dark:text-white text-black">
+      <h2 className="scroll-reveal text-center text-2xl sm:text-3xl font-black mb-8 sm:mb-12 text-slate-900 dark:text-white text-black">
         {faq.title || 'Frequently Asked Questions'}
       </h2>
 
@@ -16,7 +16,7 @@ export function StrategyFAQ() {
         {items.map((item, i) => (
           <details
             key={i}
-            className="group bg-white dark:bg-slate-800 p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-slate-100 dark:border-slate-700"
+            className="scroll-reveal group bg-white dark:bg-slate-800 p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-slate-100 dark:border-slate-700"
             open={i === 0}
           >
             <summary className="flex justify-between items-center font-bold cursor-pointer list-none text-base sm:text-lg text-slate-900 dark:text-white">
