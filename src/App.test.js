@@ -1,8 +1,13 @@
+import React from 'react';
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
+jest.mock('./context/ConfigContext', () => ({
+  useConfig: () => ({ config: {}, loading: false, error: null }),
+  ConfigProvider: ({ children }) => children,
+}));
+
+test('renders app with router', () => {
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+  expect(screen.getByTestId('router')).toBeInTheDocument();
 });
