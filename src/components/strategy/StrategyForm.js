@@ -143,7 +143,7 @@ export function StrategyForm({ embedded = false }) {
       <div className={embedded ? '' : 'max-w-md mx-auto'}>
         <div className="bg-white dark:bg-slate-800 rounded-2xl sm:rounded-3xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
           <div className="p-4 sm:p-5 lg:p-10">
-            {!embedded && (
+            {!embedded && ( 
             <div className="text-center mb-6 sm:mb-8">
               <h2 className={`text-xl sm:text-2xl font-black mb-2 transition-colors duration-500 text-black ${showTitleBlack ? 'text-black' : 'text-slate-900 dark:text-white'}`}>
                Book your 1:1 business consultation
@@ -241,7 +241,7 @@ export function StrategyForm({ embedded = false }) {
               </button>
             </form>
 
-            <p className="mt-5 text-center text-xs text-slate-400 dark:text-slate-500">
+            <p className="mt-3 text-center text-xs text-slate-400 dark:text-slate-500">
               Your information is secure and will not be shared.
             </p>
           </div>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { setAdminAuthenticated } from '../../pages/admin/AdminLogin';
 
 const navItems = [
   { path: '/admin', label: 'Dashboard', icon: '📊' },
@@ -18,6 +19,13 @@ export function AdminLayout() {
   const handleNav = (path) => {
     navigate(path);
     setSidebarOpen(false);
+  };
+
+  const handleLogout = () => {
+    setAdminAuthenticated(false);
+    setSidebarOpen(false);
+    window.dispatchEvent(new CustomEvent('adminLoggedOut'));
+    navigate('/admin', { replace: true });
   };
 
   const SidebarContent = () => (
@@ -53,6 +61,17 @@ export function AdminLayout() {
             <span className="small">{item.label}</span>
           </button>
         ))}
+        <div className="mt-3 pt-3 border-top border-secondary">
+          <button
+            type="button"
+            className="btn w-100 text-start d-flex align-items-center gap-2 py-2 px-3 rounded text-white border-0 bg-transparent"
+            style={{ color: 'rgba(255,255,255,0.85)' }}
+            onClick={handleLogout}
+          >
+            <span>🚪</span>
+            <span className="small">Logout</span>
+          </button>
+        </div>
       </nav>
     </>
   );

@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ConfigProvider } from './context/ConfigContext';
 import { LandingPage } from './pages/LandingPage';
+import { AdminAuthGuard } from './components/admin/AdminAuthGuard';
 import { AdminLayout } from './components/admin/AdminLayout';
 import { AdminDashboard } from './pages/admin/AdminDashboard';
 import { AdminSubmissions } from './pages/admin/AdminSubmissions';
@@ -15,10 +16,12 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<LandingPage />} />
-          <Route path="/admin" element={<AdminLayout />}>
-            <Route index element={<AdminDashboard />} />
-            <Route path="submissions" element={<AdminSubmissions />} />
-            <Route path="settings" element={<AdminSettings />} />
+          <Route path="/admin" element={<AdminAuthGuard />}>
+            <Route element={<AdminLayout />}>
+              <Route index element={<AdminDashboard />} />
+              <Route path="submissions" element={<AdminSubmissions />} />
+              <Route path="settings" element={<AdminSettings />} />
+            </Route>
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
