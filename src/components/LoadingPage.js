@@ -14,11 +14,12 @@ function isLightBg(hex) {
 
 /**
  * Full-screen loading experience with animated brand, progress bar, and subtle motion.
- * Use for initial app/config load.
+ * Logo is from admin (strategyLayout.nav.logo). Background is white.
  */
-export function LoadingPage({ backgroundColor, primaryColor } = {}) {
-  const bg = backgroundColor || '#0f1823';
+export function LoadingPage({ backgroundColor, primaryColor, logo } = {}) {
+  const bg = backgroundColor || '#ffffff';
   const primary = primaryColor || '#f77c18';
+  const logoUrl = (logo || '').trim();
   const light = isLightBg(bg);
   const textClass = light ? 'text-slate-900' : 'text-white';
   const mutedClass = light ? 'text-slate-500' : 'text-white/60';
@@ -27,7 +28,7 @@ export function LoadingPage({ backgroundColor, primaryColor } = {}) {
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center overflow-hidden relative"
+      className="min-h-screen flex flex-col items-center justify-center overflow-hidden relative bg-white"
       style={{ backgroundColor: bg }}
     >
       {/* Ambient gradient */}
@@ -48,15 +49,23 @@ export function LoadingPage({ backgroundColor, primaryColor } = {}) {
       />
 
       <div className="relative z-10 flex flex-col items-center justify-center px-6">
-        {/* Logo / brand mark */}
+        {/* Logo from admin (nav.logo) or fallback initial */}
         <div
-          className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl flex items-center justify-center mb-8 loader-logo"
+          className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl flex items-center justify-center mb-8 loader-logo overflow-hidden bg-white border border-slate-200"
           style={{
-            background: `linear-gradient(135deg, ${primary}, color-mix(in srgb, ${primary} 80%, black))`,
-            boxShadow: `0 20px 50px -12px ${primary}60`,
+            boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
           }}
         >
-          <span className="text-white text-3xl sm:text-4xl font-black">R</span>
+          {logoUrl ? (
+            <img src={logoUrl} alt="" className="w-full h-full object-contain p-1" />
+          ) : (
+            <span
+              className="text-3xl sm:text-4xl font-black"
+              style={{ color: primary }}
+            >
+              R
+            </span>
+          )}
         </div>
 
         {/* Title */}

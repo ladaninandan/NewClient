@@ -6,6 +6,7 @@ const ConfigContext = createContext(null);
 
 const CONFIG_KEY = 'site_config';
 const CONFIG_ROW_ID = 1;
+const CACHE_LOGO_KEY = 'site_config_logo';
 
 export function ConfigProvider({ children }) {
   const [config, setConfig] = useState(defaultConfig);
@@ -44,7 +45,14 @@ export function ConfigProvider({ children }) {
           setConfig(defaultConfig);
         }
       } else if (data?.config) {
-        setConfig(deepMerge(defaultConfig, data.config));
+        const merged = deepMerge(defaultConfig, data.config);
+        setConfig(merged);
+        try {
+          const logo = merged?.strategyLayout?.nav?.logo;
+          if (logo && typeof logo === 'string' && logo.trim()) {
+            localStorage.setItem(CACHE_LOGO_KEY, logo.trim());
+          }
+        } catch (_) {}
       }
     } catch (e) {
       setError(e.message);
@@ -70,7 +78,15 @@ export function ConfigProvider({ children }) {
         { id: CONFIG_ROW_ID, config: merged, updated_at: new Date().toISOString() },
         { onConflict: 'id' }
       );
-    if (!err) setConfig(merged);
+    if (!err) {
+      setConfig(merged);
+      try {
+        const logo = merged?.strategyLayout?.nav?.logo;
+        if (logo && typeof logo === 'string' && logo.trim()) {
+          localStorage.setItem(CACHE_LOGO_KEY, logo.trim());
+        }
+      } catch (_) {}
+    }
     return { error: err };
   }, [config, deepMerge]);
 

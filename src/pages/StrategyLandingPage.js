@@ -95,10 +95,16 @@ export function StrategyLandingPage() {
   }, [loading]);
 
   if (loading) {
+    const navLogo = (config.strategyLayout?.nav?.logo || '').trim();
+    let logo = navLogo;
+    if (!logo && typeof localStorage !== 'undefined') {
+      try { logo = localStorage.getItem('site_config_logo') || ''; } catch (_) {}
+    }
     return (
       <LoadingPage
-        backgroundColor={theme.backgroundLight}
+        backgroundColor="#ffffff"
         primaryColor={theme.primary}
+        logo={logo}
       />
     );
   }
