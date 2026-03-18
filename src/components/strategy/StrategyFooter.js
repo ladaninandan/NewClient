@@ -4,7 +4,6 @@ import { useConfig } from '../../context/ConfigContext';
 export function StrategyFooter() {
   const { config } = useConfig();
   const f = config.strategyLayout?.footer || {};
-  const links = f.links || [];
   const scrollToForm = () => document.getElementById('register-form')?.scrollIntoView({ behavior: 'smooth' });
 
   return (

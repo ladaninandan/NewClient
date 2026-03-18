@@ -35,7 +35,6 @@ export function StrategyTopVideo() {
       ? rawBg
       : `${typeof window !== 'undefined' ? window.location.origin : ''}${process.env.PUBLIC_URL || ''}/${rawBg.replace(/^\/+/, '').replace(/^src\//, '')}`
     : '';
-  const subtext = t.subtext ?? 'Transform your business from founder-dependent to data-driven. Get the roadmap to scaling without burnout.';
   const ctaText = t.ctaText ?? 'Reserve My ₹199 Strategy Session';
   const slotNote = t.slotNote ?? 'Limited slots available for this month';
   const scrollToForm = () => document.getElementById('register-form')?.scrollIntoView({ behavior: 'smooth' });
