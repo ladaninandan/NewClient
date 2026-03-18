@@ -537,6 +537,13 @@ export function AdminSettings() {
               <p className="form-text small text-muted mb-0 mt-1">Supabase Free tier allows ~50MB per file. For larger videos, upload to YouTube and paste the link. Pro plan allows bigger uploads.</p>
             </div>
             <div className="col-12">
+              <label className="form-label small">Background image or video (section back layer; 20% overlay on top)</label>
+              <div className="d-flex flex-wrap gap-2 align-items-center">
+                <input type="file" accept="image/*,video/*" className="form-control form-control-sm" style={{ maxWidth: '220px' }} onChange={(e) => handleImageUpload(e, 'strategyLayout.topVideo.backgroundImage')} disabled={!isSupabaseConfigured() || uploading} />
+                <input type="url" className="form-control form-control-sm flex-grow-1" placeholder="Or paste image / video URL" value={editConfig.strategyLayout?.topVideo?.backgroundImage ?? ''} onChange={(e) => handleConfigChange('strategyLayout.topVideo.backgroundImage', e.target.value)} />
+              </div>
+            </div>
+            <div className="col-12">
               <label className="form-label small">Subtext below video (e.g. Transform your business from founder-dependent...)</label>
               <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.topVideo?.subtext ?? ''} onChange={(e) => handleConfigChange('strategyLayout.topVideo.subtext', e.target.value)} />
             </div>
@@ -548,20 +555,6 @@ export function AdminSettings() {
               <label className="form-label small">Slot note below CTA (e.g. Limited slots available for this month)</label>
               <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.topVideo?.slotNote ?? ''} onChange={(e) => handleConfigChange('strategyLayout.topVideo.slotNote', e.target.value)} />
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="card shadow-sm mb-4 admin-card">
-        <div className="card-header fw-bold">Hero</div>
-        <div className="card-body">
-          <div className="row g-3">
-            {['badge', 'headline', 'headlineHighlight', 'subtext', 'ctaText', 'slotNote'].map((k) => (
-              <div className="col-12" key={k}>
-                <label className="form-label small">Hero {k}</label>
-                <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.hero?.[k] ?? ''} onChange={(e) => handleConfigChange(`strategyLayout.hero.${k}`, e.target.value)} />
-              </div>
-            ))}
           </div>
         </div>
       </section>
@@ -591,8 +584,82 @@ export function AdminSettings() {
               <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.whyScale?.title ?? ''} onChange={(e) => handleConfigChange('strategyLayout.whyScale.title', e.target.value)} />
             </div>
             <div className="col-12">
-              <label className="form-label small">Cards (one per line: icon|title|desc)</label>
-              <textarea className="form-control form-control-sm" rows={4} value={(editConfig.strategyLayout?.whyScale?.cards || []).map((c) => `${c.icon}|${c.title}|${c.desc || ''}`).join('\n')} onChange={(e) => handleConfigChange('strategyLayout.whyScale.cards', e.target.value.split('\n').filter(Boolean).map((line) => { const p = line.split('|'); return { icon: p[0] || 'help', title: p[1] || '', desc: p[2] || '' }; }))} />
+              <label className="form-label small">Cards</label>
+              {(editConfig.strategyLayout?.whyScale?.cards || []).map((c, idx) => (
+                <div key={idx} className="border rounded p-2 mb-2">
+                  <div className="d-flex justify-content-between align-items-center mb-2">
+                    <div className="small text-muted">Card #{idx + 1}</div>
+                    <button
+                      type="button"
+                      className="btn btn-outline-danger btn-sm"
+                      onClick={() => {
+                        const next = (editConfig.strategyLayout?.whyScale?.cards || []).filter((_, i) => i !== idx);
+                        handleConfigChange('strategyLayout.whyScale.cards', next);
+                      }}
+                      aria-label="Remove card"
+                      title="Remove card"
+                    >
+                      ×
+                    </button>
+                  </div>
+                  <div className="row g-2">
+                    <div className="col-12 col-md-3">
+                      <label className="form-label small mb-1">Icon</label>
+                      <input
+                        type="text"
+                        className="form-control form-control-sm"
+                        value={c?.icon ?? ''}
+                        onChange={(e) => {
+                          const next = [...(editConfig.strategyLayout?.whyScale?.cards || [])];
+                          next[idx] = { ...(next[idx] || {}), icon: e.target.value };
+                          handleConfigChange('strategyLayout.whyScale.cards', next);
+                        }}
+                        placeholder="e.g. person_off"
+                      />
+                    </div>
+                    <div className="col-12 col-md-4">
+                      <label className="form-label small mb-1">Title</label>
+                      <input
+                        type="text"
+                        className="form-control form-control-sm"
+                        value={c?.title ?? ''}
+                        onChange={(e) => {
+                          const next = [...(editConfig.strategyLayout?.whyScale?.cards || [])];
+                          next[idx] = { ...(next[idx] || {}), title: e.target.value };
+                          handleConfigChange('strategyLayout.whyScale.cards', next);
+                        }}
+                        placeholder="e.g. Owner Reliance"
+                      />
+                    </div>
+                    <div className="col-12 col-md-5">
+                      <label className="form-label small mb-1">Description</label>
+                      <input
+                        type="text"
+                        className="form-control form-control-sm"
+                        value={c?.desc ?? ''}
+                        onChange={(e) => {
+                          const next = [...(editConfig.strategyLayout?.whyScale?.cards || [])];
+                          next[idx] = { ...(next[idx] || {}), desc: e.target.value };
+                          handleConfigChange('strategyLayout.whyScale.cards', next);
+                        }}
+                        placeholder="Short description"
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+              <button
+                type="button"
+                className="btn btn-outline-primary btn-sm mt-1"
+                onClick={() =>
+                  handleConfigChange('strategyLayout.whyScale.cards', [
+                    ...(editConfig.strategyLayout?.whyScale?.cards || []),
+                    { icon: '', title: '', desc: '' },
+                  ])
+                }
+              >
+                + Add new card
+              </button>
             </div>
           </div>
         </div>
@@ -618,8 +685,47 @@ export function AdminSettings() {
               <textarea className="form-control form-control-sm" rows={3} value={editConfig.strategyLayout?.founderTrap?.text ?? ''} onChange={(e) => handleConfigChange('strategyLayout.founderTrap.text', e.target.value)} />
             </div>
             <div className="col-12">
-              <label className="form-label small">Warning items (one per line)</label>
-              <textarea className="form-control form-control-sm" rows={2} value={(editConfig.strategyLayout?.founderTrap?.warningItems || []).join('\n')} onChange={(e) => handleConfigChange('strategyLayout.founderTrap.warningItems', e.target.value.split('\n').filter(Boolean))} />
+              <label className="form-label small">Warning items</label>
+              {(editConfig.strategyLayout?.founderTrap?.warningItems || []).map((w, idx) => (
+                <div key={idx} className="d-flex gap-2 align-items-center mb-2">
+                  <span className="text-muted small" style={{ minWidth: '4rem' }}>#{idx + 1}</span>
+                  <input
+                    type="text"
+                    className="form-control form-control-sm"
+                    value={w ?? ''}
+                    onChange={(e) => {
+                      const next = [...(editConfig.strategyLayout?.founderTrap?.warningItems || [])];
+                      next[idx] = e.target.value;
+                      handleConfigChange('strategyLayout.founderTrap.warningItems', next);
+                    }}
+                    placeholder="e.g. You work IN the business, not ON it."
+                  />
+                  <button
+                    type="button"
+                    className="btn btn-outline-danger btn-sm"
+                    onClick={() => {
+                      const next = (editConfig.strategyLayout?.founderTrap?.warningItems || []).filter((_, i) => i !== idx);
+                      handleConfigChange('strategyLayout.founderTrap.warningItems', next);
+                    }}
+                    aria-label="Remove warning item"
+                    title="Remove warning item"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                className="btn btn-outline-primary btn-sm mt-1"
+                onClick={() =>
+                  handleConfigChange('strategyLayout.founderTrap.warningItems', [
+                    ...(editConfig.strategyLayout?.founderTrap?.warningItems || []),
+                    '',
+                  ])
+                }
+              >
+                + Add new
+              </button>
             </div>
           </div>
         </div>
@@ -642,6 +748,10 @@ export function AdminSettings() {
                 <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.coach?.[k] ?? ''} onChange={(e) => handleConfigChange(`strategyLayout.coach.${k}`, e.target.value)} />
               </div>
             ))}
+            <div className="col-12">
+              <label className="form-label small">CTA button link (e.g. https://rrtcs.com/)</label>
+              <input type="url" className="form-control form-control-sm" placeholder="https://rrtcs.com/" value={editConfig.strategyLayout?.coach?.ctaUrl ?? ''} onChange={(e) => handleConfigChange('strategyLayout.coach.ctaUrl', e.target.value)} />
+            </div>
             <div className="col-12">
               <label className="form-label small">Bio (paragraphs separated by blank line)</label>
               <textarea className="form-control form-control-sm" rows={4} value={editConfig.strategyLayout?.coach?.bio ?? ''} onChange={(e) => handleConfigChange('strategyLayout.coach.bio', e.target.value)} />
@@ -772,8 +882,68 @@ export function AdminSettings() {
               <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.learn?.subtitle ?? ''} onChange={(e) => handleConfigChange('strategyLayout.learn.subtitle', e.target.value)} />
             </div>
             <div className="col-12">
-              <label className="form-label small">Items (one per line: icon|text)</label>
-              <textarea className="form-control form-control-sm" rows={6} value={(editConfig.strategyLayout?.learn?.items || []).map((i) => `${i.icon}|${i.text || ''}`).join('\n')} onChange={(e) => handleConfigChange('strategyLayout.learn.items', e.target.value.split('\n').filter(Boolean).map((line) => { const [icon, ...rest] = line.split('|'); return { icon: icon || 'check_circle', text: rest.join('|').trim() }; }))} />
+              <label className="form-label small">Items</label>
+              {(editConfig.strategyLayout?.learn?.items || []).map((item, idx) => (
+                <div key={idx} className="border rounded p-2 mb-2">
+                  <div className="d-flex justify-content-between align-items-center mb-2">
+                    <div className="small text-muted">Item #{idx + 1}</div>
+                    <button
+                      type="button"
+                      className="btn btn-outline-danger btn-sm"
+                      onClick={() => {
+                        const next = (editConfig.strategyLayout?.learn?.items || []).filter((_, i) => i !== idx);
+                        handleConfigChange('strategyLayout.learn.items', next);
+                      }}
+                      aria-label="Remove item"
+                      title="Remove item"
+                    >
+                      ×
+                    </button>
+                  </div>
+                  <div className="row g-2">
+                    <div className="col-12 col-md-4">
+                      <label className="form-label small mb-1">Icon</label>
+                      <input
+                        type="text"
+                        className="form-control form-control-sm"
+                        value={item?.icon ?? ''}
+                        onChange={(e) => {
+                          const next = [...(editConfig.strategyLayout?.learn?.items || [])];
+                          next[idx] = { ...(next[idx] || {}), icon: e.target.value };
+                          handleConfigChange('strategyLayout.learn.items', next);
+                        }}
+                        placeholder="e.g. psychology"
+                      />
+                    </div>
+                    <div className="col-12 col-md-8">
+                      <label className="form-label small mb-1">Text</label>
+                      <input
+                        type="text"
+                        className="form-control form-control-sm"
+                        value={item?.text ?? ''}
+                        onChange={(e) => {
+                          const next = [...(editConfig.strategyLayout?.learn?.items || [])];
+                          next[idx] = { ...(next[idx] || {}), text: e.target.value };
+                          handleConfigChange('strategyLayout.learn.items', next);
+                        }}
+                        placeholder="e.g. Identify hidden revenue leaks"
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+              <button
+                type="button"
+                className="btn btn-outline-primary btn-sm mt-1"
+                onClick={() =>
+                  handleConfigChange('strategyLayout.learn.items', [
+                    ...(editConfig.strategyLayout?.learn?.items || []),
+                    { icon: '', text: '' },
+                  ])
+                }
+              >
+                + Add new item
+              </button>
             </div>
           </div>
         </div>
@@ -792,8 +962,105 @@ export function AdminSettings() {
               <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.founderModel?.subtitle ?? ''} onChange={(e) => handleConfigChange('strategyLayout.founderModel.subtitle', e.target.value)} />
             </div>
             <div className="col-12">
-              <label className="form-label small">Steps (one per line: num|title|desc|highlight optional)</label>
-              <textarea className="form-control form-control-sm" rows={4} value={(editConfig.strategyLayout?.founderModel?.steps || []).map((s) => `${s.num}|${s.title}|${s.desc}${s.highlight ? '|1' : ''}`).join('\n')} onChange={(e) => handleConfigChange('strategyLayout.founderModel.steps', e.target.value.split('\n').filter(Boolean).map((line) => { const p = line.split('|'); return { num: parseInt(p[0], 10) || 0, title: p[1] || '', desc: p[2] || '', highlight: p[3] === '1' }; }))} />
+              <label className="form-label small">Steps</label>
+              {(editConfig.strategyLayout?.founderModel?.steps || []).map((s, idx) => (
+                <div key={idx} className="border rounded p-2 mb-2">
+                  <div className="d-flex justify-content-between align-items-center mb-2">
+                    <div className="small text-muted">Step #{idx + 1}</div>
+                    <button
+                      type="button"
+                      className="btn btn-outline-danger btn-sm"
+                      onClick={() => {
+                        const next = (editConfig.strategyLayout?.founderModel?.steps || []).filter((_, i) => i !== idx);
+                        handleConfigChange('strategyLayout.founderModel.steps', next);
+                      }}
+                      aria-label="Remove step"
+                      title="Remove step"
+                    >
+                      ×
+                    </button>
+                  </div>
+                  <div className="row g-2">
+                    <div className="col-12 col-md-2">
+                      <label className="form-label small mb-1">Num</label>
+                      <input
+                        type="number"
+                        className="form-control form-control-sm"
+                        value={s?.num ?? ''}
+                        onChange={(e) => {
+                          const raw = e.target.value;
+                          const parsed = raw === '' ? '' : parseInt(raw, 10);
+                          const next = [...(editConfig.strategyLayout?.founderModel?.steps || [])];
+                          next[idx] = { ...(next[idx] || {}), num: Number.isFinite(parsed) ? parsed : '' };
+                          handleConfigChange('strategyLayout.founderModel.steps', next);
+                        }}
+                        placeholder="1"
+                      />
+                    </div>
+                    <div className="col-12 col-md-4">
+                      <label className="form-label small mb-1">Title</label>
+                      <input
+                        type="text"
+                        className="form-control form-control-sm"
+                        value={s?.title ?? ''}
+                        onChange={(e) => {
+                          const next = [...(editConfig.strategyLayout?.founderModel?.steps || [])];
+                          next[idx] = { ...(next[idx] || {}), title: e.target.value };
+                          handleConfigChange('strategyLayout.founderModel.steps', next);
+                        }}
+                        placeholder="e.g. Self-Employed"
+                      />
+                    </div>
+                    <div className="col-12 col-md-5">
+                      <label className="form-label small mb-1">Description</label>
+                      <input
+                        type="text"
+                        className="form-control form-control-sm"
+                        value={s?.desc ?? ''}
+                        onChange={(e) => {
+                          const next = [...(editConfig.strategyLayout?.founderModel?.steps || [])];
+                          next[idx] = { ...(next[idx] || {}), desc: e.target.value };
+                          handleConfigChange('strategyLayout.founderModel.steps', next);
+                        }}
+                        placeholder="e.g. The business is YOU. You do everything."
+                      />
+                    </div>
+                    <div className="col-12 col-md-1 d-flex align-items-end">
+                      <div className="form-check mb-1">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          checked={!!s?.highlight}
+                          onChange={(e) => {
+                            const next = [...(editConfig.strategyLayout?.founderModel?.steps || [])];
+                            next[idx] = { ...(next[idx] || {}), highlight: e.target.checked };
+                            handleConfigChange('strategyLayout.founderModel.steps', next);
+                          }}
+                          aria-label="Highlight optional"
+                        />
+                        <label className="form-check-label small">HL</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              <button
+                type="button"
+                className="btn btn-outline-primary btn-sm mt-1"
+                onClick={() => {
+                  const cur = editConfig.strategyLayout?.founderModel?.steps || [];
+                  const maxNum = cur.reduce((m, it) => {
+                    const n = Number(it?.num);
+                    return Number.isFinite(n) ? Math.max(m, n) : m;
+                  }, 0);
+                  handleConfigChange('strategyLayout.founderModel.steps', [
+                    ...cur,
+                    { num: maxNum + 1, title: '', desc: '', highlight: false },
+                  ]);
+                }}
+              >
+                + Add new
+              </button>
             </div>
           </div>
         </div>
@@ -952,19 +1219,47 @@ export function AdminSettings() {
               />
             </div>
             <div className="col-12">
-              <label className="form-label small">Problem bullets (one per line)</label>
-              <textarea
-                className="form-control form-control-sm"
-                rows={4}
-                value={(editConfig.strategyLayout?.problem?.items || []).join('\n')}
-                onChange={(e) =>
-                  handleConfigChange(
-                    'strategyLayout.problem.items',
-                    e.target.value.split('\n').map((v) => v.trim()).filter(Boolean),
-                  )
+              <label className="form-label small">Problem bullets</label>
+              {(editConfig.strategyLayout?.problem?.items || []).map((item, idx) => (
+                <div key={idx} className="d-flex gap-2 align-items-center mb-2">
+                  <span className="text-muted small" style={{ minWidth: '4rem' }}>#{idx + 1}</span>
+                  <input
+                    type="text"
+                    className="form-control form-control-sm"
+                    value={item}
+                    onChange={(e) => {
+                      const items = [...(editConfig.strategyLayout?.problem?.items || [])];
+                      items[idx] = e.target.value;
+                      handleConfigChange('strategyLayout.problem.items', items);
+                    }}
+                    placeholder="e.g. Business cannot run without you"
+                  />
+                  <button
+                    type="button"
+                    className="btn btn-outline-danger btn-sm"
+                    onClick={() => {
+                      const items = (editConfig.strategyLayout?.problem?.items || []).filter((_, i) => i !== idx);
+                      handleConfigChange('strategyLayout.problem.items', items);
+                    }}
+                    title="Remove"
+                    aria-label="Remove"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                className="btn btn-outline-primary btn-sm mt-1"
+                onClick={() =>
+                  handleConfigChange('strategyLayout.problem.items', [
+                    ...(editConfig.strategyLayout?.problem?.items || []),
+                    '',
+                  ])
                 }
-                placeholder={`Business cannot run without you\nTeam lacks ownership\nProcesses are unclear\nRevenue leaks happening silently\nFounder stuck in daily operations\nNo clear systems for scaling`}
-              />
+              >
+                + Add new
+              </button>
             </div>
             <div className="col-12 mb-2">
               <label className="form-label small">Ending line</label>
@@ -1175,8 +1470,68 @@ export function AdminSettings() {
               <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.faq?.title ?? ''} onChange={(e) => handleConfigChange('strategyLayout.faq.title', e.target.value)} />
             </div>
             <div className="col-12">
-              <label className="form-label small">FAQ items (Q and A: one block per pair, separate with ---)</label>
-              <textarea className="form-control form-control-sm" rows={8} value={(editConfig.strategyLayout?.faq?.items || []).map((i) => `${i.q}\n---\n${i.a}`).join('\n\n')} onChange={(e) => handleConfigChange('strategyLayout.faq.items', e.target.value.split('\n\n').filter(Boolean).map((block) => { const [q, a] = block.split('\n---\n'); return { q: (q || '').trim(), a: (a || '').trim() }; }))} />
+              <label className="form-label small">FAQ items</label>
+              {(editConfig.strategyLayout?.faq?.items || []).map((item, idx) => (
+                <div key={idx} className="border rounded p-2 mb-2">
+                  <div className="d-flex justify-content-between align-items-center mb-2">
+                    <div className="small text-muted">FAQ #{idx + 1}</div>
+                    <button
+                      type="button"
+                      className="btn btn-outline-danger btn-sm"
+                      onClick={() => {
+                        const next = (editConfig.strategyLayout?.faq?.items || []).filter((_, i) => i !== idx);
+                        handleConfigChange('strategyLayout.faq.items', next);
+                      }}
+                      aria-label="Remove FAQ item"
+                      title="Remove FAQ item"
+                    >
+                      ×
+                    </button>
+                  </div>
+                  <div className="row g-2">
+                    <div className="col-12">
+                      <label className="form-label small mb-1">Question</label>
+                      <input
+                        type="text"
+                        className="form-control form-control-sm"
+                        value={item?.q ?? ''}
+                        onChange={(e) => {
+                          const next = [...(editConfig.strategyLayout?.faq?.items || [])];
+                          next[idx] = { ...(next[idx] || {}), q: e.target.value };
+                          handleConfigChange('strategyLayout.faq.items', next);
+                        }}
+                        placeholder="e.g. How long is the session?"
+                      />
+                    </div>
+                    <div className="col-12">
+                      <label className="form-label small mb-1">Answer</label>
+                      <textarea
+                        className="form-control form-control-sm"
+                        rows={3}
+                        value={item?.a ?? ''}
+                        onChange={(e) => {
+                          const next = [...(editConfig.strategyLayout?.faq?.items || [])];
+                          next[idx] = { ...(next[idx] || {}), a: e.target.value };
+                          handleConfigChange('strategyLayout.faq.items', next);
+                        }}
+                        placeholder="Answer text"
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+              <button
+                type="button"
+                className="btn btn-outline-primary btn-sm mt-1"
+                onClick={() =>
+                  handleConfigChange('strategyLayout.faq.items', [
+                    ...(editConfig.strategyLayout?.faq?.items || []),
+                    { q: '', a: '' },
+                  ])
+                }
+              >
+                + Add new
+              </button>
             </div>
           </div>
         </div>
