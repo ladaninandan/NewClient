@@ -38,21 +38,77 @@ function SectionOrderEditor({ order, onChange, labels }) {
   const saved = Array.isArray(order) && order.length > 0 ? [...order] : [];
   const missing = defaultSectionOrder.filter((id) => !saved.includes(id));
   const list = saved.length > 0 ? [...saved, ...missing] : [...defaultSectionOrder];
-  const move = (index, dir) => {
+  const [draggedId, setDraggedId] = useState(null);
+
+  const handleDragStart = (e, id) => {
+    const idx = list.indexOf(id);
+    const isFixed = idx === 0 || idx === list.length - 1;
+    if (isFixed) {
+      e.preventDefault();
+      return;
+    }
+    setDraggedId(id);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', id);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedId(null);
+  };
+
+  const handleDragOver = (e) => {
+    // Required so the browser allows dropping
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleDrop = (e, overId) => {
+    e.preventDefault();
+    const fromId = e.dataTransfer.getData('text/plain');
+    if (!fromId || !overId || fromId === overId) return;
+
+    const fromIndex = list.indexOf(fromId);
+    const toIndex = list.indexOf(overId);
+    if (fromIndex < 0 || toIndex < 0) return;
+
+    // Keep first/last fixed (as described in the UI hint)
+    const fromIsFixed = fromIndex === 0 || fromIndex === list.length - 1;
+    const toIsFixed = toIndex === 0 || toIndex === list.length - 1;
+    if (fromIsFixed || toIsFixed) return;
+
     const next = [...list];
-    const j = index + dir;
-    if (j < 0 || j >= next.length) return;
-    [next[index], next[j]] = [next[j], next[index]];
+    const [moved] = next.splice(fromIndex, 1);
+    // After removal, indexes shift if we're moving "down" the list.
+    const insertIndex = fromIndex < toIndex ? toIndex - 1 : toIndex;
+    next.splice(insertIndex, 0, moved);
+    setDraggedId(null);
     onChange(next);
   };
+
   return (
     <div className="rounded-3 border border-secondary border-opacity-25 p-3 bg-white section-order-list">
       {list.map((id, i) => (
-        <div key={id} className="d-flex align-items-center gap-3 py-2 px-2 border-bottom border-secondary border-opacity-25">
+        <div
+          key={id}
+          className="d-flex align-items-center gap-3 py-2 px-2 border-bottom border-secondary border-opacity-25"
+          draggable={!(i === 0 || i === list.length - 1)}
+          onDragStart={(e) => handleDragStart(e, id)}
+          onDragEnd={handleDragEnd}
+          onDragOver={handleDragOver}
+          onDrop={(e) => handleDrop(e, id)}
+          style={{
+            opacity: draggedId === id ? 0.6 : 1,
+            cursor: i === 0 || i === list.length - 1 ? 'not-allowed' : 'grab',
+            background: draggedId === id ? 'rgba(0,0,0,0.03)' : undefined,
+          }}
+          aria-label={`Drag to reorder: ${labels[id] ?? id}`}
+          title={i === 0 || i === list.length - 1 ? 'Fixed position' : 'Drag to reorder'}
+        >
           <span className="text-muted fw-semibold" style={{ minWidth: '1.75rem', fontSize: '0.875rem' }}>{i + 1}</span>
+          <span className="material-symbols-outlined text-muted" style={{ fontSize: '1.25rem' }}>
+            drag_handle
+          </span>
           <span className="flex-grow-1" style={{ fontSize: '0.9375rem' }}>{labels[id] ?? id}</span>
-          <button type="button" className="btn btn-outline-secondary btn-sm" onClick={() => move(i, -1)} disabled={i === 0} aria-label="Move up">↑</button>
-          <button type="button" className="btn btn-outline-secondary btn-sm" onClick={() => move(i, 1)} disabled={i === list.length - 1} aria-label="Move down">↓</button>
         </div>
       ))}
       <style>{`.section-order-list > div:last-child { border-bottom: 0 !important; }`}</style>
@@ -453,7 +509,9 @@ export function AdminSettings() {
       <section className="card shadow-sm mb-4 admin-card">
         <div className="card-header fw-bold">Section order</div>
         <div className="card-body">
-          <p className="text-muted mb-3" style={{ fontSize: '0.9375rem' }}>Scrolling banner is always first; sticky bar is always last. Use arrows to change order. Coach Achievements (StrategyCoachAchievements) is in the list—reorder it with the arrows.</p>
+          <p className="text-muted mb-3" style={{ fontSize: '0.9375rem' }}>
+            Scrolling banner is always first; sticky bar is always last. Drag rows to change order (Coach Achievements included).
+          </p>
           <SectionOrderEditor
             order={editConfig.strategyLayout?.sectionOrder || defaultSectionOrder}
             onChange={(newOrder) => handleConfigChange('strategyLayout.sectionOrder', newOrder)}
