@@ -19,16 +19,6 @@ export function StrategyFooter() {
         >
           {f.ctaText || 'Book My Strategy Session Now'}
         </button>
-        <div className="mt-10 sm:mt-12 pt-6 sm:pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 sm:gap-6 text-xs sm:text-sm text-emerald-100/50">
-          {/* <p className="order-2 md:order-1">{f.copyright}</p> */}
-          <div className="flex flex-wrap justify-center gap-4 sm:gap-8 order-1 md:order-2">
-            {links.map((link, i) => (
-              <a key={i} href={link.url || '#'} className="hover:opacity-80 transition-colors" style={{ color: 'var(--theme-primary)' }}>
-                {link.label}
-              </a>
-            ))}
-          </div>
-        </div>
       </div>
     </footer>
   );

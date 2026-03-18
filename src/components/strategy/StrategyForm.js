@@ -1,7 +1,17 @@
 import React, { useState, useEffect } from 'react';
+import { useConfig } from '../../context/ConfigContext';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
+import { isRazorpayConfigured, createOrder, openCheckout } from '../../lib/razorpay';
 
 const SUBMISSIONS_TABLE = 'registrations';
+
+// Parse price string (e.g. "₹199" or "199") to amount in paise
+function parsePriceToPaise(priceStr) {
+  if (priceStr == null) return 19900; // default ₹199
+  const str = String(priceStr).replace(/[^\d.]/g, '');
+  const num = parseFloat(str) || 199;
+  return Math.round(num * 100);
+}
 
 // Email: standard format (local@domain.tld)
 const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
@@ -28,6 +38,7 @@ function validateEmail(email) {
 }
 
 export function StrategyForm({ embedded = false }) {
+  const { config } = useConfig();
   const idSuffix = embedded ? '-popup' : '';
   const [form, setForm] = useState({ name: '', email: '', phone: '' });
   const [status, setStatus] = useState('idle');
@@ -35,6 +46,8 @@ export function StrategyForm({ embedded = false }) {
 
   const [fieldErrors, setFieldErrors] = useState({ email: '', phone: '' });
   const [showTitleBlack, setShowTitleBlack] = useState(false);
+  const usePayment = isRazorpayConfigured();
+  const amountPaise = parsePriceToPaise(config?.strategyLayout?.pricing?.price);
 
   useEffect(() => {
     const t = setTimeout(() => setShowTitleBlack(true), 3000);
@@ -103,14 +116,54 @@ export function StrategyForm({ embedded = false }) {
         return;
       }
 
-      const { error } = await supabase.from(SUBMISSIONS_TABLE).insert([
-        {
-          name,
-          email: emailResult.normalized,
-          phone: phoneResult.normalized,
-        },
-      ]);
+      const payload = {
+        name,
+        email: emailResult.normalized,
+        phone: phoneResult.normalized,
+      };
 
+      if (usePayment) {
+        const { orderId } = await createOrder(amountPaise);
+        setStatus('idle');
+        await openCheckout({
+          orderId,
+          amount: amountPaise,
+          currency: 'INR',
+          prefill: { name, email: emailResult.normalized, contact: phoneResult.normalized },
+          handler: async (res) => {
+            setStatus('loading');
+            try {
+              const row = {
+                ...payload,
+                payment_id: res.razorpay_payment_id || null,
+                razorpay_order_id: res.razorpay_order_id || null,
+              };
+              const { error } = await supabase.from(SUBMISSIONS_TABLE).insert([row]);
+              if (error) throw error;
+              setStatus('success');
+              setForm({ name: '', email: '', phone: '' });
+              setModal({
+                type: 'success',
+                title: 'Payment successful',
+                message: 'Thank you! Your spot is reserved. We’ll confirm your session details via email.',
+              });
+            } catch (err) {
+              setStatus('idle');
+              const isDuplicate = err.code === '23505' || (err.message && /unique|duplicate|already exists/i.test(err.message));
+              setModal({
+                type: 'error',
+                title: isDuplicate ? 'Already registered' : 'Something went wrong',
+                message: isDuplicate
+                  ? 'This email is already registered. Use a different email or contact us if you need to update your booking.'
+                  : (err.message || 'Payment succeeded but we could not save your details. Please contact us with your payment ID.'),
+              });
+            }
+          },
+        });
+        return;
+      }
+
+      const { error } = await supabase.from(SUBMISSIONS_TABLE).insert([payload]);
       if (error) throw error;
 
       setStatus('success');

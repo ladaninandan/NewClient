@@ -4,7 +4,8 @@ import { useConfig } from '../../context/ConfigContext';
 export function StrategyFounderTrap() {
   const { config } = useConfig();
   const t = config.strategyLayout?.founderTrap || {};
-  const warnings = t.warningItems || [];
+  // Filter empty strings so the admin "Add new" row doesn't render blank cards
+  const warnings = (t.warningItems || []).filter(Boolean);
 
   return (
     <section className="py-12 sm:py-16 lg:py-20" style={{ backgroundColor: 'var(--theme-background-light, #f8f7f5)' }}>

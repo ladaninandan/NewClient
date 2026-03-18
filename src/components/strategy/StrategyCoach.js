@@ -45,13 +45,15 @@ export function StrategyCoach() {
               </div>
             ))}
           </div>
-          <button
-            type="button"
-            className="w-full text-white py-3 px-4 rounded-xl font-bold text-sm shadow-lg text-center btn-hover btn-blink"
+          <a
+            href={(c.ctaUrl || 'https://rrtcs.com/').trim() || '#'}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full inline-block text-white py-3 px-4 rounded-xl font-bold text-sm shadow-lg text-center btn-hover btn-blink text-decoration-none"
             style={{ backgroundColor: 'var(--theme-primary)' }}
           >
             {c.ctaText || 'Learn More About Rahul'}
-          </button>
+          </a>
         </div>
       </div>
     </section>

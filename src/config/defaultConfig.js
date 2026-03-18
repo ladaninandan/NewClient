@@ -40,9 +40,11 @@ export const defaultConfig = {
     },
     nav: { logo: '', brandShort: 'RR.', brandName: 'Rahul Revne', ctaText: 'Book Now' },
     topVideo: {
+      topLine: "You’re stuck managing daily work instead of building systems that actually grow your business.",
       badge: 'Limited Time Strategy Session',
-      headline: 'Is Your Business Running Because Of You… Or Despite You?',
+      headline: 'Limited Time Strategy Session • Reserve Your Spot at ₹199 • Trusted by 500+ Founders • 1-to-1 Business Clarity Session • Book Now — Limited Slots',
       video: '',
+      backgroundImage: 'src/file_0000000057a07208a7e28282debc2844.png', // optional: section background image (shows behind white overlay)
       subtext: 'Transform your business from founder-dependent to data-driven. Get the roadmap to scaling without burnout.',
       ctaText: 'Reserve My ₹199 Strategy Session',
       slotNote: 'Limited slots available for this month',
@@ -106,6 +108,7 @@ export const defaultConfig = {
       ],
       image: '',
       ctaText: 'Learn More About Rahul',
+      ctaUrl: 'https://rrtcs.com/',
     },
     coachAchievements: {
       heading: '',

@@ -1,0 +1,5 @@
+White overlay at 20% opacity
+A layer is added over the whole section:
+
+backgroundColor: 'rgba(255, 255, 255, 0.2)'
+Sits above the video (or the default dark/dot background) and below the content (headline, CTA, etc.).

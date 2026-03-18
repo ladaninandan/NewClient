@@ -579,12 +579,36 @@ export function AdminSettings() {
         <div className="card-body">
           <div className="row g-3">
             <div className="col-12">
+              <label className="form-label small">Top line (shows above badge)</label>
+              <input
+                type="text"
+                className="form-control form-control-sm"
+                value={editConfig.strategyLayout?.topVideo?.topLine ?? ''}
+                onChange={(e) => handleConfigChange('strategyLayout.topVideo.topLine', e.target.value)}
+                placeholder="You’re stuck managing daily work instead of building systems that actually grow your business."
+              />
+            </div>
+            <div className="col-12">
               <label className="form-label small">Badge (e.g. Limited Time Strategy Session)</label>
               <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.topVideo?.badge ?? ''} onChange={(e) => handleConfigChange('strategyLayout.topVideo.badge', e.target.value)} />
             </div>
             <div className="col-12">
               <label className="form-label small">Headline (e.g. Is Your Business Running Because Of You… Or Despite You?)</label>
               <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.topVideo?.headline ?? ''} onChange={(e) => handleConfigChange('strategyLayout.topVideo.headline', e.target.value)} />
+              <div className="d-flex gap-2 align-items-center mt-2">
+                <button
+                  type="button"
+                  className="btn btn-outline-secondary btn-sm"
+                  onClick={() =>
+                    handleConfigChange(
+                      'strategyLayout.topVideo.headline',
+                      'Limited Time Strategy Session • Reserve Your Spot at ₹199 • Trusted by 500+ Founders • 1-to-1 Business Clarity Session • Book Now — Limited Slots',
+                    )
+                  }
+                >
+                  Use this headline
+                </button>
+              </div>
             </div>
             <div className="col-12">
               <label className="form-label small">Video (YouTube link or direct video URL; autoplay on page)</label>

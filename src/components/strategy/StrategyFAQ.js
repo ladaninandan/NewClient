@@ -4,7 +4,11 @@ import { useConfig } from '../../context/ConfigContext';
 export function StrategyFAQ() {
   const { config } = useConfig();
   const faq = config.strategyLayout?.faq || {};
-  const items = faq.items || [];
+  const items = (faq.items || []).filter((it) => {
+    const q = (it?.q ?? '').toString().trim();
+    const a = (it?.a ?? '').toString().trim();
+    return q.length > 0 || a.length > 0;
+  });
 
   return (
     <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 max-w-4xl mx-auto">

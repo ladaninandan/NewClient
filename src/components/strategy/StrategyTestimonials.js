@@ -10,7 +10,7 @@ function getYouTubeEmbedUrl(url) {
   const u = (url || '').trim();
   const m = u.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
   const id = m ? m[1] : null;
-  return id ? `https://www.youtube.com/embed/${id}` : null;
+  return id ? `https://www.youtube.com/embed/${id}?autoplay=0&loop=1&playlist=${id}` : null;
 }
 
 export function StrategyTestimonials() {
