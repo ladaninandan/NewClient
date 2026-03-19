@@ -98,7 +98,7 @@ export function StrategyTopVideo() {
       {/* Dark blue overlay — 20% opacity (above video/image, below content) */}
       <div
         className="absolute inset-0 pointer-events-none"
-        style={{ backgroundColor: 'rgba(12, 43, 117, 0.5)' }}
+        style={{ backgroundColor: 'rgba(35, 35, 35, 0.59)' }}
         aria-hidden
       />
       <div className="w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 relative z-10 text-center">
@@ -109,14 +109,15 @@ export function StrategyTopVideo() {
         >
           {badge}
         </span>
+  
+        <h1 className="scroll-reveal text-1xl sm:text-2xl lg:text-3xl xl:text-4xl font-black text-white leading-tight mb-6 sm:mb-8 lg:mb-10 px-2">
+          {headline}
+        </h1>
         {topLine ? (
-          <p className="scroll-reveal text-white/90 text-sm sm:text-base font-medium mb-2 px-2">
+          <p className="scroll-reveal text-white/90 text-sm sm:text-base font-medium mb-2 px-2 pb-3">
             {topLine}
           </p>
         ) : null}
-        <h1 className="scroll-reveal text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-black text-white leading-tight mb-6 sm:mb-8 lg:mb-10 px-2">
-          {headline}
-        </h1>
         {/* Inline video card — large and responsive */}
         {videoUrl && !useVideoAsBackground && (
           <div className="scroll-reveal rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl mx-auto bg-black mb-6 sm:mb-8 lg:mb-10 w-full max-w-[1400px]">
@@ -144,7 +145,7 @@ export function StrategyTopVideo() {
             )}
           </div>
         )}
-        <div className="scroll-reveal max-w-2xl mx-auto">
+        <div className="scroll-reveal max-w-2xl mx-auto px-2">
           <button
             type="button"
             onClick={scrollToForm}

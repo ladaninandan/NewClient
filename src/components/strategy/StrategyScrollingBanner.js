@@ -27,7 +27,7 @@ export function StrategyScrollingBanner() {
           animation: 'scroll-left 40s linear infinite',
           color: 'var(--theme-primary)',
         }}
-      >nandan
+      >
         <span className="inline-block px-4">{duplicated}</span>
       </div>
       <style>{`

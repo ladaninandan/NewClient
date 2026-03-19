@@ -35,7 +35,7 @@ const defaultTheme = {
   cardDark: '#1e3a32',
 };
 
-const POPUP_DELAY_MS = 60 * 1000; // 1 minute
+const POPUP_DELAY_MS = 4 * 1000; // 4 seconds
 
 const DEFAULT_SECTION_ORDER = [
   'topVideo', 'whyScale', 'problem', 'founderTrap', 'coach', 'coachAchievements', 'learn', 'founderModel',
