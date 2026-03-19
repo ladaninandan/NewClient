@@ -38,8 +38,9 @@ function getEnv(name: string) {
 }
 
 Deno.serve(async (req: any) => {
-  if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders() });
-  if (req.method !== 'POST') return jsonResponse({ error: 'Method not allowed' }, { status: 405 });
+  const method = String(req.method || '').toUpperCase();
+  if (method === 'OPTIONS') return new Response('ok', { headers: corsHeaders() });
+  if (method !== 'POST') return jsonResponse({ error: 'Method not allowed' }, { status: 405 });
 
   try {
     const raw = await req.text();
