@@ -137,8 +137,10 @@ export function StrategyForm({ embedded = false }) {
           const isLocalhost =
             typeof window !== 'undefined' &&
             (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
-          if (!isLocalhost) throw orderErr;
-          // Local-only fallback: allow checkout to open without order_id for testing.
+          const allowLocalFallback = process.env.REACT_APP_RAZORPAY_LOCAL_FALLBACK === 'true';
+          if (!isLocalhost || !allowLocalFallback) throw orderErr;
+          // Optional local-only fallback for testing.
+          // Disabled by default because opening checkout without order_id can trigger noisy script errors.
           orderId = null;
         }
         setStatus('idle');
