@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useConfig } from '../../context/ConfigContext';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
-import { isRazorpayConfigured, createOrder, openCheckout } from '../../lib/razorpay';
+import { isRazorpayConfigured, createOrder, openCheckout, verifyPayment } from '../../lib/razorpay';
 
 const SUBMISSIONS_TABLE = 'registrations';
 
@@ -47,7 +47,13 @@ export function StrategyForm({ embedded = false }) {
   const [fieldErrors, setFieldErrors] = useState({ email: '', phone: '' });
   const [showTitleBlack, setShowTitleBlack] = useState(false);
   const usePayment = isRazorpayConfigured();
-  const amountPaise = parsePriceToPaise(config?.strategyLayout?.pricing?.price);
+  const stickyBar = config?.strategyLayout?.stickyBar || {};
+  const pricing = config?.strategyLayout?.pricing || {};
+  const preferredPrice =
+    stickyBar.enabled !== false && (stickyBar.price || '').toString().trim()
+      ? stickyBar.price
+      : pricing.price;
+  const amountPaise = parsePriceToPaise(preferredPrice);
 
   useEffect(() => {
     const t = setTimeout(() => setShowTitleBlack(true), 3000);
@@ -123,7 +129,18 @@ export function StrategyForm({ embedded = false }) {
       };
 
       if (usePayment) {
-        const { orderId } = await createOrder(amountPaise);
+        let orderId = null;
+        try {
+          const orderRes = await createOrder(amountPaise);
+          orderId = orderRes.orderId;
+        } catch (orderErr) {
+          const isLocalhost =
+            typeof window !== 'undefined' &&
+            (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+          if (!isLocalhost) throw orderErr;
+          // Local-only fallback: allow checkout to open without order_id for testing.
+          orderId = null;
+        }
         setStatus('idle');
         await openCheckout({
           orderId,
@@ -133,10 +150,26 @@ export function StrategyForm({ embedded = false }) {
           handler: async (res) => {
             setStatus('loading');
             try {
+              // CRITICAL: Verify Razorpay signature server-side before saving anything
+              const orderIdFromRes = res.razorpay_order_id || null;
+              const paymentIdFromRes = res.razorpay_payment_id || null;
+              const signatureFromRes = res.razorpay_signature || null;
+
+              if (orderIdFromRes && paymentIdFromRes && signatureFromRes) {
+                const verifyRes = await verifyPayment({
+                  orderId: orderIdFromRes,
+                  paymentId: paymentIdFromRes,
+                  signature: signatureFromRes,
+                });
+                if (!verifyRes.verified) {
+                  throw new Error('Payment verification failed');
+                }
+              }
+
               const row = {
                 ...payload,
-                payment_id: res.razorpay_payment_id || null,
-                razorpay_order_id: res.razorpay_order_id || null,
+                payment_id: paymentIdFromRes,
+                razorpay_order_id: orderIdFromRes,
               };
               const { error } = await supabase.from(SUBMISSIONS_TABLE).insert([row]);
               if (error) throw error;

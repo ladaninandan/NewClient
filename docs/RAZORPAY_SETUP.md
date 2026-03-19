@@ -18,14 +18,21 @@ Razorpay requires creating an **order** on your server before opening checkout.
 - **Request:** `POST` to your URL with JSON body:  
   `{ "amount": 19900, "currency": "INR", "receipt": "rcpt_123" }`  
   (`amount` is in paise, e.g. 19900 = ₹199.)
-- **Response:** `{ "orderId": "order_xxxx" }` (or `id` instead of `orderId`).
+- **Response:** `{ "orderId": "order_xxxx" }` (or `{ "id": "order_xxxx" }`).
 
-Example serverless function is in **`api/create-order.js`**. For Vercel, deploy the app and set:
+### Using Supabase Edge Functions (recommended: no separate Node server)
+We use these Edge Functions:
+- `supabase/functions/create-order/index.ts` (calls Razorpay Orders API)
+- `supabase/functions/verify-payment/index.ts` (verifies Razorpay HMAC signature)
 
-- **RAZORPAY_KEY_ID** and **RAZORPAY_KEY_SECRET** in Vercel project env.
-- **REACT_APP_RAZORPAY_ORDER_API** = `https://your-app.vercel.app/api/create-order`.
+Set these in your React `.env`:
+- `REACT_APP_RAZORPAY_ORDER_API=https://<your-supabase-ref>.supabase.co/functions/v1/create-order`
+- `REACT_APP_RAZORPAY_VERIFY_API=https://<your-supabase-ref>.supabase.co/functions/v1/verify-payment`
 
-You can use any other backend (Node, PHP, etc.) that calls [Razorpay Orders API](https://razorpay.com/docs/api/orders/#create-an-order) and returns the order id.
+Also set secrets in Supabase Edge Functions:
+- `RAZORPAY_KEY_ID`
+- `RAZORPAY_KEY_SECRET`
+
 
 ## 3. Supabase: registrations table
 
@@ -45,4 +52,4 @@ In Supabase: Table Editor → `registrations` → add column.
 5. User pays; on success the app saves to Supabase: name, email, phone, **payment_id**, **razorpay_order_id**.
 6. Success message is shown.
 
-Amount is taken from `config.strategyLayout.pricing.price` (e.g. "₹199"), so it stays in sync with the pricing section.
+Amount is taken from `config.strategyLayout.stickyBar.price` when the sticky bar is enabled (fallback to `config.strategyLayout.pricing.price`), so it stays in sync with the amount shown to the user.

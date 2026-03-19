@@ -16,7 +16,7 @@ function isLightBg(hex) {
  * Full-screen loading experience with animated brand, progress bar, and subtle motion.
  * Logo is from admin (strategyLayout.nav.logo). Background is white.
  */
-export function LoadingPage({ backgroundColor, primaryColor, logo } = {}) {
+export function LoadingPage({ backgroundColor, primaryColor, logo, fontFamily } = {}) {
   const bg = backgroundColor || '#ffffff';
   const primary = primaryColor || '#f77c18';
   const logoUrl = (logo || '').trim();
@@ -29,7 +29,7 @@ export function LoadingPage({ backgroundColor, primaryColor, logo } = {}) {
   return (
     <div
       className="min-h-screen flex flex-col items-center justify-center overflow-hidden relative bg-white"
-      style={{ backgroundColor: bg }}
+      style={{ backgroundColor: bg, fontFamily: fontFamily || undefined }}
     >
       {/* Ambient gradient */}
       <div

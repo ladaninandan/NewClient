@@ -5,6 +5,19 @@
 
 const SCRIPT_URL = 'https://checkout.razorpay.com/v1/checkout.js';
 
+function getSupabaseAnonKey() {
+  return process.env.REACT_APP_SUPABASE_ANON_KEY || '';
+}
+
+function getSupabaseFunctionHeaders(url) {
+  // Supabase Edge Functions typically require the `apikey` header when called via fetch.
+  if (typeof url === 'string' && url.includes('/functions/v1/')) {
+    const apikey = getSupabaseAnonKey();
+    if (apikey) return { apikey, Authorization: `Bearer ${apikey}` };
+  }
+  return {};
+}
+
 export function getRazorpayKey() {
   return process.env.REACT_APP_RAZORPAY_KEY_ID || '';
 }
@@ -13,8 +26,21 @@ export function getOrderApiUrl() {
   return (process.env.REACT_APP_RAZORPAY_ORDER_API || '').trim();
 }
 
+export function getVerifyApiUrl() {
+  return (process.env.REACT_APP_RAZORPAY_VERIFY_API || '').trim();
+}
+
 export function isRazorpayConfigured() {
-  return !!getRazorpayKey() && !!getOrderApiUrl();
+  const keyOk = !!getRazorpayKey();
+  const orderUrl = getOrderApiUrl();
+  // Treat placeholders as "not configured" so the form can fall back to Supabase insert.
+  const orderOk = !!orderUrl && !orderUrl.includes('your-api.com');
+  return keyOk && orderOk;
+}
+
+export function isRazorpayVerificationConfigured() {
+  const url = getVerifyApiUrl();
+  return !!url && !url.includes('your-api.com');
 }
 
 function loadScript() {
@@ -51,9 +77,15 @@ function loadScript() {
 export async function createOrder(amountPaise, receipt = `rcpt_${Date.now()}`) {
   const url = getOrderApiUrl();
   if (!url) throw new Error('Razorpay order API URL not configured');
+  if (url.includes('your-api.com')) {
+    throw new Error(
+      'REACT_APP_RAZORPAY_ORDER_API is still a placeholder (https://your-api.com/create-order). ' +
+      'Update it to your deployed endpoint for `api/create-order.js` (e.g. https://<project>.vercel.app/api/create-order).',
+    );
+  }
   const res = await fetch(url, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', ...getSupabaseFunctionHeaders(url) },
     body: JSON.stringify({
       amount: amountPaise,
       currency: 'INR',
@@ -62,7 +94,7 @@ export async function createOrder(amountPaise, receipt = `rcpt_${Date.now()}`) {
   });
   if (!res.ok) {
     const err = await res.text();
-    throw new Error(err || 'Order creation failed');
+    throw new Error(`Order creation failed (${res.status}) from ${url}. ${err || ''}`.trim());
   }
   const data = await res.json();
   const orderId = data.orderId || data.order_id || data.id;
@@ -80,7 +112,6 @@ export async function openCheckout(opts) {
     key: opts.key || getRazorpayKey(),
     amount: opts.amount,
     currency: opts.currency || 'INR',
-    order_id: opts.orderId,
     name: opts.name || 'Business Session',
     prefill: {
       name: opts.prefill?.name || '',
@@ -89,6 +120,41 @@ export async function openCheckout(opts) {
     },
     handler: opts.handler,
   };
+  if (opts.orderId) {
+    options.order_id = opts.orderId;
+  }
   const rzp = new Razorpay(options);
   rzp.open();
+}
+
+/**
+ * Verify Razorpay signature via backend.
+ * If verification API is not configured, returns { verified: true, skipped: true }.
+ */
+export async function verifyPayment({ orderId, paymentId, signature }) {
+  const url = getVerifyApiUrl();
+  if (!url || url.includes('your-api.com')) {
+    throw new Error(
+      'REACT_APP_RAZORPAY_VERIFY_API is not configured. ' +
+      'Set it to your deployed verify-payment endpoint so payments are verified before saving.',
+    );
+  }
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getSupabaseFunctionHeaders(url) },
+    body: JSON.stringify({
+      order_id: orderId,
+      payment_id: paymentId,
+      signature,
+    }),
+  });
+
+  if (!res.ok) {
+    const errText = await res.text().catch(() => '');
+    throw new Error(errText || 'Payment verification failed');
+  }
+
+  const data = await res.json();
+  return { verified: !!data.verified, skipped: false };
 }

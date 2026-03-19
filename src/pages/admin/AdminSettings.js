@@ -507,6 +507,31 @@ export function AdminSettings() {
       </section>
 
       <section className="card shadow-sm mb-4 admin-card">
+        <div className="card-header fw-bold">Typography (font)</div>
+        <div className="card-body">
+          <p className="text-muted mb-3" style={{ fontSize: '0.9375rem' }}>
+            Choose the site font used across the landing page.
+          </p>
+          <div className="row g-3">
+            <div className="col-12 col-md-6">
+              <label className="form-label small">Site font</label>
+              <select
+                className="form-control form-control-sm"
+                value={editConfig.strategyLayout?.fontFamily ?? 'Inter'}
+                onChange={(e) => handleConfigChange('strategyLayout.fontFamily', e.target.value)}
+              >
+                <option value="Inter">Inter</option>
+                <option value="Poppins">Poppins</option>
+                <option value="Roboto">Roboto</option>
+                <option value="Montserrat">Montserrat</option>
+                <option value="Nunito Sans">Nunito Sans</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="card shadow-sm mb-4 admin-card">
         <div className="card-header fw-bold">Section order</div>
         <div className="card-body">
           <p className="text-muted mb-3" style={{ fontSize: '0.9375rem' }}>
@@ -585,7 +610,7 @@ export function AdminSettings() {
                 className="form-control form-control-sm"
                 value={editConfig.strategyLayout?.topVideo?.topLine ?? ''}
                 onChange={(e) => handleConfigChange('strategyLayout.topVideo.topLine', e.target.value)}
-                placeholder="You’re stuck managing daily work instead of building systems that actually grow your business."
+                placeholder="What you need isn’t more effort you need the right systems, clarity, and direction to scale."
               />
             </div>
             <div className="col-12">

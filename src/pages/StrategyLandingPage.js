@@ -64,9 +64,19 @@ const SECTION_COMPONENTS = {
   footer: StrategyFooter,
 };
 
+const FONT_STACKS = {
+  Inter: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+  Poppins: "'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+  Roboto: "'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+  Montserrat: "'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+  "Nunito Sans": "'Nunito Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+};
+
 export function StrategyLandingPage() {
   const { config, loading } = useConfig();
   const theme = config.strategyLayout?.theme || defaultTheme;
+  const selectedFont = config.strategyLayout?.fontFamily || 'Inter';
+  const fontStack = FONT_STACKS[selectedFont] || FONT_STACKS.Inter;
   const [showPopup, setShowPopup] = useState(false);
   const popupTimerRef = useRef(null);
 
@@ -105,6 +115,7 @@ export function StrategyLandingPage() {
         backgroundColor="#ffffff"
         primaryColor={theme.primary}
         logo={logo}
+        fontFamily={fontStack}
       />
     );
   }
@@ -116,6 +127,7 @@ export function StrategyLandingPage() {
     '--theme-background-light': theme.backgroundLight,
     '--theme-background-dark': theme.backgroundDark,
     '--theme-card-dark': theme.cardDark,
+    '--site-font-family': fontStack,
   };
 
   const order = config.strategyLayout?.sectionOrder;
