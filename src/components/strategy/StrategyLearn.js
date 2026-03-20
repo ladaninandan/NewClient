@@ -16,7 +16,7 @@ export function StrategyLearn() {
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {items.map((item, i) => (
             <div key={i} className="scroll-reveal stagger-children-item flex gap-3 sm:gap-4 min-w-0">
-              <span className="material-symbols-outlined flex-shrink-0 text-2xl sm:text-3xl" style={{ color: 'var(--theme-primary)' }}>
+              <span className="material-symbols-outlined flex-shrink-0 text-2xl sm:text-3xl" style={{ color: 'white' }}>
                 {item.icon || 'check_circle'}
               </span>
               <p className="font-medium text-emerald-50 text-sm sm:text-base">{item.text}</p>

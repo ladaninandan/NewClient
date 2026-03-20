@@ -22,6 +22,7 @@ import {
   StrategyMoneyBackGuarantee,
   StrategyFAQ,
   StrategyFooter,
+  StrategyWhatsAppButton,
 } from '../components/strategy';
 import { LoadingPage } from '../components/LoadingPage';
 import { useConfig } from '../context/ConfigContext';
@@ -151,6 +152,7 @@ export function StrategyLandingPage() {
         return Comp ? <AnimateOnScroll key={id}><Comp /></AnimateOnScroll> : null;
       })}
       <StrategyStickyBar />
+      <StrategyWhatsAppButton />
 
     {showPopup && (
   <div

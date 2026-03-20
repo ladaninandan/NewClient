@@ -22,3 +22,4 @@ export { StrategyForm } from './StrategyForm';
 export { StrategyMoneyBackGuarantee } from './StrategyMoneyBackGuarantee';
 export { StrategyFAQ } from './StrategyFAQ';
 export { StrategyFooter } from './StrategyFooter';
+export { StrategyWhatsAppButton } from './StrategyWhatsAppButton';
