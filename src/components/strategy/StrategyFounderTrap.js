@@ -8,7 +8,7 @@ export function StrategyFounderTrap() {
   const warnings = (t.warningItems || []).filter(Boolean);
 
   return (
-    <section className="py-12 sm:py-16 lg:py-20" style={{ backgroundColor: 'var(--theme-background-light, #f8f7f5)' }}>
+    <section className="py-5 sm:py-12 lg:py-20" style={{ backgroundColor: 'var(--theme-background-light, #f8f7f5)' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
         <div className="scroll-reveal relative aspect-video rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl">
           <div
@@ -27,15 +27,24 @@ export function StrategyFounderTrap() {
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black mb-4 sm:mb-6 text-slate-900 dark:text-white text-black">
             {t.title || 'The Founder Dependency Trap'}
           </h2>
-          <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 mb-6 sm:mb-8">{t.text}</p>
+          {/* Ensure t.text or fallback text perfectly matches user copy */}
+          <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 mb-6 sm:mb-8">
+            {t.text || "Most business owners take pride in doing everything themselves. But this is exactly what stops your business from growing. If you are handling operations, sales, and decisions you are not scaling… you are just staying busy."}
+          </p>
           <div className="space-y-3 sm:space-y-4">
-            {warnings.map((item, i) => (
+            {(warnings.length ? warnings : [
+              "You work IN the business, not ON it.",
+              "Every important decision depends on you",
+              "Your team waits instead of taking ownership",
+              "You can’t step away without things slowing down",
+              "The truth is your business is not stuck. It is dependent on you."
+            ]).map((item, i) => (
               <div
                 key={i}
-                className="scroll-reveal stagger-children-item flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-white dark:bg-slate-800 rounded-xl shadow-sm border-l-4 min-w-0"
+                className="scroll-reveal stagger-children-item flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-white dark:bg-slate-800 rounded-xl shadow-sm border-l-4 min-w-0 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:bg-slate-50 dark:hover:bg-slate-700 cursor-default group"
                 style={{ borderLeftColor: 'var(--theme-primary)', minHeight: '3.5rem' }}
               >
-                <span className="material-symbols-outlined flex-shrink-0 flex items-center justify-center" style={{ color: 'var(--theme-primary)', fontSize: '1.5rem' }}>
+                <span className="material-symbols-outlined flex-shrink-0 flex items-center justify-center transition-transform duration-300 group-hover:scale-125" style={{ color: 'var(--theme-primary)', fontSize: '1.5rem' }}>
                   warning
                 </span>
                 <p className="font-semibold text-slate-900 dark:text-white mb-0 leading-snug flex items-center text-black text-sm sm:text-base">{item}</p>

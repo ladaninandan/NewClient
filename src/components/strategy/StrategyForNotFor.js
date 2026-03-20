@@ -39,7 +39,7 @@ export function StrategyForNotFor() {
   const notForIconColor = (f.notForIconColor && f.notForIconColor.trim()) ? f.notForIconColor.trim() : defaultNotFor.iconColor;
 
   return (
-    <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 max-w-7xl mx-auto">
+    <section className="py-0 sm:py-16 lg:py-20 px-4 sm:px-6 max-w-7xl mx-auto">
       <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
         <div
           className="scroll-reveal p-5 sm:p-6 lg:p-8 rounded-2xl sm:rounded-3xl border min-w-0"

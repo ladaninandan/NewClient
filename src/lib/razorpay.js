@@ -123,12 +123,11 @@ export async function openCheckout(opts) {
       contact: opts.prefill?.contact || '',
     },
     handler: opts.handler,
-  };
-  
+  }
   if (opts.orderId) {
     options.order_id = opts.orderId;
   }
-  
+
   try {
     const rzp = new Razorpay(options);
     rzp.on('payment.failed', function (response) {

@@ -13,7 +13,7 @@ export function StrategyMoneyBackGuarantee() {
   const imageUrl = (g.image || '').trim();
 
   return (
-    <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 bg-white">
+    <section className="py-5 sm:py-10 lg:py-12 px-4 sm:px-6 bg-white">
       <div className="max-w-6xl mx-auto">
         <h2 className="scroll-reveal text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-slate-100 text-center mb-2 text-black pb-5" >
           {title}
@@ -23,7 +23,7 @@ export function StrategyMoneyBackGuarantee() {
           style={{ backgroundColor: 'var(--theme-primary)' }}
         />
         <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-center">
-         
+
           <div className="scroll-reveal order-2 md:order-1 text-center md:text-left">
             <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-slate-100 mb-4 text-black">
               {subheading}

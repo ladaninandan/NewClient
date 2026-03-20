@@ -11,7 +11,7 @@ export function StrategyFAQ() {
   });
 
   return (
-    <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 max-w-4xl mx-auto">
+    <section className="py-5 sm:py-10 lg:py-12 px-4 sm:px-6 max-w-4xl mx-auto">
       <h2 className="scroll-reveal text-center text-2xl sm:text-3xl font-black mb-8 sm:mb-12 text-slate-900 dark:text-white text-black">
         {faq.title || 'Frequently Asked Questions'}
       </h2>
@@ -24,7 +24,7 @@ export function StrategyFAQ() {
             open={i === 0}
           >
             <summary className="flex justify-between items-center font-bold cursor-pointer list-none text-base sm:text-lg text-slate-900 dark:text-white">
-              
+
               <span className='text-black'>{item.q}</span>
 
               {/* + / - Icon */}

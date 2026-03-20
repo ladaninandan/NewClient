@@ -33,7 +33,7 @@ export function StrategyFeedback() {
   if (!items.length) return null;
 
   return (
-    <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6" style={{ backgroundColor: 'var(--theme-background-light)' }}>
+    <section className="py-5 sm:py-10 lg:py-12 px-4 sm:px-6" style={{ backgroundColor: 'var(--theme-background-light)' }}>
       <div className="max-w-7xl mx-auto ">
         {label && (
           <p className="text-center text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">

@@ -11,7 +11,7 @@ export function StrategyModel() {
   });
 
   return (
-    <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6">
+    <section className="py-5 sm:py-10 lg:py-12 px-4 sm:px-6">
       <div className="max-w-7xl mx-auto">
         <div className="scroll-reveal text-center mb-10 sm:mb-16">
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black mb-3 sm:mb-4 text-slate-900 dark:text-white text-black px-2">

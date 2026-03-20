@@ -31,7 +31,7 @@ export function StrategyTestimonials() {
   if (!videoItems.length) return null;
 
   return (
-    <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6" style={{ backgroundColor: 'var(--theme-background-light)' }}>
+    <section className="py-5 sm:py-10 lg:py-12 px-4 sm:px-6" style={{ backgroundColor: 'var(--theme-background-light)' }}>
       <div className="max-w-7xl mx-auto">
         <h2 className="scroll-reveal text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white text-center mb-8 sm:mb-10 text-black">
           {title}

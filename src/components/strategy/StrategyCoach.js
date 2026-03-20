@@ -11,7 +11,7 @@ export function StrategyCoach() {
   const [statsRef, statsInView] = useInView({ rootMargin: '0px 0px -40px 0px', threshold: 0.2 });
 
   return (
-    <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6">
+    <section className="py-5 sm:py-10 lg:py-12 px-4 sm:px-6">
       <div className="scroll-reveal max-w-5xl mx-auto bg-white dark:bg-slate-800 rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl flex flex-col md:flex-row border border-slate-100 dark:border-slate-700 hover-lift">
         <div className="w-full md:w-2/5 relative h-64 sm:h-80 md:min-h-[560px]">
           {c.image ? (
