@@ -6,7 +6,11 @@
 const SCRIPT_URL = 'https://checkout.razorpay.com/v1/checkout.js';
 
 function getSupabaseAnonKey() {
-  return process.env.REACT_APP_SUPABASE_ANON_KEY || '';
+  const key = process.env.REACT_APP_SUPABASE_ANON_KEY || '';
+  if (!key) {
+    throw new Error('REACT_APP_SUPABASE_ANON_KEY is completely missing in the React app. If you just added it to .env, you MUST restart your dev server (stop npm start and start it again). Also ensure it is set in Vercel environment variables.');
+  }
+  return key;
 }
 
 function getSupabaseFunctionHeaders(url) {
@@ -120,11 +124,21 @@ export async function openCheckout(opts) {
     },
     handler: opts.handler,
   };
+  
   if (opts.orderId) {
     options.order_id = opts.orderId;
   }
-  const rzp = new Razorpay(options);
-  rzp.open();
+  
+  try {
+    const rzp = new Razorpay(options);
+    rzp.on('payment.failed', function (response) {
+      console.error('Razorpay payment failed:', response.error);
+    });
+    rzp.open();
+  } catch (err) {
+    console.error('Fatal sync error in Razorpay checkout module:', err);
+    alert('Payment gateway could not load correctly. Please disable your ad blocker or try another browser.');
+  }
 }
 
 /**

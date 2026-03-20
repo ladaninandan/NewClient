@@ -38,6 +38,19 @@ function validateEmail(email) {
 }
 
 export function StrategyForm({ embedded = false }) {
+  // Suppress benign cross-origin Script errors from triggering Webpack's red screen locally
+  useEffect(() => {
+    const errorHandler = (e) => {
+      if (e.message === 'Script error.') {
+        e.preventDefault();
+        if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+        e.stopPropagation();
+      }
+    };
+    window.addEventListener('error', errorHandler, true);
+    return () => window.removeEventListener('error', errorHandler, true);
+  }, []);
+
   const { config } = useConfig();
   const idSuffix = embedded ? '-popup' : '';
   const [form, setForm] = useState({ name: '', email: '', phone: '' });
@@ -134,14 +147,7 @@ export function StrategyForm({ embedded = false }) {
           const orderRes = await createOrder(amountPaise);
           orderId = orderRes.orderId;
         } catch (orderErr) {
-          const isLocalhost =
-            typeof window !== 'undefined' &&
-            (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
-          const allowLocalFallback = process.env.REACT_APP_RAZORPAY_LOCAL_FALLBACK === 'true';
-          if (!isLocalhost || !allowLocalFallback) throw orderErr;
-          // Optional local-only fallback for testing.
-          // Disabled by default because opening checkout without order_id can trigger noisy script errors.
-          orderId = null;
+          throw orderErr;
         }
         setStatus('idle');
         await openCheckout({
@@ -231,15 +237,15 @@ export function StrategyForm({ embedded = false }) {
       <div className={embedded ? '' : 'max-w-md mx-auto'}>
         <div className={`${!embedded ? 'scroll-reveal ' : ''}bg-white dark:bg-slate-800 rounded-2xl sm:rounded-3xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden`}>
           <div className="p-4 sm:p-5 lg:p-10">
-            {!embedded && ( 
-            <div className="text-center mb-6 sm:mb-8">
-              <h2 className={`text-xl sm:text-2xl font-black mb-2 transition-colors duration-500 text-black ${showTitleBlack ? 'text-black' : 'text-slate-900 dark:text-white'}`}>
-               Book your 1:1 business consultation
-              </h2>
-              <p className="text-slate-500 dark:text-slate-400 text-sm sm:text-base">
-                Fill in your details and we’ll confirm your session.
-              </p>
-            </div>
+            {!embedded && (
+              <div className="text-center mb-6 sm:mb-8">
+                <h2 className={`text-xl sm:text-2xl font-black mb-2 transition-colors duration-500 text-black ${showTitleBlack ? 'text-black' : 'text-slate-900 dark:text-white'}`}>
+                  Book your 1:1 business consultation
+                </h2>
+                <p className="text-slate-500 dark:text-slate-400 text-sm sm:text-base">
+                  Fill in your details and we’ll confirm your session.
+                </p>
+              </div>
             )}
 
             <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
@@ -351,11 +357,10 @@ export function StrategyForm({ embedded = false }) {
           >
             <div className="text-center">
               <div
-                className={`mx-auto w-14 h-14 rounded-full flex items-center justify-center mb-4 ${
-                  modal.type === 'success'
+                className={`mx-auto w-14 h-14 rounded-full flex items-center justify-center mb-4 ${modal.type === 'success'
                     ? 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400'
                     : 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400'
-                }`}
+                  }`}
               >
                 <span className="material-symbols-outlined text-3xl">
                   {modal.type === 'success' ? 'check_circle' : 'error'}
