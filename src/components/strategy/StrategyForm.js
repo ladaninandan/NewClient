@@ -5,13 +5,7 @@ import { isRazorpayConfigured, createOrder, openCheckout, verifyPayment } from '
 
 const SUBMISSIONS_TABLE = 'registrations';
 
-// Parse price string (e.g. "₹1" or "1") to amount in paise
-function parsePrice(priceStr) {
-  if (priceStr == null) return 100; // default ₹1
-  const str = String(priceStr).replace(/[^\d.]/g, '');
-  const num = parseFloat(str) || 1;
-  return Math.round(num * 100);
-}
+// Note: checkout amount is strictly hardcoded to 100 paise now
 
 // Email: standard format (local@domain.tld)
 const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
@@ -62,11 +56,6 @@ export function StrategyForm({ embedded = false }) {
   const usePayment = isRazorpayConfigured();
   const stickyBar = config?.strategyLayout?.stickyBar || {};
   const pricing = config?.strategyLayout?.pricing || {};
-  const preferredPrice =
-    stickyBar.enabled !== false && (stickyBar.price || '').toString().trim()
-      ? stickyBar.price
-      : pricing.price;
-  
   // Hardcoded to strictly charge 1 INR (100 paise) as requested, regardless of DB config
   const amountPaise = 100;
 
