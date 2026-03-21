@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useConfig } from '../../context/ConfigContext';
+
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { isRazorpayConfigured, createOrder, openCheckout, verifyPayment } from '../../lib/razorpay';
 
@@ -45,7 +45,7 @@ export function StrategyForm({ embedded = false }) {
     return () => window.removeEventListener('error', errorHandler, true);
   }, []);
 
-  const { config } = useConfig();
+
   const idSuffix = embedded ? '-popup' : '';
   const [form, setForm] = useState({ name: '', email: '', phone: '' });
   const [status, setStatus] = useState('idle');
