@@ -54,8 +54,6 @@ export function StrategyForm({ embedded = false }) {
   const [fieldErrors, setFieldErrors] = useState({ email: '', phone: '' });
   const [showTitleBlack, setShowTitleBlack] = useState(false);
   const usePayment = isRazorpayConfigured();
-  const stickyBar = config?.strategyLayout?.stickyBar || {};
-  const pricing = config?.strategyLayout?.pricing || {};
   // Hardcoded to strictly charge 1 INR (100 paise) as requested, regardless of DB config
   const amountPaise = 100;
 
