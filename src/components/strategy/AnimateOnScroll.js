@@ -13,7 +13,7 @@ export function AnimateOnScroll({ children, className = '', stagger, as: Tag = '
   return (
     <Tag
       ref={ref}
-      className={`animate-on-scroll${isInView ? ' in-view' : ''}${staggerClass} ${className}`.trim()}
+      className={`animate-on-scroll${isInView ? ' in-view' : ''}${staggerClass} ${className} bdbfjsdfjsdf`.trim()}
     >
       {children}
     </Tag>

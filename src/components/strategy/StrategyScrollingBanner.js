@@ -24,7 +24,7 @@ export function StrategyScrollingBanner() {
       <div
         className="scrolling-banner-inner flex whitespace-nowrap text-sm sm:text-base font-semibold"
         style={{
-          animation: 'scroll-left 40s linear infinite',
+          animation: 'scroll-left 7s linear infinite',
           color: 'var(--theme-primary)',
         }}
       >

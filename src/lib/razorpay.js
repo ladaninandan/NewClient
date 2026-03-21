@@ -74,7 +74,7 @@ function loadScript() {
 
 /**
  * Create order via your backend. Backend should POST to Razorpay Orders API and return { orderId } or { id }.
- * @param {number} amountPaise - Amount in paise (e.g. 19900 for ₹199)
+ * @param {number} amountPaise - Amount in paise (e.g. 100 for ₹1)
  * @param {string} [receipt] - Receipt id (optional)
  * @returns {Promise<{ orderId: string }>}
  */

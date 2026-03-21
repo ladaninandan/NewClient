@@ -77,7 +77,7 @@ export function AdminLayout() {
   );
 
   return (
-    <div className="d-flex flex-column flex-lg-row min-vh-100 bg-light">
+    <div className="d-flex flex-column flex-lg-row vh-100 overflow-hidden bg-light">
       {/* Mobile: hamburger */}
       <div className="d-flex d-lg-none align-items-center justify-content-between bg-dark text-white px-3 py-2 sticky-top">
         <button

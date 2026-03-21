@@ -5,11 +5,11 @@ import { isRazorpayConfigured, createOrder, openCheckout, verifyPayment } from '
 
 const SUBMISSIONS_TABLE = 'registrations';
 
-// Parse price string (e.g. "₹199" or "199") to amount in paise
-function parsePriceToPaise(priceStr) {
-  if (priceStr == null) return 19900; // default ₹199
+// Parse price string (e.g. "₹1" or "1") to amount in paise
+function parsePrice(priceStr) {
+  if (priceStr == null) return 100; // default ₹1
   const str = String(priceStr).replace(/[^\d.]/g, '');
-  const num = parseFloat(str) || 199;
+  const num = parseFloat(str) || 1;
   return Math.round(num * 100);
 }
 
@@ -66,7 +66,9 @@ export function StrategyForm({ embedded = false }) {
     stickyBar.enabled !== false && (stickyBar.price || '').toString().trim()
       ? stickyBar.price
       : pricing.price;
-  const amountPaise = parsePriceToPaise(preferredPrice);
+  
+  // Hardcoded to strictly charge 1 INR (100 paise) as requested, regardless of DB config
+  const amountPaise = 100;
 
   useEffect(() => {
     const t = setTimeout(() => setShowTitleBlack(true), 3000);
@@ -358,8 +360,8 @@ export function StrategyForm({ embedded = false }) {
             <div className="text-center">
               <div
                 className={`mx-auto w-14 h-14 rounded-full flex items-center justify-center mb-4 ${modal.type === 'success'
-                    ? 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400'
-                    : 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400'
+                  ? 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400'
+                  : 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400'
                   }`}
               >
                 <span className="material-symbols-outlined text-3xl">

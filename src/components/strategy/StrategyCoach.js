@@ -11,13 +11,13 @@ export function StrategyCoach() {
   const [statsRef, statsInView] = useInView({ rootMargin: '0px 0px -40px 0px', threshold: 0.2 });
 
   return (
-    <section className="py-5 sm:py-10 lg:py-12 px-4 sm:px-6">
+    <section className="py-1 sm:py-10 lg:py-12 px-4 sm:px-6">
       <div className="scroll-reveal max-w-5xl mx-auto bg-white dark:bg-slate-800 rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl flex flex-col md:flex-row border border-slate-100 dark:border-slate-700 hover-lift">
-        <div className="w-full md:w-2/5 relative h-64 sm:h-80 md:min-h-[560px]">
+        <div className="w-full md:w-2/5 relative flex md:min-h-[560px]">
           {c.image ? (
-            <img className="w-full h-full object-cover" alt={c.name} src={c.image} />
+            <img className="w-full h-auto md:h-full object-cover" alt={c.name} src={c.image} />
           ) : (
-            <div className="w-full h-full bg-slate-700 flex items-center justify-center text-white text-4xl sm:text-5xl font-black">
+            <div className="w-full h-64 sm:h-80 md:h-full flex-grow bg-slate-700 flex items-center justify-center text-white text-4xl sm:text-5xl font-black">
               {c.name ? c.name.charAt(0) : '?'}
             </div>
           )}

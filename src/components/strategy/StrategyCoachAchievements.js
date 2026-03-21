@@ -66,7 +66,7 @@ export function StrategyCoachAchievements() {
           return (
             <div
               key={i}
-              className={`scroll-reveal coach-achieve-card group rounded-2xl sm:rounded-3xl p-5 sm:p-6 lg:p-7 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col text-center sm:text-left items-center sm:items-start ${!cardBg ? 'bg-white dark:bg-slate-800' : ''}`}
+              className={`scroll-reveal coach-achieve-card group rounded-2xl sm:rounded-3xl p-5 sm:p-6 lg:p-7 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col text-center items-center ${!cardBg ? 'bg-white dark:bg-slate-800' : ''}`}
               style={cardStyle}
             >
               <div

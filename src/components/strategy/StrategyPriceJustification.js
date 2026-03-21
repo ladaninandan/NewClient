@@ -16,7 +16,7 @@ export function StrategyPriceJustification() {
   const paragraphs = (explain || '').split(/\n\n+/).filter(Boolean);
 
   return (
-    <section className="relative py-3 sm:py-20 px-4 sm:px-6 overflow-hidden">
+    <section className="relative py-5 sm:py-20 px-4 sm:px-6 overflow-hidden">
       <style>{`
         @keyframes priceJustifySlideLeft {
           from { opacity: 0; transform: translateX(-32px) scale(0.95); }
@@ -70,7 +70,7 @@ export function StrategyPriceJustification() {
           </div>
 
           {/* Right: copy + CTA */}
-          <div className="scroll-reveal lg:col-span-7 order-1 lg:order-2">
+          <div className="scroll-reveal lg:col-span-7 order-1 lg:order-2 text-center lg:text-left flex flex-col items-center lg:items-start">
             <p className="price-justify-label text-xs sm:text-sm font-semibold tracking-widest uppercase mb-2" style={{ color: primary }}>
               Value without the barrier
             </p>
