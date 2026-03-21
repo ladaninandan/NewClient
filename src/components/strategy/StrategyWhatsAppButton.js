@@ -13,7 +13,7 @@ export function StrategyWhatsAppButton() {
 
       {/* Actual Button */}
       <a
-        href="https://wa.me/919313488989"
+        href="https://api.whatsapp.com/send?phone=919313488989&text=Hey%20I%20am%20interested%20for%20business%201%20to%201%20clarity%20session"
         target="_blank"
         rel="noopener noreferrer"
         className="relative flex items-center justify-center w-full h-full rounded-full shadow-[0_8px_30px_rgba(37,211,102,0.4)] transition-transform duration-300 hover:scale-110 hover:-translate-y-2"
