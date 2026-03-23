@@ -74,19 +74,19 @@ export function StrategyProblem() {
           {items.map((text, i) => (
             <div
               key={i}
-              className="scroll-reveal problem-card group relative rounded-2xl sm:rounded-[1.25rem] p-4 sm:p-5 bg-white dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-600/60 shadow-sm hover:shadow-lg hover:border-slate-300 dark:hover:border-slate-500/80 transition-all duration-300 ease-out hover:-translate-y-0.5 backdrop-blur-sm"
+              className="scroll-reveal problem-card group relative flex items-center min-h-[88px] rounded-2xl sm:rounded-[1.25rem] p-4 sm:p-5 bg-white dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-600/60 shadow-sm hover:shadow-lg hover:border-slate-300 dark:hover:border-slate-500/80 transition-all duration-300 ease-out hover:-translate-y-0.5 backdrop-blur-sm"
             >
               <div
-                className="absolute top-3 left-3 sm:top-4 sm:left-4 w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center text-white font-bold text-sm opacity-90 group-hover:scale-110 transition-transform duration-300"
+                className="absolute top-1/2 -translate-y-1/2 left-3 sm:left-4 w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center text-white font-bold text-sm opacity-90 group-hover:scale-110 transition-transform duration-300"
                 style={{ backgroundColor: primary }}
               >
                 {i + 1}
               </div>
-              <p className="text-slate-700 dark:text-slate-900 text-sm sm:text-base font-medium pl-10 sm:pl-11 leading-snug pt-0.5">
+              <p className="text-slate-700 dark:text-slate-900 text-sm sm:text-base font-medium pl-10 sm:pl-11 leading-snug">
                 {text}
               </p>
               <span
-                className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 material-symbols-outlined text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                className="absolute top-1/2 -translate-y-1/2 right-3 sm:right-4 material-symbols-outlined text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                 style={{ color: primary }}
               >
                 arrow_forward

@@ -18,7 +18,7 @@ function isLightBg(hex) {
  */
 export function LoadingPage({ backgroundColor, primaryColor, logo, fontFamily } = {}) {
   const bg = backgroundColor || '#ffffff';
-  const primary = primaryColor || '#f77c18';
+  const primary = primaryColor || '#1845f7ff';
   const logoUrl = (logo || '').trim();
   const light = isLightBg(bg);
   const textClass = light ? 'text-slate-900' : 'text-white';

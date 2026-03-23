@@ -98,18 +98,18 @@ export function StrategyTopVideo() {
       {/* Dark blue overlay — 20% opacity (above video/image, below content) */}
       <div
         className="absolute inset-0 pointer-events-none"
-        style={{ backgroundColor: 'rgba(35, 35, 35, 0.59)' }}
+        style={{ backgroundColor: 'rgba(0, 0, 0, 0.72)' }}
         aria-hidden
       />
       <div className="w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 relative z-10 text-center">
-       
+
         <span
           className="scroll-reveal inline-block px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase mb-2 text-white"
           style={{ backgroundColor: 'color-mix(in srgb, var(--theme-primary) 25%, transparent)' }}
         >
           {badge}
         </span>
-  
+
         <h1 className="scroll-reveal text-1xl sm:text-2xl lg:text-3xl xl:text-4xl font-black text-white leading-tight mb-6 sm:mb-8 lg:mb-10 px-2">
           {headline}
         </h1>
