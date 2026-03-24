@@ -44,4 +44,4 @@ export function ScrollRevealObserver({ dependency } = {}) {
   }, [dependency]);
 
   return null;
-}
+} 
