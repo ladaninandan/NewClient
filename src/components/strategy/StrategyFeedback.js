@@ -34,9 +34,9 @@ export function StrategyFeedback() {
 
   return (
     <section className="py-0 sm:py-10 lg:py-12 px-4 sm:px-6" style={{ backgroundColor: 'var(--theme-background-light)' }}>
-      <div className="max-w-7xl mx-auto ">
+      <div className="max-w-7xl mx-auto mt-4">
         {label && (
-          <p className="text-center text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
+          <p className="text-center text-xl font-semibold uppercase tracking-wider text-slate-500 dark:text-dark-400 mb-2">
             {label}
           </p>
         )}
@@ -86,7 +86,7 @@ export function StrategyFeedback() {
                   </div>
                 </div>
                 {it.text ? (
-                  <p className="text-slate-700 dark:text-slate-300 text-sm sm:text-base leading-relaxed mb-5 flex-1 text-center px-1">
+                  <p className="text-slate-700 dark:text-slate-600 text-sm sm:text-base leading-relaxed mb-5 flex-1 text-center px-1">
                     {it.text}
                   </p>
                 ) : null}

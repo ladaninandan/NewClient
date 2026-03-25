@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ConfigProvider } from './context/ConfigContext';
 import { LandingPage } from './pages/LandingPage';
+import { ThankYouPage } from './pages/ThankYouPage';
 import { AdminAuthGuard } from './components/admin/AdminAuthGuard';
 import { AdminLayout } from './components/admin/AdminLayout';
 import { AdminDashboard } from './pages/admin/AdminDashboard';
@@ -16,6 +17,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<LandingPage />} />
+          <Route path="/thank-you" element={<ThankYouPage />} />
           <Route path="/admin" element={<AdminAuthGuard />}>
             <Route element={<AdminLayout />}>
               <Route index element={<AdminDashboard />} />

@@ -22,7 +22,7 @@ export function StrategyPricing() {
             <span className="text-slate-400 line-through text-lg sm:text-2xl">{p.originalPrice || '₹4,999'}</span>
             <AnimatedNumber value={p.price || '₹199'} className="text-4xl sm:text-5xl lg:text-6xl font-black" style={{ color: 'var(--theme-primary)' }} />
           </div>
-          <p className="text-slate-600 dark:text-slate-400 mb-6 sm:mb-8 text-sm sm:text-base">{p.note}</p>
+          <p className="text-slate-600 dark:text-slate-600 mb-6 sm:mb-8 text-sm sm:text-base">{p.note}</p>
           <button
             type="button"
             onClick={scrollToForm}

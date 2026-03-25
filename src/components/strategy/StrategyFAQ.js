@@ -34,7 +34,7 @@ export function StrategyFAQ() {
 
             </summary>
 
-            <p className="mt-3 sm:mt-4 text-slate-600 dark:text-slate-400 text-sm sm:text-base">
+            <p className="mt-3 sm:mt-4 text-slate-600 dark:text-slate-600 text-sm sm:text-base">
               {item.a}
             </p>
 

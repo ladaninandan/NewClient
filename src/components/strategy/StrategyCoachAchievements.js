@@ -58,40 +58,40 @@ export function StrategyCoachAchievements() {
           </h2>
         )}
         <div className={`grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-5 lg:gap-6 ${isInView ? 'coach-achieve-inview' : ''}`}>
-        {achievements.map((a, i) => {
-          const icon = a.icon || DEFAULT_ICONS[i] || 'star';
-          const cardStyle = cardBg ? { backgroundColor: cardBg } : undefined;
-          const numberStyle = numberColor ? { color: numberColor } : undefined;
-          const descStyle = descriptionColor ? { color: descriptionColor } : undefined;
-          return (
-            <div
-              key={i}
-              className={`scroll-reveal coach-achieve-card group rounded-2xl sm:rounded-3xl p-5 sm:p-6 lg:p-7 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col text-center items-center ${!cardBg ? 'bg-white dark:bg-slate-800' : ''}`}
-              style={cardStyle}
-            >
+          {achievements.map((a, i) => {
+            const icon = a.icon || DEFAULT_ICONS[i] || 'star';
+            const cardStyle = cardBg ? { backgroundColor: cardBg } : undefined;
+            const numberStyle = numberColor ? { color: numberColor } : undefined;
+            const descStyle = descriptionColor ? { color: descriptionColor } : undefined;
+            return (
               <div
-                className="w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center flex-shrink-0 mb-4 transition-transform duration-300 group-hover:scale-110"
-                style={{ backgroundColor: iconBg, color: iconColor }}
+                key={i}
+                className={`scroll-reveal coach-achieve-card group rounded-2xl sm:rounded-3xl p-5 sm:p-6 lg:p-7 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col text-center items-center ${!cardBg ? 'bg-white dark:bg-slate-800' : ''}`}
+                style={cardStyle}
               >
-                <span className="material-symbols-outlined text-3xl sm:text-4xl" aria-hidden>
-                  {icon}
-                </span>
+                <div
+                  className="w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center flex-shrink-0 mb-4 transition-transform duration-300 group-hover:scale-110"
+                  style={{ backgroundColor: iconBg, color: iconColor }}
+                >
+                  <span className="material-symbols-outlined text-3xl sm:text-4xl" aria-hidden>
+                    {icon}
+                  </span>
+                </div>
+                <p
+                  className={`text-3xl sm:text-3xl lg:text-3xl font-black tabular-nums mb-2 ${!numberColor ? 'text-black dark:text-white' : ''}`}
+                  style={numberStyle}
+                >
+                  <AnimatedNumber value={a.value} isInView={isInView} />
+                </p>
+                <p
+                  className={`text-sm sm:text-base leading-relaxed font-medium ${!descriptionColor ? 'text-black/80 dark:text-slate-600' : ''}`}
+                  style={descStyle}
+                >
+                  {a.description}
+                </p>
               </div>
-              <p
-                className={`text-3xl sm:text-3xl lg:text-3xl font-black tabular-nums mb-2 ${!numberColor ? 'text-black dark:text-white' : ''}`}
-                style={numberStyle}
-              >
-                <AnimatedNumber value={a.value} isInView={isInView} />
-              </p>
-              <p
-                className={`text-sm sm:text-base leading-relaxed font-medium ${!descriptionColor ? 'text-black/80 dark:text-slate-300' : ''}`}
-                style={descStyle}
-              >
-                {a.description}
-              </p>
-            </div>
-          );
-        })}
+            );
+          })}
         </div>
       </div>
     </section>

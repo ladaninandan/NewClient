@@ -42,7 +42,7 @@ export const defaultConfig = {
     fontFamily: 'Inter',
     nav: { logo: '', brandShort: 'RR.', brandName: 'Rahul Revne', ctaText: 'Book Now' },
     topVideo: {
-      topLine: "What you need isn’t more effort you need the right systems, clarity, and direction to scale.",
+      topLine: "",
       badge: 'Limited Time Strategy Session',
       headline: 'Limited Time Strategy Session • Reserve Your Spot at ₹199 • Trusted by 500+ Founders • 1-to-1 Business Clarity Session • Book Now — Limited Slots',
       video: '',

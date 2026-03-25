@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { isRazorpayConfigured, createOrder, openCheckout, verifyPayment } from '../../lib/razorpay';
@@ -47,6 +48,7 @@ export function StrategyForm({ embedded = false }) {
 
 
   const idSuffix = embedded ? '-popup' : '';
+  const navigate = useNavigate();
   const [form, setForm] = useState({ name: '', email: '', phone: '' });
   const [status, setStatus] = useState('idle');
   const [modal, setModal] = useState(null); // { type: 'success' | 'error', title, message }
@@ -172,11 +174,7 @@ export function StrategyForm({ embedded = false }) {
               if (error) throw error;
               setStatus('success');
               setForm({ name: '', email: '', phone: '' });
-              setModal({
-                type: 'success',
-                title: 'Payment successful',
-                message: 'Thank you! Your spot is reserved. We’ll confirm your session details via email.',
-              });
+              navigate('/thank-you');
             } catch (err) {
               setStatus('idle');
               const isDuplicate = err.code === '23505' || (err.message && /unique|duplicate|already exists/i.test(err.message));
@@ -198,11 +196,7 @@ export function StrategyForm({ embedded = false }) {
 
       setStatus('success');
       setForm({ name: '', email: '', phone: '' });
-      setModal({
-        type: 'success',
-        title: 'Spot reserved',
-        message: 'Thank you! Your spot is reserved. We’ll confirm your session details via email.',
-      });
+      navigate('/thank-you');
     } catch (err) {
       setStatus('idle');
       const isDuplicate = err.code === '23505' || (err.message && /unique|duplicate|already exists/i.test(err.message));

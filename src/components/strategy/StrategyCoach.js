@@ -30,7 +30,7 @@ export function StrategyCoach() {
             {c.label || 'The Strategist'}
           </span>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black mb-4 sm:mb-6 text-slate-900 dark:text-white text-black">{c.heading || 'Meet Rahul Revne'}</h2>
-          <div className="space-y-3 sm:space-y-4 text-slate-600 dark:text-slate-400 leading-relaxed mb-6 sm:mb-8 text-sm sm:text-base">
+          <div className="space-y-3 sm:space-y-4 text-slate-600 dark:text-slate-600 leading-relaxed mb-6 sm:mb-8 text-sm sm:text-base">
             {bioParagraphs.map((p, i) => (
               <p key={i}>{p}</p>
             ))}
@@ -41,7 +41,7 @@ export function StrategyCoach() {
                 <p className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white text-black">
                   <AnimatedNumber value={s.value} isInView={statsInView} />
                 </p>
-                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">{s.label}</p>
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-600">{s.label}</p>
               </div>
             ))}
           </div>

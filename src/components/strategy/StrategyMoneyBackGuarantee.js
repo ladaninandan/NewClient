@@ -28,7 +28,7 @@ export function StrategyMoneyBackGuarantee() {
             <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-slate-100 mb-4 text-black">
               {subheading}
             </h3>
-            <p className="text-slate-600 dark:text-slate-400 text-base sm:text-lg leading-relaxed mb-6">
+            <p className="text-slate-600 dark:text-slate-600 text-base sm:text-lg leading-relaxed mb-6">
               {description}
             </p>
             <button
