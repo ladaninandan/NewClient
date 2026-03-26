@@ -4,7 +4,6 @@ import { useConfig } from '../../context/ConfigContext';
 export function StrategyFeedback() {
   const { config } = useConfig();
   const scrollRef = useRef(null);
-  const t = config.strategyLayout?.testimonials || {};
   const f = config.strategyLayout?.feedback || {};
   const label = f.label ?? 'Feedbacks';
   const title = f.title ?? 'Here are some Real Screenshots & Feedbacks';
