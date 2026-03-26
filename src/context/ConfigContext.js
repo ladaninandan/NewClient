@@ -114,6 +114,17 @@ export function ConfigProvider({ children }) {
           updateFavicon(logoUrl.trim());
         };
         img.src = logoUrl.trim();
+
+        // Update og:image
+        const ogImage = document.getElementById('og-image');
+        if (ogImage) ogImage.content = logoUrl.trim();
+      }
+      
+      const brandName = config?.strategyLayout?.nav?.brandName;
+      if (brandName) {
+        document.title = brandName;
+        const ogTitle = document.getElementById('og-title');
+        if (ogTitle) ogTitle.content = brandName;
       }
     } catch (err) {
       console.error('Failed to update favicon:', err);

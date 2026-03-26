@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom';
 const ADMIN_STORAGE_KEY = 'adminLoggedIn';
 
 // Static credentials (override via env in production)
-const STATIC_EMAIL = process.env.REACT_APP_ADMIN_EMAIL || 'admin@example.com';
-const STATIC_PASSWORD = process.env.REACT_APP_ADMIN_PASSWORD || 'admin123';
+const STATIC_EMAIL = process.env.REACT_APP_ADMIN_EMAIL || 'consulting@rrtcs.com';
+const STATIC_PASSWORD = process.env.REACT_APP_ADMIN_PASSWORD || 'RRTCS@2026';
 
 export function getAdminAuthenticated() {
   return sessionStorage.getItem(ADMIN_STORAGE_KEY) === 'true';
@@ -49,7 +49,7 @@ export function AdminLogin() {
                 id="admin-email"
                 type="email"
                 className="form-control form-control-sm"
-                placeholder="admin@example.com"
+                placeholder="consulting@rrtcs.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 autoComplete="email"

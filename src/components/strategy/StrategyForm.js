@@ -6,7 +6,7 @@ import { isRazorpayConfigured, createOrder, openCheckout, verifyPayment } from '
 
 const SUBMISSIONS_TABLE = 'registrations';
 
-// Note: checkout amount is strictly hardcoded to 100 paise now
+// Note: checkout amount is strictly hardcoded to 19900 paise now
 
 // Email: standard format (local@domain.tld)
 const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
@@ -56,8 +56,8 @@ export function StrategyForm({ embedded = false }) {
   const [fieldErrors, setFieldErrors] = useState({ email: '', phone: '' });
   const [showTitleBlack, setShowTitleBlack] = useState(false);
   const usePayment = isRazorpayConfigured();
-  // Hardcoded to strictly charge 1 INR (100 paise) as requested, regardless of DB config
-  const amountPaise = 100;
+  // Hardcoded to strictly charge 199 INR (19900 paise) as requested, regardless of DB config
+  const amountPaise = 19900;
 
   useEffect(() => {
     const t = setTimeout(() => setShowTitleBlack(true), 3000);

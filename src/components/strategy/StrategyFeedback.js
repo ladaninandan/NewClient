@@ -9,15 +9,12 @@ export function StrategyFeedback() {
   const label = f.label ?? 'Feedbacks';
   const title = f.title ?? 'Here are some Real Screenshots & Feedbacks';
 
-  // Show feedback cards only for the same people who have videos (4 videos uploaded in admin)
-  const videoItems = (t.items || []).filter((it) => it != null && (it.video || '').trim());
   const feedbackItems = (f.items || []).filter((it) => it != null && typeof it === 'object');
 
-  const items = videoItems.map((video, i) => {
-    const fb = feedbackItems[i] || {};
+  const items = feedbackItems.map((fb) => {
     return {
-      name: (video.name ?? fb.name ?? '').trim(),
-      role: (video.role ?? fb.role ?? fb.company ?? '').trim(),
+      name: (fb.name ?? '').trim(),
+      role: (fb.role ?? fb.company ?? '').trim(),
       text: (fb.text ?? fb.quote ?? '').trim(),
       image: (fb.image ?? fb.avatar ?? '').trim() || undefined,
     };
