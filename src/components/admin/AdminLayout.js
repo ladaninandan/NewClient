@@ -4,7 +4,7 @@ import { setAdminAuthenticated } from '../../pages/admin/AdminLogin';
 
 const navItems = [
   { path: '/admin', label: 'Dashboard', icon: '📊' },
-  { path: '/admin/submissions', label: 'Submissions', icon: '📋' },
+  { path: '/admin/submissions', label: 'Form Submissions', icon: '📋' },
   { path: '/admin/settings', label: 'Site Settings', icon: '⚙️' },
 ];
 
@@ -51,9 +51,8 @@ export function AdminLayout() {
           <button
             key={item.path}
             type="button"
-            className={`btn w-100 text-start d-flex align-items-center gap-2 py-2 px-3 mb-1 rounded ${
-              isActive(item) ? 'btn-primary' : 'text-white border-0 bg-transparent'
-            }`}
+            className={`btn w-100 text-start d-flex align-items-center gap-2 py-2 px-3 mb-1 rounded ${isActive(item) ? 'btn-primary' : 'text-white border-0 bg-transparent'
+              }`}
             style={!isActive(item) ? { color: 'rgba(255,255,255,0.85)' } : {}}
             onClick={() => handleNav(item.path)}
           >

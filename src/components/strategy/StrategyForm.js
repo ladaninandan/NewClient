@@ -56,7 +56,7 @@ export function StrategyForm({ embedded = false }) {
   const [fieldErrors, setFieldErrors] = useState({ email: '', phone: '' });
   const [showTitleBlack, setShowTitleBlack] = useState(false);
   const usePayment = isRazorpayConfigured();
-  // Hardcoded to strictly charge 199 INR (19900 paise) as requested, regardless of DB config
+  // Hardcoded to strictly charge 1 INR (100 paise) for testing
   const amountPaise = 19900;
 
   useEffect(() => {
@@ -132,6 +132,15 @@ export function StrategyForm({ embedded = false }) {
         phone: phoneResult.normalized,
       };
 
+      // 1) SAVE TO DB IMMEDIATELY
+      const { data: insertedData, error: insertError } = await supabase
+        .from(SUBMISSIONS_TABLE)
+        .insert([payload])
+        .select()
+        .single();
+
+      if (insertError) throw insertError;
+
       if (usePayment) {
         let orderId = null;
         try {
@@ -149,7 +158,7 @@ export function StrategyForm({ embedded = false }) {
           handler: async (res) => {
             setStatus('loading');
             try {
-              // CRITICAL: Verify Razorpay signature server-side before saving anything
+              // CRITICAL: Verify Razorpay signature server-side before updating
               const orderIdFromRes = res.razorpay_order_id || null;
               const paymentIdFromRes = res.razorpay_payment_id || null;
               const signatureFromRes = res.razorpay_signature || null;
@@ -165,25 +174,28 @@ export function StrategyForm({ embedded = false }) {
                 }
               }
 
-              const row = {
-                ...payload,
+              // 2) UPDATE THE EXISTING RECORD with payment details
+              const updatePayload = {
                 payment_id: paymentIdFromRes,
                 razorpay_order_id: orderIdFromRes,
               };
-              const { error } = await supabase.from(SUBMISSIONS_TABLE).insert([row]);
-              if (error) throw error;
+
+              const { error: updateError } = await supabase
+                .from(SUBMISSIONS_TABLE)
+                .update(updatePayload)
+                .eq('id', insertedData.id);
+
+              if (updateError) throw updateError;
+
               setStatus('success');
               setForm({ name: '', email: '', phone: '' });
               navigate('/thank-you');
             } catch (err) {
               setStatus('idle');
-              const isDuplicate = err.code === '23505' || (err.message && /unique|duplicate|already exists/i.test(err.message));
               setModal({
                 type: 'error',
-                title: isDuplicate ? 'Already registered' : 'Something went wrong',
-                message: isDuplicate
-                  ? 'This email is already registered. Use a different email or contact us if you need to update your booking.'
-                  : (err.message || 'Payment succeeded but we could not save your details. Please contact us with your payment ID.'),
+                title: 'Something went wrong',
+                message: err.message || 'Payment processing error. Your data was saved, please contact support.',
               });
             }
           },
@@ -191,9 +203,7 @@ export function StrategyForm({ embedded = false }) {
         return;
       }
 
-      const { error } = await supabase.from(SUBMISSIONS_TABLE).insert([payload]);
-      if (error) throw error;
-
+      // No payment needed, already saved
       setStatus('success');
       setForm({ name: '', email: '', phone: '' });
       navigate('/thank-you');

@@ -23,7 +23,7 @@ export function AdminDashboard() {
 
       const { data: recent } = await supabase
         .from(SUBMISSIONS_TABLE)
-        .select('id, name, email, phone, created_at')
+        .select('id, name, email, phone, created_at, payment_id')
         .order('created_at', { ascending: false })
         .limit(RECENT_LIMIT);
       setSubmissions(recent || []);
@@ -31,6 +31,29 @@ export function AdminDashboard() {
     };
     fetch();
   }, []);
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this user?')) return;
+    
+    try {
+      const { data, error } = await supabase
+        .from(SUBMISSIONS_TABLE)
+        .delete()
+        .eq('id', id)
+        .select();
+        
+      if (error) throw error;
+      
+      if (!data || data.length === 0) {
+        throw new Error('Supabase Security Rules (RLS) blocked the delete. You must enable "Delete" permissions in your Supabase dashboard for the registrations table.');
+      }
+      
+      setSubmissions(submissions.filter(s => s.id !== id));
+      setTotal(prev => Math.max(0, prev - 1));
+    } catch (err) {
+      alert('Error deleting submission: ' + err.message);
+    }
+  };
 
   if (!isSupabaseConfigured()) {
     return (
@@ -96,6 +119,8 @@ export function AdminDashboard() {
                     <th>Email</th>
                     <th className="d-none d-md-table-cell">Phone</th>
                     <th className="d-none d-lg-table-cell">Date</th>
+                    <th>Status</th>
+                    <th className="text-end">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -105,6 +130,22 @@ export function AdminDashboard() {
                       <td className="text-break small">{row.email}</td>
                       <td className="d-none d-md-table-cell small">{row.phone}</td>
                       <td className="d-none d-lg-table-cell text-muted small">{row.created_at ? new Date(row.created_at).toLocaleString() : '-'}</td>
+                      <td>
+                        {row.payment_id ? (
+                          <span className="badge bg-success">Paid</span>
+                        ) : (
+                          <span className="badge bg-warning text-dark">Pending</span>
+                        )}
+                      </td>
+                      <td className="text-end">
+                        <button 
+                          className="btn btn-sm btn-outline-danger py-0 px-2" 
+                          onClick={() => handleDelete(row.id)}
+                          title="Delete User"
+                        >
+                          <span className="material-symbols-outlined text-sm" style={{ fontSize: '16px', verticalAlign: 'middle' }}>delete</span>
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
