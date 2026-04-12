@@ -78,9 +78,9 @@ export function StrategyStickyBar() {
             <span className="text-2xl font-black" style={{ color: 'var(--theme-primary)' }}>{price}</span>
             <span className="text-sm text-slate-500 line-through">{originalPrice}</span>
           </div>
-          <p className="text-xs sm:text-sm font-semibold text-black">
+          <div className="text-xs sm:text-sm font-semibold text-black">
             {displayCountdown}
-          </p>
+          </div>
         </div>
         <button
           type="button"
