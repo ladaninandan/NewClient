@@ -20,8 +20,10 @@ create table if not exists public.registrations (
   name text not null,
   email text not null,
   phone text not null,
+  turnover text,
   created_at timestamptz default now()
 );
+alter table public.registrations add column if not exists turnover text;
 
 -- 3) RLS for site_config
 alter table public.site_config enable row level security;

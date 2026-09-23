@@ -49,11 +49,11 @@ export function StrategyForm({ embedded = false }) {
 
   const idSuffix = embedded ? '-popup' : '';
   const navigate = useNavigate();
-  const [form, setForm] = useState({ name: '', email: '', phone: '' });
+  const [form, setForm] = useState({ name: '', email: '', phone: '', turnover: '' });
   const [status, setStatus] = useState('idle');
   const [modal, setModal] = useState(null); // { type: 'success' | 'error', title, message }
 
-  const [fieldErrors, setFieldErrors] = useState({ email: '', phone: '' });
+  const [fieldErrors, setFieldErrors] = useState({ email: '', phone: '', turnover: '' });
   const [showTitleBlack, setShowTitleBlack] = useState(false);
   const usePayment = isRazorpayConfigured();
   // Hardcoded to strictly charge 99 INR (9900 paise) as requested, regardless of DB config
@@ -69,17 +69,19 @@ export function StrategyForm({ embedded = false }) {
     setForm((prev) => ({ ...prev, [name]: value }));
     if (name === 'email') setFieldErrors((prev) => ({ ...prev, email: '' }));
     if (name === 'phone') setFieldErrors((prev) => ({ ...prev, phone: '' }));
+    if (name === 'turnover') setFieldErrors((prev) => ({ ...prev, turnover: '' }));
   };
 
   const closeModal = () => setModal(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setFieldErrors({ email: '', phone: '' });
+    setFieldErrors({ email: '', phone: '', turnover: '' });
 
     const name = form.name.trim();
     const emailInput = form.email.trim();
     const phoneInput = form.phone.trim();
+    const turnover = (form.turnover || '').trim();
 
     if (!name) {
       setModal({ type: 'error', title: 'Invalid input', message: 'Please enter your full name.' });
@@ -98,6 +100,13 @@ export function StrategyForm({ embedded = false }) {
       const phoneMsg = 'Please enter a valid 10-digit Indian mobile number (e.g. 9876543210).';
       setFieldErrors((prev) => ({ ...prev, phone: phoneMsg }));
       setModal({ type: 'error', title: 'Invalid phone', message: phoneMsg });
+      return;
+    }
+
+    if (!turnover) {
+      const turnoverMsg = 'Please select your annual business turnover.';
+      setFieldErrors((prev) => ({ ...prev, turnover: turnoverMsg }));
+      setModal({ type: 'error', title: 'Selection required', message: turnoverMsg });
       return;
     }
 
@@ -130,14 +139,27 @@ export function StrategyForm({ embedded = false }) {
         name,
         email: emailResult.normalized,
         phone: phoneResult.normalized,
+        turnover,
       };
 
       // 1) SAVE TO DB IMMEDIATELY
-      const { data: insertedData, error: insertError } = await supabase
+      let { data: insertedData, error: insertError } = await supabase
         .from(SUBMISSIONS_TABLE)
         .insert([payload])
         .select()
         .single();
+
+      // Gracefully handle if 'turnover' column does not exist yet in remote Supabase table
+      if (insertError && insertError.message && /column.*turnover.*does not exist/i.test(insertError.message)) {
+        const { turnover: _t, ...fallbackPayload } = payload;
+        const fallbackRes = await supabase
+          .from(SUBMISSIONS_TABLE)
+          .insert([fallbackPayload])
+          .select()
+          .single();
+        insertedData = fallbackRes.data;
+        insertError = fallbackRes.error;
+      }
 
       if (insertError) throw insertError;
 
@@ -188,7 +210,7 @@ export function StrategyForm({ embedded = false }) {
               if (updateError) throw updateError;
 
               setStatus('success');
-              setForm({ name: '', email: '', phone: '' });
+              setForm({ name: '', email: '', phone: '', turnover: '' });
               navigate('/thank-you');
             } catch (err) {
               setStatus('idle');
@@ -205,7 +227,7 @@ export function StrategyForm({ embedded = false }) {
 
       // No payment needed, already saved
       setStatus('success');
-      setForm({ name: '', email: '', phone: '' });
+      setForm({ name: '', email: '', phone: '', turnover: '' });
       navigate('/thank-you');
     } catch (err) {
       setStatus('idle');
@@ -305,6 +327,39 @@ export function StrategyForm({ embedded = false }) {
                 </div>
                 {fieldErrors.phone && (
                   <p className="mt-1 text-sm text-red-600 dark:text-red-400">{fieldErrors.phone}</p>
+                )}
+              </div>
+
+              <div>
+                <label htmlFor={`form-turnover${idSuffix}`} className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                  What is your current annual business turnover?
+                </label>
+                <div className={`form-input-wrap bg-white ${fieldErrors.turnover ? 'border-red-500 dark:border-red-500' : ''}`}>
+                  <span className="form-icon material-symbols-outlined text-xl">payments</span>
+                  <select
+                    id={`form-turnover${idSuffix}`}
+                    name="turnover"
+                    value={form.turnover}
+                    onChange={handleChange}
+                    required
+                    className={`text-slate-900 dark:text-white ${!form.turnover ? 'text-slate-400 dark:text-slate-400' : 'text-black'}`}
+                  >
+                    <option value="" disabled className="text-slate-400 bg-white dark:bg-slate-800">
+                      Select annual turnover
+                    </option>
+                    <option value="₹1–5 Crore" className="text-slate-900 bg-white dark:bg-slate-800">
+                      ₹1–5 Crore
+                    </option>
+                    <option value="₹5–10 Crore" className="text-slate-900 bg-white dark:bg-slate-800">
+                      ₹5–10 Crore
+                    </option>
+                    <option value="₹10+ Crore" className="text-slate-900 bg-white dark:bg-slate-800">
+                      ₹10+ Crore
+                    </option>
+                  </select>
+                </div>
+                {fieldErrors.turnover && (
+                  <p className="mt-1 text-sm text-red-600 dark:text-red-400">{fieldErrors.turnover}</p>
                 )}
               </div>
 

@@ -23,7 +23,7 @@ export function AdminDashboard() {
 
       const { data: recent } = await supabase
         .from(SUBMISSIONS_TABLE)
-        .select('id, name, email, phone, created_at, payment_id')
+        .select('*')
         .order('created_at', { ascending: false })
         .limit(RECENT_LIMIT);
       setSubmissions(recent || []);
@@ -118,6 +118,7 @@ export function AdminDashboard() {
                     <th>Name</th>
                     <th>Email</th>
                     <th className="d-none d-md-table-cell">Phone</th>
+                    <th className="d-none d-lg-table-cell">Turnover</th>
                     <th className="d-none d-lg-table-cell">Date</th>
                     <th>Status</th>
                     <th className="text-end">Actions</th>
@@ -129,6 +130,7 @@ export function AdminDashboard() {
                       <td className="text-break">{row.name}</td>
                       <td className="text-break small">{row.email}</td>
                       <td className="d-none d-md-table-cell small">{row.phone}</td>
+                      <td className="d-none d-lg-table-cell small text-nowrap">{row.turnover || '-'}</td>
                       <td className="d-none d-lg-table-cell text-muted small">{row.created_at ? new Date(row.created_at).toLocaleString() : '-'}</td>
                       <td>
                         {row.payment_id ? (

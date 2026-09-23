@@ -325,7 +325,8 @@ details.animate-faq p {
   color: var(--theme-primary);
   pointer-events: none;
 }
-.form-input-wrap input {
+.form-input-wrap input,
+.form-input-wrap select {
   flex: 1;
   min-width: 0;
   border: none;
@@ -333,7 +334,11 @@ details.animate-faq p {
   padding: 0.75rem 1rem 0.75rem 0.5rem;
   font-size: 1rem;
 }
-.form-input-wrap input:focus {
+.form-input-wrap select {
+  cursor: pointer;
+}
+.form-input-wrap input:focus,
+.form-input-wrap select:focus {
   outline: none;
 }
 .form-input-wrap input::placeholder {

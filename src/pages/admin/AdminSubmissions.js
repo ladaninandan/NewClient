@@ -15,7 +15,7 @@ export function AdminSubmissions() {
     setLoading(true);
     const { data, error } = await supabase
       .from(SUBMISSIONS_TABLE)
-      .select('id, name, email, phone, created_at, payment_id')
+      .select('*')
       .order('created_at', { ascending: false });
     if (!error) setSubmissions(data || []);
     setLoading(false);
@@ -50,7 +50,7 @@ export function AdminSubmissions() {
       return;
     }
 
-    const headers = ['ID', 'Name', 'Email', 'Phone', 'Status', 'Date'];
+    const headers = ['ID', 'Name', 'Email', 'Phone', 'Turnover', 'Status', 'Date'];
     const csvRows = [headers.join(',')];
 
     submissions.forEach((row, index) => {
@@ -58,10 +58,11 @@ export function AdminSubmissions() {
       const name = `"${(row.name || '').replace(/"/g, '""')}"`;
       const email = `"${(row.email || '').replace(/"/g, '""')}"`;
       const phone = `"${(row.phone || '').replace(/"/g, '""')}"`;
+      const turnover = `"${(row.turnover || '').replace(/"/g, '""')}"`;
       const status = row.payment_id ? '"Paid"' : '"Pending"';
       const date = `"${row.created_at ? new Date(row.created_at).toLocaleString() : '-'}"`;
 
-      csvRows.push([id, name, email, phone, status, date].join(','));
+      csvRows.push([id, name, email, phone, turnover, status, date].join(','));
     });
 
     const csvString = csvRows.join('\n');
@@ -118,6 +119,7 @@ export function AdminSubmissions() {
                       <th>Name</th>
                       <th>Email</th>
                       <th>Phone</th>
+                      <th>Turnover</th>
                       <th>Date</th>
                       <th>Status</th>
                       <th className="text-end">Actions</th>
@@ -130,6 +132,7 @@ export function AdminSubmissions() {
                         <td className="text-break">{row.name}</td>
                         <td className="text-break small">{row.email}</td>
                         <td className="small">{row.phone}</td>
+                        <td className="small text-nowrap">{row.turnover || '-'}</td>
                         <td className="text-muted small">{row.created_at ? new Date(row.created_at).toLocaleString() : '-'}</td>
                         <td>
                           {row.payment_id ? (
@@ -179,7 +182,8 @@ export function AdminSubmissions() {
                       </div>
                       <div className="mb-1"><span className="text-muted">Name:</span> {row.name}</div>
                       <div className="mb-1 text-break"><span className="text-muted">Email:</span> {row.email}</div>
-                      <div><span className="text-muted">Phone:</span> {row.phone}</div>
+                      <div className="mb-1"><span className="text-muted">Phone:</span> {row.phone}</div>
+                      <div><span className="text-muted">Turnover:</span> {row.turnover || '-'}</div>
                     </div>
                   </div>
                 ))}
