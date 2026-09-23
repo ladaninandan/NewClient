@@ -44,11 +44,11 @@ export const defaultConfig = {
     topVideo: {
       topLine: "",
       badge: 'Limited Time Strategy Session',
-      headline: 'Limited Time Strategy Session • Reserve Your Spot at ₹199 • Trusted by 500+ Founders • 1-to-1 Business Clarity Session • Book Now — Limited Slots',
+      headline: 'Limited Time Strategy Session • Reserve Your Spot at ₹99 • Trusted by 500+ Founders • 1-to-1 Business Clarity Session • Book Now — Limited Slots',
       video: '',
       backgroundImage: 'src/file_0000000057a07208a7e28282debc2844.png', // optional: section background image (shows behind white overlay)
       subtext: 'Transform your business from founder-dependent to data-driven. Get the roadmap to scaling without burnout.',
-      ctaText: 'Reserve My ₹199 Strategy Session',
+      ctaText: 'Reserve My ₹99 Strategy Session',
       slotNote: 'Limited slots available for this month',
     },
     hero: {
@@ -56,11 +56,11 @@ export const defaultConfig = {
       headline: 'Is Your Business Running Because Of You…',
       headlineHighlight: 'Or Despite You?',
       subtext: 'Stop being the bottleneck. Transform your Indian business from chaos to clarity with a high-impact 1-to-1 Strategy Session.',
-      ctaText: 'Reserve My ₹199 Strategy Session',
+      ctaText: 'Reserve My ₹99 Strategy Session',
       slotNote: 'Limited slots available for this month',
     },
     offerCard: {
-      price: '₹199',
+      price: '₹99',
       items: [
         { title: 'Personalized Business Audit', desc: "We'll identify exactly where you are stuck." },
         { title: '90-Minute Strategic Roadmap', desc: 'Step-by-step plan to automate operations.' },
@@ -158,9 +158,9 @@ export const defaultConfig = {
     testimonials: {
       title: 'What Founders Say',
       items: [
-        { name: 'Rajesh K.', role: 'Manufacturing, Pune', text: 'The session gave me a clear roadmap. I implemented one process and saved 10 hours a week.' },
-        { name: 'Priya M.', role: 'Services, Bangalore', text: 'Finally someone who understood the Indian MSME reality. Not theory—actual steps I could take.' },
-        { name: 'Vikram S.', role: 'Retail, Delhi NCR', text: 'Worth every rupee. I now have a delegation plan and my team is taking ownership.' },
+        { name: 'Rajesh K.', role: 'Manufacturing, Pune', text: 'The session gave me a clear roadmap. I implemented one process and saved 10 hours a week.', image: '', video: '' },
+        { name: 'Priya M.', role: 'Services, Bangalore', text: 'Finally someone who understood the Indian MSME reality. Not theory—actual steps I could take.', image: '', video: '' },
+        { name: 'Vikram S.', role: 'Retail, Delhi NCR', text: 'Worth every rupee. I now have a delegation plan and my team is taking ownership.', image: '', video: '' },
       ],
     },
     feedback: {
@@ -198,16 +198,16 @@ export const defaultConfig = {
       notForIconColor: '#dc2626',
     },
     priceJustification: {
-      title: 'Why This Session Is Only ₹199',
-      explain: 'Normally consulting sessions cost thousands.\n\nBut this session is offered at ₹199 so business owners can experience the process.',
-      ctaText: 'Reserve My ₹199 Strategy Session',
+      title: 'Why This Session Is Only ₹99',
+      explain: 'Normally consulting sessions cost thousands.\n\nBut this session is offered at ₹99 so business owners can experience the process.',
+      ctaText: 'Reserve My ₹99 Strategy Session',
     },
     pricing: {
       title: 'Start Your Transformation',
       originalPrice: '₹4,999',
-      price: '₹199',
+      price: '₹99',
       note: 'This is a symbolic commitment fee. My goal is to work with dedicated founders, not spectators.',
-      ctaText: 'Reserve My ₹199 Strategy Session',
+      ctaText: 'Reserve My ₹99 Strategy Session',
       ribbonText: 'BEST VALUE',
       secureText: '100% Secure Checkout',
     },
@@ -232,7 +232,7 @@ export const defaultConfig = {
       items: [
         { q: 'How long is the session?', a: 'The Clarity Session typically lasts between 75 to 90 minutes. We dive deep into your specific business challenges.' },
         { q: 'Will I get a recording?', a: 'Yes, the session is conducted over Zoom, and a full recording along with the notes will be provided to you.' },
-        { q: 'Why is it only ₹199?', a: 'I want to eliminate the barrier to entry for serious entrepreneurs. Once you experience the value of a structured approach, you might want to explore long-term coaching (no pressure!).' },
+        { q: 'Why is it only ₹99?', a: 'I want to eliminate the barrier to entry for serious entrepreneurs. Once you experience the value of a structured approach, you might want to explore long-term coaching (no pressure!).' },
       ],
     },
     footer: {

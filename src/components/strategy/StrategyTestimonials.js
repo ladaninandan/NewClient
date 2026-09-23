@@ -19,7 +19,9 @@ export function StrategyTestimonials() {
   const t = config.strategyLayout?.testimonials || {};
   const title = t.title ?? 'What Founders Say';
   const rawItems = t.items || [];
-  const videoItems = rawItems.filter((it) => it != null && typeof it === 'object' && (it.video || '').trim());
+  const displayItems = rawItems.filter(
+    (it) => it != null && typeof it === 'object' && ((it.video || '').trim() || (it.image || '').trim() || (it.details || it.text || '').trim())
+  );
 
   const scroll = (dir) => {
     const el = scrollRef.current;
@@ -28,7 +30,7 @@ export function StrategyTestimonials() {
     el.scrollBy({ left: dir === 'left' ? -step : step, behavior: 'smooth' });
   };
 
-  if (!videoItems.length) return null;
+  if (!displayItems.length) return null;
 
   return (
     <section className="py-5 sm:py-10 lg:py-12 px-4 sm:px-6" style={{ backgroundColor: 'var(--theme-background-light)' }}>
@@ -60,8 +62,9 @@ export function StrategyTestimonials() {
             className="flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 overflow-x-scroll overflow-y-hidden snap-x snap-mandatory sm:overflow-visible sm:snap-none pb-2 sm:pb-0 px-4 sm:px-0 scrollbar-none overscroll-x-contain min-w-0"
             style={{ WebkitOverflowScrolling: 'touch', scrollPaddingLeft: '1rem', scrollPaddingRight: '1rem' }}
           >
-            {videoItems.map((item, i) => {
+            {displayItems.map((item, i) => {
               const videoUrl = (item.video || '').trim();
+              const imageUrl = (item.image || '').trim();
               const isYt = isYouTubeUrl(videoUrl);
               const embedUrl = isYt ? getYouTubeEmbedUrl(videoUrl) : null;
               return (
@@ -69,7 +72,7 @@ export function StrategyTestimonials() {
                   key={i}
                   className="scroll-reveal flex-shrink-0 w-[85vw] max-w-[320px] sm:w-auto sm:min-w-0 sm:max-w-none snap-start bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-600 overflow-hidden shadow-md hover:shadow-lg transition-all duration-200 flex flex-col"
                 >
-                  <div className="aspect-video bg-black relative">
+                  <div className="aspect-video bg-black relative overflow-hidden">
                     {isYt && embedUrl ? (
                       <iframe
                         src={embedUrl}
@@ -82,32 +85,52 @@ export function StrategyTestimonials() {
                       <video
                         className="w-full h-full object-cover"
                         src={videoUrl}
+                        poster={imageUrl || undefined}
                         controls
                         playsInline
                         title={item.name ? `Testimonial from ${item.name}` : 'Founder testimonial'}
                       />
+                    ) : imageUrl ? (
+                      <img
+                        src={imageUrl}
+                        alt={item.name ? `Testimonial from ${item.name}` : 'Founder testimonial'}
+                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                        loading="lazy"
+                      />
                     ) : (
                       <div className="absolute inset-0 flex items-center justify-center text-slate-500 dark:text-slate-400 text-sm">
-                        No video
+                        No media
                       </div>
                     )}
                   </div>
-                  <div className="p-4">
+                  <div className="p-4 flex-grow flex flex-col justify-between">
                     {(item.details || item.text) && (
                       <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm leading-relaxed mb-3 line-clamp-3">
                         {item.details || item.text}
                       </p>
                     )}
-                    {item.name && (
-                      <p className="font-bold text-slate-900 dark:text-white text-sm sm:text-base" style={{ color: 'var(--theme-primary)' }}>
-                        {item.name}
-                      </p>
-                    )}
-                    {item.role && (
-                      <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
-                        {item.role}
-                      </p>
-                    )}
+                    <div className="flex items-center gap-3 mt-auto">
+                      {imageUrl && videoUrl && (
+                        <img
+                          src={imageUrl}
+                          alt={item.name || ''}
+                          className="w-9 h-9 rounded-full object-cover border flex-shrink-0"
+                          style={{ borderColor: 'var(--theme-primary)' }}
+                        />
+                      )}
+                      <div>
+                        {item.name && (
+                          <p className="font-bold text-slate-900 dark:text-white text-sm sm:text-base" style={{ color: 'var(--theme-primary)' }}>
+                            {item.name}
+                          </p>
+                        )}
+                        {item.role && (
+                          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+                            {item.role}
+                          </p>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
               );

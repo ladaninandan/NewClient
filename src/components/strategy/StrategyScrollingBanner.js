@@ -5,7 +5,7 @@ export function StrategyScrollingBanner() {
   const { config } = useConfig();
   const items = config.strategyLayout?.scrollingBanner?.items || [
     'Limited Time Strategy Session',
-    'Reserve Your Spot at ₹199',
+    'Reserve Your Spot at ₹99',
     'Trusted by 500+ Founders',
     '1-to-1 Business Clarity Session',
     'Book Now — Limited Slots',

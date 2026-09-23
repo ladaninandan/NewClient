@@ -16,8 +16,8 @@ If these are not set, the form skips payment and submits only to Supabase (curre
 Razorpay requires creating an **order** on your server before opening checkout.
 
 - **Request:** `POST` to your URL with JSON body:  
-  `{ "amount": 19900, "currency": "INR", "receipt": "rcpt_123" }`  
-  (`amount` is in paise, e.g. 19900 = ₹199.)
+  `{ "amount": 9900, "currency": "INR", "receipt": "rcpt_123" }`  
+  (`amount` is in paise, e.g. 9900 = ₹99.)
 - **Response:** `{ "orderId": "order_xxxx" }` (or `{ "id": "order_xxxx" }`).
 
 ### Using Supabase Edge Functions (recommended: no separate Node server)
@@ -47,7 +47,7 @@ In Supabase: Table Editor → `registrations` → add column.
 
 1. User fills name, email, phone and clicks **Reserve My Spot**.
 2. Form is validated and duplicate email is checked.
-3. Your order API is called with amount (from **Site Settings → Pricing → price**, e.g. ₹199 → 19900 paise).
+3. Your order API is called with amount (from **Site Settings → Pricing → price**, e.g. ₹99 → 9900 paise).
 4. Razorpay checkout opens with **prefill** (name, email, contact) and the order amount.
 5. User pays; on success the app saves to Supabase: name, email, phone, **payment_id**, **razorpay_order_id**.
 6. Success message is shown.

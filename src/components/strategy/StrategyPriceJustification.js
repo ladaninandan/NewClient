@@ -8,9 +8,9 @@ export function StrategyPriceJustification() {
   const theme = config.strategyLayout?.theme || {};
   const primary = theme.primary || '#f77c18';
 
-  const title = j.title || 'Why This Session Is Only ₹199';
-  const explain = j.explain || 'Normally consulting sessions cost thousands. But this session is offered at ₹199 so business owners can experience the process.';
-  const ctaText = j.ctaText || 'Reserve My ₹199 Strategy Session';
+  const title = j.title || 'Why This Session Is Only ₹99';
+  const explain = j.explain || 'Normally consulting sessions cost thousands. But this session is offered at ₹99 so business owners can experience the process.';
+  const ctaText = j.ctaText || 'Reserve My ₹99 Strategy Session';
 
   const scrollToForm = () => document.getElementById('register-form')?.scrollIntoView({ behavior: 'smooth' });
   const paragraphs = (explain || '').split(/\n\n+/).filter(Boolean);
@@ -62,7 +62,7 @@ export function StrategyPriceJustification() {
                 }}
               >
                 <span className="text-white/90 text-sm sm:text-base font-bold tracking-widest uppercase">Only</span>
-                <AnimatedNumber value="₹199" className="text-white text-4xl sm:text-5xl font-black mt-1" />
+                <AnimatedNumber value="₹99" className="text-white text-4xl sm:text-5xl font-black mt-1" />
                 <span className="text-white/80 text-xs sm:text-sm mt-1 font-medium">Session</span>
               </div>
               <div className="absolute -bottom-3 -right-3 w-20 h-20 rounded-2xl bg-slate-200/50 dark:bg-slate-600/30 -z-10" />

@@ -23,11 +23,11 @@ const sectionOrderLabels = {
   learn: 'Learn',
   founderModel: 'Founder Model',
   whyDifferent: 'Why Different',
-  testimonials: 'Testimonials (Video cards)',
+  testimonials: 'Testimonials (Video & image cards)',
   feedback: 'Feedback (Screenshots & cards)',
   forNotFor: 'For / Not For',
   pricing: 'Pricing',
-  priceJustification: 'Price Justification (Why ₹199)',
+  priceJustification: 'Price Justification (Why ₹99)',
   form: 'Registration Form',
   moneyBackGuarantee: 'Money Back Guarantee',
   faq: 'FAQ',
@@ -627,7 +627,7 @@ export function AdminSettings() {
                   onClick={() =>
                     handleConfigChange(
                       'strategyLayout.topVideo.headline',
-                      'Limited Time Strategy Session • Reserve Your Spot at ₹199 • Trusted by 500+ Founders • 1-to-1 Business Clarity Session • Book Now — Limited Slots',
+                      'Limited Time Strategy Session • Reserve Your Spot at ₹99 • Trusted by 500+ Founders • 1-to-1 Business Clarity Session • Book Now — Limited Slots',
                     )
                   }
                 >
@@ -1203,7 +1203,7 @@ export function AdminSettings() {
               return (
                 <div className="col-12 col-lg-6" key={idx}>
                   <div className="border rounded p-3 bg-white">
-                    <h6 className="border-bottom pb-2 mb-3">Video card {idx + 1}</h6>
+                    <h6 className="border-bottom pb-2 mb-3">Card {idx + 1}</h6>
                     <div className="mb-2">
                       <label className="form-label small mb-0">Name</label>
                       <input type="text" className="form-control form-control-sm" placeholder="e.g. Shanmuganathan C" value={item.name ?? ''} onChange={(e) => handleConfigChange(`strategyLayout.testimonials.items.${idx}.name`, e.target.value)} />
@@ -1216,7 +1216,7 @@ export function AdminSettings() {
                       <label className="form-label small mb-0">Details (short quote or description — shown on website below video)</label>
                       <textarea className="form-control form-control-sm" rows={2} placeholder="e.g. The session gave me a clear roadmap. I implemented one process and saved 10 hours a week." value={item.details ?? item.text ?? ''} onChange={(e) => handleConfigChange(`strategyLayout.testimonials.items.${idx}.details`, e.target.value)} />
                     </div>
-                    <div>
+                    <div className="mb-3">
                       <label className="form-label small mb-0">Video (upload or paste YouTube / video URL)</label>
                       <div className="d-flex flex-wrap gap-2 align-items-center">
                         <input type="file" accept="video/*" className="form-control form-control-sm" style={{ maxWidth: '160px' }} onChange={(e) => handleImageUpload(e, `strategyLayout.testimonials.items.${idx}.video`)} disabled={!isSupabaseConfigured() || uploading} />
@@ -1224,8 +1224,28 @@ export function AdminSettings() {
                       </div>
                       <p className="form-text small text-muted mb-0 mt-1">Supabase Free: ~50MB max. For larger videos use YouTube and paste the link.</p>
                       {item.video && (
-                        <div className="mt-2 small text-muted">
+                        <div className="mt-1 small text-muted">
                           {/youtube\.com|youtu\.be/i.test(item.video) ? 'YouTube link' : 'Video URL'} saved
+                        </div>
+                      )}
+                    </div>
+                    <div>
+                      <label className="form-label small mb-0">Image (upload or paste image URL)</label>
+                      <div className="d-flex flex-wrap gap-2 align-items-center">
+                        <input type="file" accept="image/*" className="form-control form-control-sm" style={{ maxWidth: '160px' }} onChange={(e) => handleImageUpload(e, `strategyLayout.testimonials.items.${idx}.image`)} disabled={!isSupabaseConfigured() || uploading} />
+                        <input type="url" className="form-control form-control-sm flex-grow-1" placeholder="Image URL (e.g. https://... or uploaded)" value={item.image ?? ''} onChange={(e) => handleConfigChange(`strategyLayout.testimonials.items.${idx}.image`, e.target.value)} />
+                      </div>
+                      <p className="form-text small text-muted mb-0 mt-1">Used as card media, or as video cover thumbnail if video is also provided.</p>
+                      {item.image && (
+                        <div className="mt-2 d-flex align-items-center gap-2">
+                          <img src={item.image} alt="Preview" style={{ height: '50px', width: '80px', objectFit: 'cover', borderRadius: '4px', border: '1px solid #dee2e6' }} />
+                          <button
+                            type="button"
+                            className="btn btn-outline-danger btn-sm py-0 px-2"
+                            onClick={() => handleConfigChange(`strategyLayout.testimonials.items.${idx}.image`, '')}
+                          >
+                            Remove
+                          </button>
                         </div>
                       )}
                     </div>
@@ -1645,20 +1665,20 @@ export function AdminSettings() {
       </section>
 
       <section className="card shadow-sm mb-4 admin-card">
-        <div className="card-header fw-bold">Price Justification (Why ₹199)</div>
+        <div className="card-header fw-bold">Price Justification (Why ₹99)</div>
         <div className="card-body">
           <div className="row g-3">
             <div className="col-12">
               <label className="form-label small">Title</label>
-              <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.priceJustification?.title ?? ''} onChange={(e) => handleConfigChange('strategyLayout.priceJustification.title', e.target.value)} placeholder="Why This Session Is Only ₹199" />
+              <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.priceJustification?.title ?? ''} onChange={(e) => handleConfigChange('strategyLayout.priceJustification.title', e.target.value)} placeholder="Why This Session Is Only ₹99" />
             </div>
             <div className="col-12">
               <label className="form-label small">Explain (paragraphs — separate with blank line)</label>
-              <textarea className="form-control form-control-sm" rows={4} value={editConfig.strategyLayout?.priceJustification?.explain ?? ''} onChange={(e) => handleConfigChange('strategyLayout.priceJustification.explain', e.target.value)} placeholder={'Normally consulting sessions cost thousands.\n\nBut this session is offered at ₹199 so business owners can experience the process.'} />
+              <textarea className="form-control form-control-sm" rows={4} value={editConfig.strategyLayout?.priceJustification?.explain ?? ''} onChange={(e) => handleConfigChange('strategyLayout.priceJustification.explain', e.target.value)} placeholder={'Normally consulting sessions cost thousands.\n\nBut this session is offered at ₹99 so business owners can experience the process.'} />
             </div>
             <div className="col-12">
               <label className="form-label small">CTA button text (scrolls to form on click)</label>
-              <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.priceJustification?.ctaText ?? ''} onChange={(e) => handleConfigChange('strategyLayout.priceJustification.ctaText', e.target.value)} placeholder="Reserve My ₹199 Strategy Session" />
+              <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.priceJustification?.ctaText ?? ''} onChange={(e) => handleConfigChange('strategyLayout.priceJustification.ctaText', e.target.value)} placeholder="Reserve My ₹99 Strategy Session" />
             </div>
           </div>
         </div>
