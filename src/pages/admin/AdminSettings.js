@@ -561,8 +561,7 @@ export function AdminSettings() {
                       checked={visible}
                       onChange={(e) => {
                         const next = { ...(editConfig.strategyLayout?.sectionVisibility || {}) };
-                        if (e.target.checked) delete next[id];
-                        else next[id] = false;
+                        next[id] = e.target.checked;
                         handleConfigChange('strategyLayout.sectionVisibility', next);
                       }}
                     />

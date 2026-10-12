@@ -16,7 +16,9 @@ export function ConfigProvider({ children }) {
   const deepMerge = useCallback((target, source) => {
     const out = { ...target };
     for (const key of Object.keys(source)) {
-      if (source[key] != null && typeof source[key] === 'object' && !Array.isArray(source[key]) && typeof target[key] === 'object' && target[key] != null && !Array.isArray(target[key])) {
+      if (key === 'sectionVisibility' && typeof source[key] === 'object' && source[key] != null) {
+        out[key] = { ...source[key] };
+      } else if (source[key] != null && typeof source[key] === 'object' && !Array.isArray(source[key]) && typeof target[key] === 'object' && target[key] != null && !Array.isArray(target[key])) {
         out[key] = deepMerge(target[key], source[key]);
       } else {
         out[key] = source[key];
