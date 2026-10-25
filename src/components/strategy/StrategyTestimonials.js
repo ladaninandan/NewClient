@@ -8,9 +8,47 @@ function isYouTubeUrl(url) {
 
 function getYouTubeEmbedUrl(url) {
   const u = (url || '').trim();
-  const m = u.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
+  const m = u.match(/(?:youtube\.com\/(?:watch\?v=|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]+)/);
   const id = m ? m[1] : null;
   return id ? `https://www.youtube.com/embed/${id}?autoplay=0&loop=1&playlist=${id}` : null;
+}
+
+function getCardAspectRatio(item, sectionRatio) {
+  const ratio = (item?.aspectRatio && item.aspectRatio !== 'default' && item.aspectRatio !== 'auto')
+    ? item.aspectRatio
+    : (sectionRatio && sectionRatio !== 'auto' ? sectionRatio : null);
+
+  if (ratio === '9:16' || ratio === '9/16') {
+    return { style: { aspectRatio: '9 / 16' }, className: 'aspect-[9/16]' };
+  }
+  if (ratio === '4:5' || ratio === '4/5') {
+    return { style: { aspectRatio: '4 / 5' }, className: 'aspect-[4/5]' };
+  }
+  if (ratio === '1:1' || ratio === '1/1') {
+    return { style: { aspectRatio: '1 / 1' }, className: 'aspect-square' };
+  }
+  if (ratio === '16:9' || ratio === '16/9') {
+    return { style: { aspectRatio: '16 / 9' }, className: 'aspect-video' };
+  }
+
+  // Auto default:
+  // If video is present (e.g. 1080x1920 Instagram Reel), default to 9:16
+  if (item?.video && item.video.trim()) {
+    const isYt = /youtube\.com|youtu\.be/i.test(item.video);
+    const isYtShort = /youtube\.com\/shorts/i.test(item.video);
+    if (isYt && !isYtShort) {
+      return { style: { aspectRatio: '16 / 9' }, className: 'aspect-video' };
+    }
+    return { style: { aspectRatio: '9 / 16' }, className: 'aspect-[9/16]' };
+  }
+
+  // If photo/image is present, default to 4:5 portrait
+  if (item?.image && item.image.trim()) {
+    return { style: { aspectRatio: '4 / 5' }, className: 'aspect-[4/5]' };
+  }
+
+  // Fallback to 9:16
+  return { style: { aspectRatio: '9 / 16' }, className: 'aspect-[9/16]' };
 }
 
 export function StrategyTestimonials() {
@@ -18,6 +56,7 @@ export function StrategyTestimonials() {
   const scrollRef = useRef(null);
   const t = config.strategyLayout?.testimonials || {};
   const title = t.title ?? 'What Founders Say';
+  const sectionRatio = t.aspectRatio || 'auto';
   const rawItems = t.items || [];
   const displayItems = rawItems.filter(
     (it) => it != null && typeof it === 'object' && ((it.video || '').trim() || (it.image || '').trim() || (it.details || it.text || '').trim())
@@ -67,12 +106,17 @@ export function StrategyTestimonials() {
               const imageUrl = (item.image || '').trim();
               const isYt = isYouTubeUrl(videoUrl);
               const embedUrl = isYt ? getYouTubeEmbedUrl(videoUrl) : null;
+              const aspect = getCardAspectRatio(item, sectionRatio);
+
               return (
                 <div
                   key={i}
-                  className="scroll-reveal flex-shrink-0 w-[85vw] max-w-[320px] sm:w-auto sm:min-w-0 sm:max-w-none snap-start bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-600 overflow-hidden shadow-md hover:shadow-lg transition-all duration-200 flex flex-col"
+                  className="scroll-reveal flex-shrink-0 w-[85vw] max-w-[320px] sm:w-auto sm:min-w-0 sm:max-w-none snap-start bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-600 overflow-hidden shadow-md hover:shadow-lg transition-all duration-200 flex flex-col h-full"
                 >
-                  <div className="aspect-video bg-black relative overflow-hidden">
+                  <div
+                    className={`w-full bg-black relative overflow-hidden flex-shrink-0 ${aspect.className}`}
+                    style={aspect.style}
+                  >
                     {isYt && embedUrl ? (
                       <iframe
                         src={embedUrl}

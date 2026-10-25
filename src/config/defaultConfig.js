@@ -157,6 +157,7 @@ export const defaultConfig = {
     },
     testimonials: {
       title: 'What Founders Say',
+      aspectRatio: 'auto',
       items: [
         { name: 'Rajesh K.', role: 'Manufacturing, Pune', text: 'The session gave me a clear roadmap. I implemented one process and saved 10 hours a week.', image: '', video: '' },
         { name: 'Priya M.', role: 'Services, Bangalore', text: 'Finally someone who understood the Indian MSME reality. Not theory—actual steps I could take.', image: '', video: '' },

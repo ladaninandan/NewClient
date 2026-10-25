@@ -1192,13 +1192,28 @@ export function AdminSettings() {
         <div className="card-header fw-bold">Testimonials (What Founders Say)</div>
         <div className="card-body">
           <div className="row g-3">
-            <div className="col-12 mb-2">
+            <div className="col-12 col-md-6 mb-2">
               <label className="form-label small">Section title</label>
               <input type="text" className="form-control form-control-sm" value={editConfig.strategyLayout?.testimonials?.title ?? ''} onChange={(e) => handleConfigChange('strategyLayout.testimonials.title', e.target.value)} placeholder="What Founders Say" />
+            </div>
+            <div className="col-12 col-md-6 mb-2">
+              <label className="form-label small">Default Media Aspect Ratio</label>
+              <select
+                className="form-select form-select-sm"
+                value={editConfig.strategyLayout?.testimonials?.aspectRatio ?? 'auto'}
+                onChange={(e) => handleConfigChange('strategyLayout.testimonials.aspectRatio', e.target.value)}
+              >
+                <option value="auto">Auto (9:16 Reel / 4:5 Photo)</option>
+                <option value="9:16">9:16 (Instagram Reel — 1080×1920 px)</option>
+                <option value="4:5">4:5 (Portrait Photo — 1080×1350 px)</option>
+                <option value="1:1">1:1 (Square Photo — 1080×1080 px)</option>
+                <option value="16:9">16:9 (Landscape Video — 1920×1080 px)</option>
+              </select>
             </div>
             {[0, 1, 2, 3].map((idx) => {
               const items = editConfig.strategyLayout?.testimonials?.items || [];
               const item = (items[idx] != null && typeof items[idx] === 'object') ? items[idx] : {};
+              const previewAspect = item.aspectRatio === '4:5' ? '4/5' : item.aspectRatio === '1:1' ? '1/1' : item.aspectRatio === '16:9' ? '16/9' : (item.aspectRatio === '9:16' ? '9/16' : (item.video ? '9/16' : '4/5'));
               return (
                 <div className="col-12 col-lg-6" key={idx}>
                   <div className="border rounded p-3 bg-white">
@@ -1215,16 +1230,55 @@ export function AdminSettings() {
                       <label className="form-label small mb-0">Details (short quote or description — shown on website below video)</label>
                       <textarea className="form-control form-control-sm" rows={2} placeholder="e.g. The session gave me a clear roadmap. I implemented one process and saved 10 hours a week." value={item.details ?? item.text ?? ''} onChange={(e) => handleConfigChange(`strategyLayout.testimonials.items.${idx}.details`, e.target.value)} />
                     </div>
+                    <div className="mb-2">
+                      <label className="form-label small mb-0">Aspect Ratio (Photo / Reel)</label>
+                      <select
+                        className="form-select form-select-sm"
+                        value={item.aspectRatio || 'auto'}
+                        onChange={(e) => handleConfigChange(`strategyLayout.testimonials.items.${idx}.aspectRatio`, e.target.value)}
+                      >
+                        <option value="auto">Auto / Section Default</option>
+                        <option value="9:16">9:16 (Instagram Reel — 1080×1920 px)</option>
+                        <option value="4:5">4:5 (Portrait Photo — 1080×1350 px)</option>
+                        <option value="1:1">1:1 (Square Photo — 1080×1080 px)</option>
+                        <option value="16:9">16:9 (Landscape Video — 1920×1080 px)</option>
+                      </select>
+                    </div>
                     <div className="mb-3">
                       <label className="form-label small mb-0">Video (upload or paste YouTube / video URL)</label>
                       <div className="d-flex flex-wrap gap-2 align-items-center">
                         <input type="file" accept="video/*" className="form-control form-control-sm" style={{ maxWidth: '160px' }} onChange={(e) => handleImageUpload(e, `strategyLayout.testimonials.items.${idx}.video`)} disabled={!isSupabaseConfigured() || uploading} />
-                        <input type="url" className="form-control form-control-sm flex-grow-1" placeholder="YouTube or video URL" value={item.video ?? ''} onChange={(e) => handleConfigChange(`strategyLayout.testimonials.items.${idx}.video`, e.target.value)} />
+                        <input type="url" className="form-control form-control-sm flex-grow-1" placeholder="YouTube, Shorts, or video URL" value={item.video ?? ''} onChange={(e) => handleConfigChange(`strategyLayout.testimonials.items.${idx}.video`, e.target.value)} />
                       </div>
-                      <p className="form-text small text-muted mb-0 mt-1">Supabase Free: ~50MB max. For larger videos use YouTube and paste the link.</p>
+                      <p className="form-text small text-muted mb-0 mt-1">
+                        Supabase Free: ~50MB max. Recommended for Instagram Reels: <strong>9:16 (1080×1920 px)</strong>.
+                      </p>
                       {item.video && (
-                        <div className="mt-1 small text-muted">
-                          {/youtube\.com|youtu\.be/i.test(item.video) ? 'YouTube link' : 'Video URL'} saved
+                        <div className="mt-2 d-flex align-items-center gap-2">
+                          {/youtube\.com|youtu\.be/i.test(item.video) ? (
+                            <span className="badge bg-secondary">YouTube Saved</span>
+                          ) : (
+                            <video
+                              src={item.video}
+                              style={{
+                                height: '60px',
+                                width: 'auto',
+                                aspectRatio: previewAspect,
+                                objectFit: 'cover',
+                                borderRadius: '4px',
+                                border: '1px solid #dee2e6'
+                              }}
+                              muted
+                              playsInline
+                            />
+                          )}
+                          <button
+                            type="button"
+                            className="btn btn-outline-danger btn-sm py-0 px-2"
+                            onClick={() => handleConfigChange(`strategyLayout.testimonials.items.${idx}.video`, '')}
+                          >
+                            Remove Video
+                          </button>
                         </div>
                       )}
                     </div>
@@ -1234,10 +1288,23 @@ export function AdminSettings() {
                         <input type="file" accept="image/*" className="form-control form-control-sm" style={{ maxWidth: '160px' }} onChange={(e) => handleImageUpload(e, `strategyLayout.testimonials.items.${idx}.image`)} disabled={!isSupabaseConfigured() || uploading} />
                         <input type="url" className="form-control form-control-sm flex-grow-1" placeholder="Image URL (e.g. https://... or uploaded)" value={item.image ?? ''} onChange={(e) => handleConfigChange(`strategyLayout.testimonials.items.${idx}.image`, e.target.value)} />
                       </div>
-                      <p className="form-text small text-muted mb-0 mt-1">Used as card media, or as video cover thumbnail if video is also provided.</p>
+                      <p className="form-text small text-muted mb-0 mt-1">
+                        Used as card media, or video thumbnail. Recommended photo: <strong>4:5 (1080×1350 px)</strong> or <strong>1:1 (1080×1080 px)</strong>.
+                      </p>
                       {item.image && (
                         <div className="mt-2 d-flex align-items-center gap-2">
-                          <img src={item.image} alt="Preview" style={{ height: '50px', width: '80px', objectFit: 'cover', borderRadius: '4px', border: '1px solid #dee2e6' }} />
+                          <img
+                            src={item.image}
+                            alt="Preview"
+                            style={{
+                              height: '60px',
+                              width: 'auto',
+                              aspectRatio: previewAspect,
+                              objectFit: 'cover',
+                              borderRadius: '4px',
+                              border: '1px solid #dee2e6'
+                            }}
+                          />
                           <button
                             type="button"
                             className="btn btn-outline-danger btn-sm py-0 px-2"
