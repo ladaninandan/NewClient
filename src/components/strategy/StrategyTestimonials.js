@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useConfig } from '../../context/ConfigContext';
 
 function isYouTubeUrl(url) {
@@ -18,37 +18,33 @@ function getCardAspectRatio(item, sectionRatio) {
     ? item.aspectRatio
     : (sectionRatio && sectionRatio !== 'auto' ? sectionRatio : null);
 
-  if (ratio === '9:16' || ratio === '9/16') {
-    return { style: { aspectRatio: '9 / 16' }, className: 'aspect-[9/16]' };
-  }
-  if (ratio === '4:5' || ratio === '4/5') {
-    return { style: { aspectRatio: '4 / 5' }, className: 'aspect-[4/5]' };
-  }
-  if (ratio === '1:1' || ratio === '1/1') {
-    return { style: { aspectRatio: '1 / 1' }, className: 'aspect-square' };
-  }
   if (ratio === '16:9' || ratio === '16/9') {
     return { style: { aspectRatio: '16 / 9' }, className: 'aspect-video' };
   }
 
-  // Auto default:
-  // Both images and videos default to 9:16 so images have the exact same height as videos
-  if (item?.video && item.video.trim()) {
-    const isYt = /youtube\.com|youtu\.be/i.test(item.video);
-    const isYtShort = /youtube\.com\/shorts/i.test(item.video);
-    if (isYt && !isYtShort) {
-      return { style: { aspectRatio: '16 / 9' }, className: 'aspect-video' };
-    }
-    return { style: { aspectRatio: '9 / 16' }, className: 'aspect-[9/16]' };
-  }
-
-  // Default image to 9:16 matching video height
+  // All cards (both images and videos) use 9:16 to guarantee exact same length as video reels
   return { style: { aspectRatio: '9 / 16' }, className: 'aspect-[9/16]' };
 }
 
 export function StrategyTestimonials() {
   const { config } = useConfig();
   const scrollRef = useRef(null);
+  const [previewImage, setPreviewImage] = useState(null);
+
+  useEffect(() => {
+    if (!previewImage) return;
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') setPreviewImage(null);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    const origOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      window.removeEventListener('keydown', onKeyDown);
+      document.body.style.overflow = origOverflow;
+    };
+  }, [previewImage]);
+
   const t = config.strategyLayout?.testimonials || {};
   const title = t.title ?? 'What Founders Say';
   const sectionRatio = t.aspectRatio || 'auto';
@@ -130,12 +126,37 @@ export function StrategyTestimonials() {
                         title={item.name ? `Testimonial from ${item.name}` : 'Founder testimonial'}
                       />
                     ) : imageUrl ? (
-                      <img
-                        src={imageUrl}
-                        alt={item.name ? `Testimonial from ${item.name}` : 'Founder testimonial'}
-                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                        loading="lazy"
-                      />
+                      <div
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => setPreviewImage({ url: imageUrl, alt: item.name ? `Testimonial from ${item.name}` : 'Feedback screenshot' })}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            setPreviewImage({ url: imageUrl, alt: item.name ? `Testimonial from ${item.name}` : 'Feedback screenshot' });
+                          }
+                        }}
+                        className="w-full h-full relative overflow-hidden bg-slate-950 flex items-center justify-center cursor-pointer group select-none"
+                        title="Click to view full image"
+                      >
+                        <img
+                          src={imageUrl}
+                          alt=""
+                          aria-hidden="true"
+                          className="absolute inset-0 w-full h-full object-cover blur-md scale-110 opacity-40 pointer-events-none"
+                        />
+                        <img
+                          src={imageUrl}
+                          alt={item.name ? `Testimonial from ${item.name}` : 'Founder testimonial'}
+                          className="relative z-10 w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
+                          loading="lazy"
+                        />
+                        <div className="absolute inset-0 z-20 bg-black/25 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center pointer-events-none">
+                          <span className="bg-black/75 text-white rounded-full p-2.5 shadow-xl backdrop-blur-sm flex items-center justify-center transform scale-90 group-hover:scale-100 transition-transform duration-200">
+                            <span className="material-symbols-outlined text-2xl">zoom_in</span>
+                          </span>
+                        </div>
+                      </div>
                     ) : (
                       <div className="absolute inset-0 flex items-center justify-center text-slate-500 dark:text-slate-400 text-sm">
                         No media
@@ -144,7 +165,7 @@ export function StrategyTestimonials() {
                   </div>
                   <div className="p-4 sm:p-5 flex-grow flex flex-col justify-between">
                     {(item.details || item.text) && (
-                      <p className="text-slate-900 dark:text-slate-100 text-xs sm:text-sm leading-relaxed whitespace-pre-line font-medium mb-3">
+                      <p className="text-slate-900 dark:text-slate-500 text-xs sm:text-sm leading-relaxed whitespace-pre-line font-medium mb-3">
                         {item.details || item.text}
                       </p>
                     )}
@@ -195,6 +216,32 @@ export function StrategyTestimonials() {
           </div>
         </div>
       </div>
+
+      {previewImage && (
+        <div
+          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-6"
+          onClick={() => setPreviewImage(null)}
+        >
+          <button
+            type="button"
+            onClick={() => setPreviewImage(null)}
+            className="absolute top-4 right-4 z-50 w-11 h-11 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center transition-all duration-200 shadow-xl border border-white/20"
+            aria-label="Close image preview"
+          >
+            <span className="material-symbols-outlined text-2xl">close</span>
+          </button>
+          <div
+            className="relative max-w-5xl max-h-[92vh] flex items-center justify-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={previewImage.url}
+              alt={previewImage.alt || 'Full size feedback'}
+              className="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl"
+            />
+          </div>
+        </div>
+      )}
     </section>
   );
 }
