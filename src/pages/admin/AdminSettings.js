@@ -1203,8 +1203,8 @@ export function AdminSettings() {
                 value={editConfig.strategyLayout?.testimonials?.aspectRatio ?? 'auto'}
                 onChange={(e) => handleConfigChange('strategyLayout.testimonials.aspectRatio', e.target.value)}
               >
-                <option value="auto">Auto (9:16 Reel / 4:5 Photo)</option>
-                <option value="9:16">9:16 (Instagram Reel — 1080×1920 px)</option>
+                <option value="auto">Auto (9:16 Match All - Reel & Photo)</option>
+                <option value="9:16">9:16 (Instagram Reel / Story — 1080×1920 px)</option>
                 <option value="4:5">4:5 (Portrait Photo — 1080×1350 px)</option>
                 <option value="1:1">1:1 (Square Photo — 1080×1080 px)</option>
                 <option value="16:9">16:9 (Landscape Video — 1920×1080 px)</option>

@@ -32,7 +32,7 @@ function getCardAspectRatio(item, sectionRatio) {
   }
 
   // Auto default:
-  // If video is present (e.g. 1080x1920 Instagram Reel), default to 9:16
+  // Both images and videos default to 9:16 so images have the exact same height as videos
   if (item?.video && item.video.trim()) {
     const isYt = /youtube\.com|youtu\.be/i.test(item.video);
     const isYtShort = /youtube\.com\/shorts/i.test(item.video);
@@ -42,12 +42,7 @@ function getCardAspectRatio(item, sectionRatio) {
     return { style: { aspectRatio: '9 / 16' }, className: 'aspect-[9/16]' };
   }
 
-  // If photo/image is present, default to 4:5 portrait
-  if (item?.image && item.image.trim()) {
-    return { style: { aspectRatio: '4 / 5' }, className: 'aspect-[4/5]' };
-  }
-
-  // Fallback to 9:16
+  // Default image to 9:16 matching video height
   return { style: { aspectRatio: '9 / 16' }, className: 'aspect-[9/16]' };
 }
 
@@ -98,7 +93,7 @@ export function StrategyTestimonials() {
           </button>
           <div
             ref={scrollRef}
-            className="flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 items-start overflow-x-scroll overflow-y-hidden snap-x snap-mandatory sm:overflow-visible sm:snap-none pb-2 sm:pb-0 px-4 sm:px-0 scrollbar-none overscroll-x-contain min-w-0"
+            className="flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 overflow-x-scroll overflow-y-hidden snap-x snap-mandatory sm:overflow-visible sm:snap-none pb-2 sm:pb-0 px-4 sm:px-0 scrollbar-none overscroll-x-contain min-w-0"
             style={{ WebkitOverflowScrolling: 'touch', scrollPaddingLeft: '1rem', scrollPaddingRight: '1rem' }}
           >
             {displayItems.map((item, i) => {
@@ -111,7 +106,7 @@ export function StrategyTestimonials() {
               return (
                 <div
                   key={i}
-                  className="scroll-reveal flex-shrink-0 w-[85vw] max-w-[320px] sm:w-auto sm:min-w-0 sm:max-w-none snap-start bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-600 overflow-hidden shadow-md hover:shadow-lg transition-all duration-200 flex flex-col h-auto"
+                  className="scroll-reveal flex-shrink-0 w-[85vw] max-w-[320px] sm:w-auto sm:min-w-0 sm:max-w-none snap-start bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full"
                 >
                   <div
                     className={`w-full bg-black relative overflow-hidden flex-shrink-0 ${aspect.className}`}
@@ -147,47 +142,51 @@ export function StrategyTestimonials() {
                       </div>
                     )}
                   </div>
-                  <div className="p-4 flex flex-col">
+                  <div className="p-4 sm:p-5 flex-grow flex flex-col justify-between">
                     {(item.details || item.text) && (
-                      <p className="text-slate-700 dark:text-slate-300 text-xs sm:text-sm leading-relaxed whitespace-pre-line">
+                      <p className="text-slate-900 dark:text-slate-100 text-xs sm:text-sm leading-relaxed whitespace-pre-line font-medium mb-3">
                         {item.details || item.text}
                       </p>
                     )}
-                    {(item.name || item.role) && (
-                      <div className="flex items-center gap-3 mt-3 pt-3 border-t border-slate-100 dark:border-slate-700/60">
-                        {imageUrl && videoUrl && (
-                          <img
-                            src={imageUrl}
-                            alt={item.name || ''}
-                            className="w-9 h-9 rounded-full object-cover border flex-shrink-0"
-                            style={{ borderColor: 'var(--theme-primary)' }}
-                          />
+                    {((item.name && item.name.trim()) || (item.role && item.role.trim()) || (item.buttonText && item.buttonText.trim())) && (
+                      <div className="mt-auto pt-3 border-t border-slate-100 dark:border-slate-700/80">
+                        {((item.name && item.name.trim()) || (item.role && item.role.trim())) && (
+                          <div className="flex items-center gap-3">
+                            {imageUrl && videoUrl && (
+                              <img
+                                src={imageUrl}
+                                alt={item.name || ''}
+                                className="w-10 h-10 rounded-full object-cover border-2 flex-shrink-0"
+                                style={{ borderColor: 'var(--theme-primary)' }}
+                              />
+                            )}
+                            <div>
+                              {item.name && item.name.trim() && (
+                                <p className="font-bold text-slate-900 dark:text-white text-sm sm:text-base leading-snug">
+                                  {item.name}
+                                </p>
+                              )}
+                              {item.role && item.role.trim() && (
+                                <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 font-medium mt-0.5">
+                                  {item.role}
+                                </p>
+                              )}
+                            </div>
+                          </div>
                         )}
-                        <div>
-                          {item.name && (
-                            <p className="font-bold text-slate-900 dark:text-white text-sm sm:text-base" style={{ color: 'var(--theme-primary)' }}>
-                              {item.name}
-                            </p>
-                          )}
-                          {item.role && (
-                            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
-                              {item.role}
-                            </p>
-                          )}
-                        </div>
+                        {(item.buttonText || item.ctaText) && (
+                          <a
+                            href={(item.buttonUrl || item.ctaUrl || '#pricing').trim()}
+                            className="mt-3 inline-flex items-center justify-center gap-1.5 w-full py-2.5 px-3 rounded-xl text-xs sm:text-sm font-semibold text-white transition-all duration-200 shadow-sm hover:shadow hover:opacity-95 text-center"
+                            style={{ backgroundColor: 'var(--theme-primary)' }}
+                          >
+                            {item.buttonIcon && (
+                              <span className="material-symbols-outlined text-sm sm:text-base">{item.buttonIcon}</span>
+                            )}
+                            <span>{item.buttonText || item.ctaText}</span>
+                          </a>
+                        )}
                       </div>
-                    )}
-                    {(item.buttonText || item.ctaText) && (
-                      <a
-                        href={(item.buttonUrl || item.ctaUrl || '#pricing').trim()}
-                        className="mt-3.5 inline-flex items-center justify-center gap-1.5 w-full py-2 px-3 rounded-xl text-xs sm:text-sm font-semibold text-white transition-all duration-200 shadow-sm hover:shadow hover:opacity-95 text-center"
-                        style={{ backgroundColor: 'var(--theme-primary)' }}
-                      >
-                        {item.buttonIcon && (
-                          <span className="material-symbols-outlined text-sm sm:text-base">{item.buttonIcon}</span>
-                        )}
-                        <span>{item.buttonText || item.ctaText}</span>
-                      </a>
                     )}
                   </div>
                 </div>
