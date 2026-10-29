@@ -98,7 +98,7 @@ export function StrategyTestimonials() {
           </button>
           <div
             ref={scrollRef}
-            className="flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 overflow-x-scroll overflow-y-hidden snap-x snap-mandatory sm:overflow-visible sm:snap-none pb-2 sm:pb-0 px-4 sm:px-0 scrollbar-none overscroll-x-contain min-w-0"
+            className="flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 items-start overflow-x-scroll overflow-y-hidden snap-x snap-mandatory sm:overflow-visible sm:snap-none pb-2 sm:pb-0 px-4 sm:px-0 scrollbar-none overscroll-x-contain min-w-0"
             style={{ WebkitOverflowScrolling: 'touch', scrollPaddingLeft: '1rem', scrollPaddingRight: '1rem' }}
           >
             {displayItems.map((item, i) => {
@@ -111,7 +111,7 @@ export function StrategyTestimonials() {
               return (
                 <div
                   key={i}
-                  className="scroll-reveal flex-shrink-0 w-[85vw] max-w-[320px] sm:w-auto sm:min-w-0 sm:max-w-none snap-start bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-600 overflow-hidden shadow-md hover:shadow-lg transition-all duration-200 flex flex-col h-full"
+                  className="scroll-reveal flex-shrink-0 w-[85vw] max-w-[320px] sm:w-auto sm:min-w-0 sm:max-w-none snap-start bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-600 overflow-hidden shadow-md hover:shadow-lg transition-all duration-200 flex flex-col h-auto"
                 >
                   <div
                     className={`w-full bg-black relative overflow-hidden flex-shrink-0 ${aspect.className}`}
@@ -147,34 +147,48 @@ export function StrategyTestimonials() {
                       </div>
                     )}
                   </div>
-                  <div className="p-4 flex-grow flex flex-col justify-between">
+                  <div className="p-4 flex flex-col">
                     {(item.details || item.text) && (
-                      <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm leading-relaxed mb-3 line-clamp-3">
+                      <p className="text-slate-700 dark:text-slate-300 text-xs sm:text-sm leading-relaxed whitespace-pre-line">
                         {item.details || item.text}
                       </p>
                     )}
-                    <div className="flex items-center gap-3 mt-auto">
-                      {imageUrl && videoUrl && (
-                        <img
-                          src={imageUrl}
-                          alt={item.name || ''}
-                          className="w-9 h-9 rounded-full object-cover border flex-shrink-0"
-                          style={{ borderColor: 'var(--theme-primary)' }}
-                        />
-                      )}
-                      <div>
-                        {item.name && (
-                          <p className="font-bold text-slate-900 dark:text-white text-sm sm:text-base" style={{ color: 'var(--theme-primary)' }}>
-                            {item.name}
-                          </p>
+                    {(item.name || item.role) && (
+                      <div className="flex items-center gap-3 mt-3 pt-3 border-t border-slate-100 dark:border-slate-700/60">
+                        {imageUrl && videoUrl && (
+                          <img
+                            src={imageUrl}
+                            alt={item.name || ''}
+                            className="w-9 h-9 rounded-full object-cover border flex-shrink-0"
+                            style={{ borderColor: 'var(--theme-primary)' }}
+                          />
                         )}
-                        {item.role && (
-                          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
-                            {item.role}
-                          </p>
-                        )}
+                        <div>
+                          {item.name && (
+                            <p className="font-bold text-slate-900 dark:text-white text-sm sm:text-base" style={{ color: 'var(--theme-primary)' }}>
+                              {item.name}
+                            </p>
+                          )}
+                          {item.role && (
+                            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+                              {item.role}
+                            </p>
+                          )}
+                        </div>
                       </div>
-                    </div>
+                    )}
+                    {(item.buttonText || item.ctaText) && (
+                      <a
+                        href={(item.buttonUrl || item.ctaUrl || '#pricing').trim()}
+                        className="mt-3.5 inline-flex items-center justify-center gap-1.5 w-full py-2 px-3 rounded-xl text-xs sm:text-sm font-semibold text-white transition-all duration-200 shadow-sm hover:shadow hover:opacity-95 text-center"
+                        style={{ backgroundColor: 'var(--theme-primary)' }}
+                      >
+                        {item.buttonIcon && (
+                          <span className="material-symbols-outlined text-sm sm:text-base">{item.buttonIcon}</span>
+                        )}
+                        <span>{item.buttonText || item.ctaText}</span>
+                      </a>
+                    )}
                   </div>
                 </div>
               );

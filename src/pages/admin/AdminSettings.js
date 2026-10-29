@@ -1210,56 +1210,144 @@ export function AdminSettings() {
                 <option value="16:9">16:9 (Landscape Video — 1920×1080 px)</option>
               </select>
             </div>
-            {[0, 1, 2, 3].map((idx) => {
-              const items = editConfig.strategyLayout?.testimonials?.items || [];
-              const item = (items[idx] != null && typeof items[idx] === 'object') ? items[idx] : {};
-              const previewAspect = item.aspectRatio === '4:5' ? '4/5' : item.aspectRatio === '1:1' ? '1/1' : item.aspectRatio === '16:9' ? '16/9' : (item.aspectRatio === '9:16' ? '9/16' : (item.video ? '9/16' : '4/5'));
-              return (
-                <div className="col-12 col-lg-6" key={idx}>
-                  <div className="border rounded p-3 bg-white">
-                    <h6 className="border-bottom pb-2 mb-3">Card {idx + 1}</h6>
-                    <div className="mb-2">
-                      <label className="form-label small mb-0">Name</label>
-                      <input type="text" className="form-control form-control-sm" placeholder="e.g. Shanmuganathan C" value={item.name ?? ''} onChange={(e) => handleConfigChange(`strategyLayout.testimonials.items.${idx}.name`, e.target.value)} />
-                    </div>
-                    <div className="mb-2">
-                      <label className="form-label small mb-0">Role / Company</label>
-                      <input type="text" className="form-control form-control-sm" placeholder="e.g. Spider India" value={item.role ?? ''} onChange={(e) => handleConfigChange(`strategyLayout.testimonials.items.${idx}.role`, e.target.value)} />
-                    </div>
-                    <div className="mb-2">
-                      <label className="form-label small mb-0">Details (short quote or description — shown on website below video)</label>
-                      <textarea className="form-control form-control-sm" rows={2} placeholder="e.g. The session gave me a clear roadmap. I implemented one process and saved 10 hours a week." value={item.details ?? item.text ?? ''} onChange={(e) => handleConfigChange(`strategyLayout.testimonials.items.${idx}.details`, e.target.value)} />
-                    </div>
-                    <div className="mb-2">
-                      <label className="form-label small mb-0">Aspect Ratio (Photo / Reel)</label>
-                      <select
-                        className="form-select form-select-sm"
-                        value={item.aspectRatio || 'auto'}
-                        onChange={(e) => handleConfigChange(`strategyLayout.testimonials.items.${idx}.aspectRatio`, e.target.value)}
-                      >
-                        <option value="auto">Auto / Section Default</option>
-                        <option value="9:16">9:16 (Instagram Reel — 1080×1920 px)</option>
-                        <option value="4:5">4:5 (Portrait Photo — 1080×1350 px)</option>
-                        <option value="1:1">1:1 (Square Photo — 1080×1080 px)</option>
-                        <option value="16:9">16:9 (Landscape Video — 1920×1080 px)</option>
-                      </select>
-                    </div>
-                    <div className="mb-3">
-                      <label className="form-label small mb-0">Video (upload or paste YouTube / video URL)</label>
-                      <div className="d-flex flex-wrap gap-2 align-items-center">
-                        <input type="file" accept="video/*" className="form-control form-control-sm" style={{ maxWidth: '160px' }} onChange={(e) => handleImageUpload(e, `strategyLayout.testimonials.items.${idx}.video`)} disabled={!isSupabaseConfigured() || uploading} />
-                        <input type="url" className="form-control form-control-sm flex-grow-1" placeholder="YouTube, Shorts, or video URL" value={item.video ?? ''} onChange={(e) => handleConfigChange(`strategyLayout.testimonials.items.${idx}.video`, e.target.value)} />
+            {(() => {
+              const items = editConfig.strategyLayout?.testimonials?.items && editConfig.strategyLayout.testimonials.items.length > 0
+                ? editConfig.strategyLayout.testimonials.items
+                : [{}, {}, {}, {}];
+              return items.map((rawItem, idx) => {
+                const item = (rawItem != null && typeof rawItem === 'object') ? rawItem : {};
+                const previewAspect = item.aspectRatio === '4:5' ? '4/5' : item.aspectRatio === '1:1' ? '1/1' : item.aspectRatio === '16:9' ? '16/9' : (item.aspectRatio === '9:16' ? '9/16' : (item.video ? '9/16' : '4/5'));
+                return (
+                  <div className="col-12 col-lg-6" key={idx}>
+                    <div className="border rounded p-3 bg-white">
+                      <div className="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+                        <h6 className="mb-0 fw-bold">Card {idx + 1}</h6>
+                        <div className="d-flex gap-1 align-items-center">
+                          {idx > 0 && (
+                            <button
+                              type="button"
+                              className="btn btn-outline-secondary btn-sm py-0 px-2"
+                              title="Move up"
+                              onClick={() => {
+                                const list = [...items];
+                                const temp = list[idx - 1];
+                                list[idx - 1] = list[idx];
+                                list[idx] = temp;
+                                handleConfigChange('strategyLayout.testimonials.items', list);
+                              }}
+                            >
+                              ↑
+                            </button>
+                          )}
+                          {idx < items.length - 1 && (
+                            <button
+                              type="button"
+                              className="btn btn-outline-secondary btn-sm py-0 px-2"
+                              title="Move down"
+                              onClick={() => {
+                                const list = [...items];
+                                const temp = list[idx + 1];
+                                list[idx + 1] = list[idx];
+                                list[idx] = temp;
+                                handleConfigChange('strategyLayout.testimonials.items', list);
+                              }}
+                            >
+                              ↓
+                            </button>
+                          )}
+                          {items.length > 1 && (
+                            <button
+                              type="button"
+                              className="btn btn-outline-danger btn-sm py-0 px-2"
+                              title="Delete card"
+                              onClick={() => {
+                                const list = items.filter((_, i) => i !== idx);
+                                handleConfigChange('strategyLayout.testimonials.items', list);
+                              }}
+                            >
+                              Delete
+                            </button>
+                          )}
+                        </div>
                       </div>
-                      <p className="form-text small text-muted mb-0 mt-1">
-                        Supabase Free: ~50MB max. Recommended for Instagram Reels: <strong>9:16 (1080×1920 px)</strong>.
-                      </p>
-                      {item.video && (
-                        <div className="mt-2 d-flex align-items-center gap-2">
-                          {/youtube\.com|youtu\.be/i.test(item.video) ? (
-                            <span className="badge bg-secondary">YouTube Saved</span>
-                          ) : (
-                            <video
-                              src={item.video}
+                      <div className="mb-2">
+                        <label className="form-label small mb-0">Name</label>
+                        <input type="text" className="form-control form-control-sm" placeholder="e.g. Shanmuganathan C" value={item.name ?? ''} onChange={(e) => handleConfigChange(`strategyLayout.testimonials.items.${idx}.name`, e.target.value)} />
+                      </div>
+                      <div className="mb-2">
+                        <label className="form-label small mb-0">Role / Company</label>
+                        <input type="text" className="form-control form-control-sm" placeholder="e.g. Spider India" value={item.role ?? ''} onChange={(e) => handleConfigChange(`strategyLayout.testimonials.items.${idx}.role`, e.target.value)} />
+                      </div>
+                      <div className="mb-2">
+                        <label className="form-label small mb-0">Details (short quote or description — shown on website below video)</label>
+                        <textarea className="form-control form-control-sm" rows={2} placeholder="e.g. The session gave me a clear roadmap. I implemented one process and saved 10 hours a week." value={item.details ?? item.text ?? ''} onChange={(e) => handleConfigChange(`strategyLayout.testimonials.items.${idx}.details`, e.target.value)} />
+                      </div>
+                      <div className="mb-2">
+                        <label className="form-label small mb-0">Aspect Ratio (Photo / Reel)</label>
+                        <select
+                          className="form-select form-select-sm"
+                          value={item.aspectRatio || 'auto'}
+                          onChange={(e) => handleConfigChange(`strategyLayout.testimonials.items.${idx}.aspectRatio`, e.target.value)}
+                        >
+                          <option value="auto">Auto / Section Default</option>
+                          <option value="9:16">9:16 (Instagram Reel — 1080×1920 px)</option>
+                          <option value="4:5">4:5 (Portrait Photo — 1080×1350 px)</option>
+                          <option value="1:1">1:1 (Square Photo — 1080×1080 px)</option>
+                          <option value="16:9">16:9 (Landscape Video — 1920×1080 px)</option>
+                        </select>
+                      </div>
+                      <div className="mb-3">
+                        <label className="form-label small mb-0">Video (upload or paste YouTube / video URL)</label>
+                        <div className="d-flex flex-wrap gap-2 align-items-center">
+                          <input type="file" accept="video/*" className="form-control form-control-sm" style={{ maxWidth: '160px' }} onChange={(e) => handleImageUpload(e, `strategyLayout.testimonials.items.${idx}.video`)} disabled={!isSupabaseConfigured() || uploading} />
+                          <input type="url" className="form-control form-control-sm flex-grow-1" placeholder="YouTube, Shorts, or video URL" value={item.video ?? ''} onChange={(e) => handleConfigChange(`strategyLayout.testimonials.items.${idx}.video`, e.target.value)} />
+                        </div>
+                        <p className="form-text small text-muted mb-0 mt-1">
+                          Supabase Free: ~50MB max. Recommended for Instagram Reels: <strong>9:16 (1080×1920 px)</strong>.
+                        </p>
+                        {item.video && (
+                          <div className="mt-2 d-flex align-items-center gap-2">
+                            {/youtube\.com|youtu\.be/i.test(item.video) ? (
+                              <span className="badge bg-secondary">YouTube Saved</span>
+                            ) : (
+                              <video
+                                src={item.video}
+                                style={{
+                                  height: '60px',
+                                  width: 'auto',
+                                  aspectRatio: previewAspect,
+                                  objectFit: 'cover',
+                                  borderRadius: '4px',
+                                  border: '1px solid #dee2e6'
+                                }}
+                                muted
+                                playsInline
+                              />
+                            )}
+                            <button
+                              type="button"
+                              className="btn btn-outline-danger btn-sm py-0 px-2"
+                              onClick={() => handleConfigChange(`strategyLayout.testimonials.items.${idx}.video`, '')}
+                            >
+                              Remove Video
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                      <div>
+                        <label className="form-label small mb-0">Image (upload or paste image URL)</label>
+                        <div className="d-flex flex-wrap gap-2 align-items-center">
+                          <input type="file" accept="image/*" className="form-control form-control-sm" style={{ maxWidth: '160px' }} onChange={(e) => handleImageUpload(e, `strategyLayout.testimonials.items.${idx}.image`)} disabled={!isSupabaseConfigured() || uploading} />
+                          <input type="url" className="form-control form-control-sm flex-grow-1" placeholder="Image URL (e.g. https://... or uploaded)" value={item.image ?? ''} onChange={(e) => handleConfigChange(`strategyLayout.testimonials.items.${idx}.image`, e.target.value)} />
+                        </div>
+                        <p className="form-text small text-muted mb-0 mt-1">
+                          Used as card media, or video thumbnail. Recommended photo: <strong>4:5 (1080×1350 px)</strong> or <strong>1:1 (1080×1080 px)</strong>.
+                        </p>
+                        {item.image && (
+                          <div className="mt-2 d-flex align-items-center gap-2">
+                            <img
+                              src={item.image}
+                              alt="Preview"
                               style={{
                                 height: '60px',
                                 width: 'auto',
@@ -1268,57 +1356,70 @@ export function AdminSettings() {
                                 borderRadius: '4px',
                                 border: '1px solid #dee2e6'
                               }}
-                              muted
-                              playsInline
                             />
-                          )}
-                          <button
-                            type="button"
-                            className="btn btn-outline-danger btn-sm py-0 px-2"
-                            onClick={() => handleConfigChange(`strategyLayout.testimonials.items.${idx}.video`, '')}
-                          >
-                            Remove Video
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                    <div>
-                      <label className="form-label small mb-0">Image (upload or paste image URL)</label>
-                      <div className="d-flex flex-wrap gap-2 align-items-center">
-                        <input type="file" accept="image/*" className="form-control form-control-sm" style={{ maxWidth: '160px' }} onChange={(e) => handleImageUpload(e, `strategyLayout.testimonials.items.${idx}.image`)} disabled={!isSupabaseConfigured() || uploading} />
-                        <input type="url" className="form-control form-control-sm flex-grow-1" placeholder="Image URL (e.g. https://... or uploaded)" value={item.image ?? ''} onChange={(e) => handleConfigChange(`strategyLayout.testimonials.items.${idx}.image`, e.target.value)} />
+                            <button
+                              type="button"
+                              className="btn btn-outline-danger btn-sm py-0 px-2"
+                              onClick={() => handleConfigChange(`strategyLayout.testimonials.items.${idx}.image`, '')}
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        )}
                       </div>
-                      <p className="form-text small text-muted mb-0 mt-1">
-                        Used as card media, or video thumbnail. Recommended photo: <strong>4:5 (1080×1350 px)</strong> or <strong>1:1 (1080×1080 px)</strong>.
-                      </p>
-                      {item.image && (
-                        <div className="mt-2 d-flex align-items-center gap-2">
-                          <img
-                            src={item.image}
-                            alt="Preview"
-                            style={{
-                              height: '60px',
-                              width: 'auto',
-                              aspectRatio: previewAspect,
-                              objectFit: 'cover',
-                              borderRadius: '4px',
-                              border: '1px solid #dee2e6'
-                            }}
-                          />
-                          <button
-                            type="button"
-                            className="btn btn-outline-danger btn-sm py-0 px-2"
-                            onClick={() => handleConfigChange(`strategyLayout.testimonials.items.${idx}.image`, '')}
-                          >
-                            Remove
-                          </button>
+                      <div className="mt-3 pt-2 border-top">
+                        <label className="form-label small mb-1 fw-semibold text-muted">Card Button / Link (Optional)</label>
+                        <div className="row g-2">
+                          <div className="col-12 col-md-5">
+                            <input
+                              type="text"
+                              className="form-control form-control-sm"
+                              placeholder="Button Text (e.g. View Story)"
+                              value={item.buttonText ?? ''}
+                              onChange={(e) => handleConfigChange(`strategyLayout.testimonials.items.${idx}.buttonText`, e.target.value)}
+                            />
+                          </div>
+                          <div className="col-12 col-md-4">
+                            <input
+                              type="text"
+                              className="form-control form-control-sm"
+                              placeholder="Button Link / URL"
+                              value={item.buttonUrl ?? ''}
+                              onChange={(e) => handleConfigChange(`strategyLayout.testimonials.items.${idx}.buttonUrl`, e.target.value)}
+                            />
+                          </div>
+                          <div className="col-12 col-md-3">
+                            <input
+                              type="text"
+                              className="form-control form-control-sm"
+                              placeholder="Icon (e.g. arrow_forward)"
+                              value={item.buttonIcon ?? ''}
+                              onChange={(e) => handleConfigChange(`strategyLayout.testimonials.items.${idx}.buttonIcon`, e.target.value)}
+                            />
+                          </div>
                         </div>
-                      )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              });
+            })()}
+            <div className="col-12">
+              <button
+                type="button"
+                className="btn btn-outline-primary btn-sm d-inline-flex align-items-center gap-1"
+                onClick={() => {
+                  const current = editConfig.strategyLayout?.testimonials?.items || [];
+                  handleConfigChange('strategyLayout.testimonials.items', [
+                    ...current,
+                    { name: '', role: '', details: '', aspectRatio: 'auto', video: '', image: '', buttonText: '', buttonUrl: '', buttonIcon: '' }
+                  ]);
+                }}
+              >
+                <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>add_circle</span>
+                + Add new card
+              </button>
+            </div>
           </div>
         </div>
       </section>
