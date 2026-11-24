@@ -118,23 +118,6 @@ export function StrategyForm({ embedded = false }) {
     setStatus('loading');
 
     try {
-      const { data: existing } = await supabase
-        .from(SUBMISSIONS_TABLE)
-        .select('id')
-        .ilike('email', emailResult.normalized)
-        .limit(1)
-        .maybeSingle();
-
-      if (existing) {
-        setStatus('idle');
-        setModal({
-          type: 'error',
-          title: 'Already registered',
-          message: 'This email is already registered. Use a different email or contact us if you need to update your booking.',
-        });
-        return;
-      }
-
       const payload = {
         name,
         email: emailResult.normalized,
@@ -231,13 +214,10 @@ export function StrategyForm({ embedded = false }) {
       navigate('/thank-you');
     } catch (err) {
       setStatus('idle');
-      const isDuplicate = err.code === '23505' || (err.message && /unique|duplicate|already exists/i.test(err.message));
       setModal({
         type: 'error',
-        title: isDuplicate ? 'Already registered' : 'Something went wrong',
-        message: isDuplicate
-          ? 'This email is already registered. Use a different email or contact us if you need to update your booking.'
-          : (err.message || 'Could not submit. Please try again.'),
+        title: 'Something went wrong',
+        message: err.message || 'Could not submit. Please try again.',
       });
     }
   };
